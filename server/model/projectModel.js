@@ -1,0 +1,212 @@
+const db = require("../Database/database").pool;
+
+/**
+ * Get all projects with their client details.
+ * @returns {Promise<Array>} List of projects
+ */
+const getAllProjectsModel = async () => {
+  try {
+    const [projects] = await db.query(`
+      SELECT 
+        p.*, 
+        c.name AS client_name, 
+        c.company AS client_company 
+      FROM projects p
+      JOIN clients c ON p.client_id = c.id
+      ORDER BY p.created_at DESC
+    `);
+    return projects;
+  } catch (error) {
+    console.error("Error in getAllProjects:", error);
+    throw new Error("Failed to fetch projects");
+  }
+};
+
+/**
+ * Get employees assigned to a specific project.
+ * @param {number} projectId 
+ * @returns {Promise<Array>} List of employees
+ */
+const getProjectEmployeesModel = async (projectId) => {
+  if (!projectId) throw new Error("Project ID is required");
+
+  try {
+    const [employees] = await db.query(`
+      SELECT 
+        e.id, e.employee_id, e.firstName,e.lastName,e.designation, 
+        pa.role_in_project, pa.assigned_date
+      FROM project_assignments pa
+      JOIN employees e ON pa.employee_id = e.id
+      WHERE pa.project_id = ?
+    `, [projectId]);
+    console.log("employee assigned to project",employees);
+    return employees;
+  } catch (error) {
+    console.error("Error in getProjectEmployees:", error);
+    throw new Error("Failed to fetch project employees");
+  }
+};
+
+/**
+ * Add a new project.
+ * @param {Object} data 
+ * @returns {Promise<Object>} Insert result
+ */
+const addNewProjectModel = async (data) => {
+  const {
+    title,
+    description,
+    client_id,
+    start_date,
+    end_date,
+    budget
+  } = data;
+
+  if (!title || !client_id) {
+    throw new Error("Title and client_id are required");
+  }
+
+  try {
+    const [result] = await db.query(`
+      INSERT INTO projects (
+        title, description, client_id, start_date, end_date, budget
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `, [title, description, client_id, start_date, end_date, budget]);
+
+    return result;
+  } catch (error) {
+    console.error("Error in addNewProject:", error);
+    throw new Error("Failed to add project");
+  }
+};
+
+/**
+ * Update an existing project by ID.
+ * @param {number} projectId 
+ * @param {Object} updates 
+ * @returns {Promise<Object>} Update result
+ */
+const updateProjectModel = async (projectId, updates) => {
+  if (!projectId || !updates || typeof updates !== "object") {
+    throw new Error("Invalid project update input");
+  }
+
+  const fields = [];
+  const values = [];
+
+  for (const key in updates) {
+    fields.push(`${key} = ?`);
+    values.push(updates[key]);
+  }
+
+  if (fields.length === 0) {
+    throw new Error("No fields to update");
+  }
+
+  const query = `
+    UPDATE projects 
+    SET ${fields.join(", ")} 
+    WHERE id = ?
+  `;
+  values.push(projectId);
+
+  try {
+    const [result] = await db.query(query, values);
+    return result;
+  } catch (error) {
+    console.error("Error in updateProject:", error);
+    throw new Error("Failed to update project");
+  }
+};
+
+/**
+ * Delete a project by ID.
+ * @param {number} projectId 
+ * @returns {Promise<Object>} Delete result
+ */
+const deleteProjectModel = async (projectId) => {
+  if (!projectId) throw new Error("Project ID is required");
+
+  try {
+    const [result] = await db.query(
+      `DELETE FROM projects WHERE id = ?`,
+      [projectId]
+    );
+    return result;
+  } catch (error) {
+    console.error("Error in deleteProject:", error);
+    throw new Error("Failed to delete project");
+  }
+};
+/**
+ * Assign an employee to a project.
+ * @param {Object} data - assignment info
+ * @param {number} data.project_id - ID of the project
+ * @param {number} data.employee_id - ID of the employee
+ * @param {string} [data.role_in_project] - Optional role
+ * @param {string} [data.assigned_date] - Optional assignment date
+ * @returns {Promise<Object>} MySQL insert result
+ */
+const assignProjectToEmployeeModel = async (data) => {
+    const { project_id, employee_id, role_in_project = null, assigned_date = null } = data;
+  
+    if (!project_id || !employee_id) {
+      throw new Error("project_id and employee_id are required");
+    }
+  
+    try {
+      const [result] = await db.query(`
+        INSERT INTO project_assignments (
+          project_id, employee_id, role_in_project, assigned_date
+        ) VALUES (?, ?, ?, ?)
+      `, [project_id, employee_id, role_in_project, assigned_date]);
+  
+      return result;
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new Error("This employee is already assigned to the project");
+      }
+      console.error("Error in assignProjectToEmployee:", error);
+      throw new Error("Failed to assign project to employee");
+    }
+  };
+/** 
+ @param {Object} updatedFields
+ @param {number} projectId
+ @param {number} employeeId
+ @return {Promise<Object>}
+
+*/
+const updateProjectAssignModel = async (projectId,employeeId, updatedFields) => {
+    
+  
+    const keys = Object.keys(updatedFields);
+    
+    const values = Object.values(updatedFields);
+  
+    if (keys.length === 0) {
+      throw new Error("No fields provided for update.");
+    }
+  
+    // Build dynamic SET clause like: "firstName = ?, email = ?"
+    const setClause = keys.join("=?,") + "=?";
+  
+    const query = `UPDATE project_assignments SET ${setClause} WHERE project_id = ?
+    and employee_id = ?
+    `;
+    values.push(projectId);
+    values.push(employeeId)
+    // Add ID as last param
+  
+    await db.query(query, values);
+  };  
+
+module.exports = {
+  getAllProjectsModel,
+  getProjectEmployeesModel,
+  addNewProjectModel,
+  updateProjectModel,
+  deleteProjectModel,
+  assignProjectToEmployeeModel,
+  updateProjectAssignModel
+};
