@@ -1,0 +1,69 @@
+/* General body background */
+body {
+  background-color: #F9FAFB;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container for login/signup */
+.auth-container {
+  max-width: 400px;
+  margin: 80px auto;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+/* Headings */
+.auth-container h2 {
+  margin-bottom: 24px;
+  color: #1E3A8A;
+  font-size: 28px;
+}
+
+/* Form styling */
+.auth-form input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Button styling */
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3B82F6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.auth-form button:hover {
+  background-color: #2563EB;
+}
+
+/* Text below form */
+.auth-form p {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #111827;
+}
+
+.auth-form a {
+  color: #3B82F6;
+  text-decoration: none;
+}
+
+.auth-form a:hover {
+  text-decoration: underline;
+}
