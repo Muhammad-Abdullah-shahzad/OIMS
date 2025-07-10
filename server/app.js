@@ -1,11 +1,13 @@
 const express = require("express")
 const app = express();
+
 const authenticationRoutes = require("./routes/authenticationRoutes")
 const employeeRoutes = require("./routes/employeeRoutes")
 const projectRoutes = require("./routes/projectsRoutes")
 const clientRoutes = require("./routes/clientRoutes")
 const dashboardRoute = require("./routes/dashboardsRoutes")
 const paymentRoutes = require("./routes/paymentRoutes")
+const expenseRoutes = require("./routes/expenseRoute")
 
 app.use(express.json())
 
@@ -103,6 +105,8 @@ app.use("/client",clientRoutes)
 app.use("/dashboard",dashboardRoute)
 
 app.use("/payment",paymentRoutes)
+
+app.use("/expense",expenseRoutes)
 
 app.listen(port,()=>{
     console.log("server listening on port ", port);
