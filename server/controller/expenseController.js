@@ -56,9 +56,19 @@ exports.deleteExpenseController = async (req, res) => {
 // 5. Get Monthly Expense Report
 exports.getExpenseReportController = async (req, res) => {
     try {
-      const report = await expenseModel.getMonthlyExpenseReport();
-      const pdfBuffer = await generatePdfFromJson(report); //call the helper here
-      
+      let report ={};
+      const startDate = req.params.startDate;
+      const endDate = req.params.endDate;
+      if(!startDate || !endDate){
+         report = await expenseModel.getMonthlyExpenseReport();
+         console.log(report);
+      }
+     else{
+      report = await expenseModel.getMonthlyExpenseReport(startDate,endDate);
+      console.log(report);
+     } 
+     
+      const pdfBuffer = await generatePdfFromJson(report,"Expense Report Slip","OraDigital"); //call the helper here
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", "attachment; filename=monthly_expense_report.pdf");
       res.send(pdfBuffer);

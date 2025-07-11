@@ -1,6 +1,21 @@
 const PDFDocument = require('pdfkit');
 
-exports.generatePdfFromJson = (data) => {
+exports.generatePdfFromJson = (data,Title,Author) => {
+  const months =[
+    "none",
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december"
+  ]
   return new Promise((resolve, reject) => {
     try {
       const doc = new PDFDocument({ margin: 50 });
@@ -34,14 +49,14 @@ exports.generatePdfFromJson = (data) => {
       doc.on('error', reject);
 
       // Metadata
-      doc.info.Title = 'Monthly Expense Report';
-      doc.info.Author = 'OIMS';
+      doc.info.Title = Title;
+      doc.info.Author = Author;
 
       // Title
       doc
         .fontSize(20)
         .fillColor('#333')
-        .text('OIMS Monthly Expense Report', { align: 'center', underline: true });
+        .text('OraDigitals Monthly Expense Report', { align: 'center', underline: true });
       doc.moveDown(2);
 
       // Table headers
@@ -73,7 +88,7 @@ exports.generatePdfFromJson = (data) => {
           .fillColor('#000')
           .fontSize(11)
           .text(item.expense_year.toString(), col1, y)
-          .text(item.expense_month, col2, y)
+          .text(months[item.expense_month], col2, y)
           .text(parseFloat(item.total_expense_amount || 0).toFixed(2), col3, y);
 
         y += rowHeight;

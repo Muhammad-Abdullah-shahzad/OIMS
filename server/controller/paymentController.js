@@ -1,5 +1,5 @@
 const paymentModel = require("../model/paymentModel");
-
+const {convertPaymentJSONToPDF} = require("../utility/convertPaymentJSONToPDF")
 // Get all payments with project and client info
 exports.getAllPaymentController = async (req, res) => {
   try {
@@ -15,7 +15,7 @@ exports.getAllPaymentController = async (req, res) => {
 exports.addNewPaymentController = async (req, res) => {
   try {
     const paymentData = req.body;
-    const inserted = await paymentModel.addPaymentModel(paymentData);
+    const inserted = await paymentModel.getPaymentSlipDataModel(paymentData);
     res.status(201).json({ message: "Payment added", inserted });
   } catch (err) {
     console.error("Error in addNewPaymentController:", err);
@@ -45,5 +45,20 @@ exports.deletePaymentController = async (req, res) => {
   } catch (err) {
     console.error("Error in deletePaymentController:", err);
     res.status(500).json({ error: "Failed to delete payment" });
+  }
+};
+exports.getPaymentSlipController = async (req, res) => {
+  try {
+    const clientId = req.body.client_id;
+   const slip = await paymentModel.getPaymentSlipDataModel(clientId);
+   console.log("slip data ",slip);
+   const slipBuffer = await convertPaymentJSONToPDF(slip);
+   res.setHeader("Content-Type", "application/pdf");
+   res.setHeader("Content-Disposition", "attachment; filename=monthly_expense_report.pdf");
+   res.send(slipBuffer);
+    
+  } catch (err) {
+    console.error("Error generating pdf", err);
+    res.status(500).json({ error: "Failed to generate pdf" });
   }
 };
