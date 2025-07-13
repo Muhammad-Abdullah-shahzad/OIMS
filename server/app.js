@@ -8,8 +8,10 @@ const clientRoutes = require("./routes/clientRoutes")
 const dashboardRoute = require("./routes/dashboardsRoutes")
 const paymentRoutes = require("./routes/paymentRoutes")
 const expenseRoutes = require("./routes/expenseRoute")
+const salaryRoutes = require("./routes/salaryRoutes")
 
 app.use(express.json())
+
 
 const port = process.env.port
 /*
@@ -108,6 +110,7 @@ app.use("/payment",paymentRoutes)
 
 app.use("/expense",expenseRoutes)
 
+app.use("/salary",salaryRoutes)
 app.listen(port,()=>{
     console.log("server listening on port ", port);
 })
