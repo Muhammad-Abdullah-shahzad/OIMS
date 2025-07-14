@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/AuthForm.css"; // Assuming this CSS file exists and styles the form
 import handleChange from "./handleChange";
 import handleSubmit from "./makeSignUp";
+
 const Signup = () => {
   // State for form inputs
   const [firstName, setFirstName] = useState("");
