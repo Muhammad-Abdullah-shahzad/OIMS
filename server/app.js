@@ -1,4 +1,8 @@
 const express = require("express")
+// In Express backend:
+const cors = require('cors');
+
+
 const app = express();
 
 const authenticationRoutes = require("./routes/authenticationRoutes")
@@ -9,7 +13,7 @@ const dashboardRoute = require("./routes/dashboardsRoutes")
 const paymentRoutes = require("./routes/paymentRoutes")
 const expenseRoutes = require("./routes/expenseRoute")
 const salaryRoutes = require("./routes/salaryRoutes")
-
+app.use(cors());
 app.use(express.json())
 
 

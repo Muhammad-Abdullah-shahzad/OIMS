@@ -5,15 +5,15 @@ const {authenticateRoles} = require("../middleware/authenticateRole")
 
 const paymentController = require("../controller/paymentController")
 
-router.get("/all",paymentController.getAllPaymentController)
+router.get("/all",authenticateToken,authenticateRoles("finance_manager","super_admin"),paymentController.getAllPaymentController)
 
-router.post("/get-payment-slip",paymentController.getPaymentSlipController)
+router.post("/get-payment-slip",authenticateToken,authenticateRoles("finance_manager","super_admin"),paymentController.getPaymentSlipController)
 
-router.post("/add",paymentController.addNewPaymentController)
+router.post("/add",authenticateToken,authenticateRoles("finance_manager","super_admin"),paymentController.addNewPaymentController)
 
-router.put("/edit/:paymentId",paymentController.updatePaymentController)
+router.put("/edit/:paymentId",authenticateToken,authenticateRoles("finance_manager","super_admin"),paymentController.updatePaymentController)
 
-router.delete("/delete/:paymentId",paymentController.deletePaymentController)
+router.delete("/delete/:paymentId",authenticateToken,authenticateRoles("finance_manager","super_admin"),paymentController.deletePaymentController)
 
 
 

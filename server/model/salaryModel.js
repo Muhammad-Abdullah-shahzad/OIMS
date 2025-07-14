@@ -14,7 +14,8 @@ exports.getAllSalaries = async () => {
   `);
   return rows;
 };
-exports.getSalary = async (employeeId) => {
+exports.getSalary = async (employeeId,month,year) => {
+
     const [rows] = await db.pool.execute(`
       SELECT 
         s.*, 
@@ -23,11 +24,12 @@ exports.getSalary = async (employeeId) => {
         e.employee_id AS system_employee_id
       FROM salary_payments s
       JOIN employees e ON s.employee_id = e.id
-      WHERE s.employee_id = ?
+      WHERE s.employee_id = ? AND MONTH(s.payment_date) = ? AND YEAR(s.payment_date) = ? 
       ORDER BY s.salary_year DESC, s.salary_month DESC
-    `, [employeeId]);
-  
+      `, [employeeId,month,year]);
+
     return rows;
+
   };
   
 // ADD a new salary record

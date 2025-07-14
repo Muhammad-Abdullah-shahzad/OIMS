@@ -118,7 +118,9 @@ exports.deleteSalaryrecordController = async (req, res) => {
 exports.generateReportController = async (req, res) => {
   try {
     const { employeeId } = req.params;
-    const employeeSalaryData = await salaryModel.getSalary(employeeId);
+    const {month,year} = req.body;
+
+    const employeeSalaryData = await salaryModel.getSalary(employeeId,month.year);
 
     if (!employeeSalaryData || employeeSalaryData.length === 0) {
       return res.status(404).json({ message: "No salary data found" });
