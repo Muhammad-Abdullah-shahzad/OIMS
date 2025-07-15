@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv").config();
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -12,7 +12,7 @@ exports.authenticateToken=(req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "Access denied. No token provided." });
   }
-
+  
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
       console.error("JWT Verification Error:", err.message);

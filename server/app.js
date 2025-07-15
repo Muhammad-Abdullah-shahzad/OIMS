@@ -1,6 +1,7 @@
 const express = require("express")
 // In Express backend:
 const cors = require('cors');
+const dotenv = require("dotenv").config();
 
 
 const app = express();

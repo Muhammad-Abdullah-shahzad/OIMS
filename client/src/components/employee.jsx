@@ -9,12 +9,15 @@ const validateEmployeeForm = (formData) => {
     if (!formData.firstName) errors.firstName = 'First Name is required.';
     if (!formData.lastName) errors.lastName = 'Last Name is required.';
     if (!formData.designation) errors.designation = 'Designation is required.';
-    if (!formData.salary || isNaN(formData.salary) || parseFloat(formData.salary) <= 0) errors.salary = 'Valid Salary is required.';
+    // Ensure salary is a number and greater than 0, allowing 0 if appropriate for your business logic
+    if (isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) < 0) { // Changed to < 0 to allow 0 salary if needed
+        errors.salary = 'Valid Salary is required and must be a non-negative number.';
+    }
     if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email format.';
     if (formData.phoneNumber && !/^\+?[0-9\s-]{7,20}$/.test(formData.phoneNumber)) errors.phoneNumber = 'Invalid phone number format.';
     if (formData.cnic && !/^[0-9]{5}-?[0-9]{7}-?[0-9]{1}$/.test(formData.cnic)) errors.cnic = 'Invalid CNIC format (e.g., 12345-1234567-1).';
-    if (formData.hire_date && isNaN(new Date(formData.hire_date))) errors.hire_date = 'Invalid hire date.';
+    if (formData.hire_date && isNaN(new Date(formData.hire_date).getTime())) errors.hire_date = 'Invalid hire date.'; // Use getTime() to check for valid date
 
     return errors;
 };
@@ -36,22 +39,28 @@ const EmployeeManagement = () => {
         phoneNumber: '',
         cnic: '',
         address: '',
-        salary: '',
+        salary: '', // Keep as string for input, convert to number before sending
         bank_account: '',
         hire_date: '',
     });
     const [validationErrors, setValidationErrors] = useState({});
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
-
+    
     // Base URL for your Express.js API
     const API_BASE_URL = 'http://localhost:5000/employee'; // Adjust if your API is on a different base path
 
     // Fetch Employees
     const fetchEmployees = useCallback(async () => {
+        const token = localStorage.getItem("token");
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${API_BASE_URL}/all`);
+            const response = await fetch(`${API_BASE_URL}/all`,{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -88,7 +97,10 @@ const EmployeeManagement = () => {
     // Handle Form Input Changes
     const handleChange = (e) => {
         const { name, value } = e.target;
+        // For salary, ensure it's either a valid number string or an empty string
+        // We'll parse it to a float just before sending to the API in handleSubmit
         setFormData(prev => ({ ...prev, [name]: value }));
+        
         // Clear validation error for the field as user types
         if (validationErrors[name]) {
             setValidationErrors(prev => {
@@ -114,14 +126,19 @@ const EmployeeManagement = () => {
                 phoneNumber: '',
                 cnic: '',
                 address: '',
-                salary: '',
+                salary: '', // Keep as empty string for new employee
                 bank_account: '',
                 hire_date: '',
             });
         } else if (mode === 'edit' && employee) {
             // Format hire_date for input[type="date"]
             const formattedHireDate = employee.hire_date ? new Date(employee.hire_date).toISOString().split('T')[0] : '';
-            setFormData({ ...employee, hire_date: formattedHireDate, salary: employee.salary.toString() });
+            // Ensure salary is a string for the input field, even if it's a number from the API
+            setFormData({ 
+                ...employee, 
+                hire_date: formattedHireDate, 
+                salary: employee.salary != null ? String(employee.salary) : '' // Convert to string, handle null/undefined
+            });
         }
         setShowModal(true);
     };
@@ -137,7 +154,16 @@ const EmployeeManagement = () => {
     // Handle Create/Update Employee Submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const errors = validateEmployeeForm(formData);
+        
+        // Prepare data for submission, converting salary to a number or null
+        const dataToSubmit = { ...formData };
+        if (dataToSubmit.salary === '') {
+            dataToSubmit.salary = null; // Send null if empty, assuming your DB allows NULL
+        } else {
+            dataToSubmit.salary = parseFloat(dataToSubmit.salary);
+        }
+
+        const errors = validateEmployeeForm(dataToSubmit); // Validate the prepared data
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors);
             showToastMessage('Please correct the form errors.', 'error');
@@ -147,17 +173,28 @@ const EmployeeManagement = () => {
         setLoading(true);
         try {
             let response;
+            const token = localStorage.token;
             if (modalMode === 'create') {
-                response = await fetch(API_BASE_URL, {
+                response = await fetch(`${API_BASE_URL}/add`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
+                    headers: { 
+                    'Content-Type': 'application/json',
+                    "Authorization":`Bearer ${token}`
+                 },
+                    body: JSON.stringify(dataToSubmit), // Use dataToSubmit
                 });
             } else if (modalMode === 'edit' && selectedEmployee) {
-                response = await fetch(`${API_BASE_URL}/${selectedEmployee.id}`, {
+                
+                // console.log("data that we are sending to update employee route",dataToSubmit); // Use dataToSubmit
+                const token = localStorage.token
+                // console.log("selected employee ",selectedEmployee);
+                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id)}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
+                    headers: { 
+                    'Content-Type': 'application/json',
+                    "Authorization":`Bearer ${token}`
+                 },
+                    body: JSON.stringify(dataToSubmit), // Use dataToSubmit
                 });
             }
 
@@ -184,8 +221,12 @@ const EmployeeManagement = () => {
 
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/${selectedEmployee.id}`, {
+            const token = localStorage.token;
+            const response = await fetch(`${API_BASE_URL}/remove/${selectedEmployee.id}`, {
                 method: 'DELETE',
+                headers: { // DELETE requests can also have headers
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (!response.ok) {
@@ -318,7 +359,7 @@ const EmployeeManagement = () => {
                                     type="number"
                                     id="salary"
                                     name="salary"
-                                    value={formData.salary}
+                                    value={formData.salary} // Keep as string for input
                                     onChange={handleChange}
                                     className={`form-input ${validationErrors.salary ? 'input-error' : ''}`}
                                     required
@@ -540,4 +581,3 @@ const EmployeeManagement = () => {
 };
 
 export default EmployeeManagement;
-

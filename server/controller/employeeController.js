@@ -44,6 +44,7 @@ exports.updateEmployeeInfoController = async (req, res) => {
 exports.getAllEmployeeController = async (req, res) => {
   try {
     const employees = await employeeModel.getAllEmployeesModel();
+    console.log("employees date sent to front end ",employees);
     res.status(200).json(employees);
   } catch (err) {
     console.error("Get Employees Error:", err.message);
