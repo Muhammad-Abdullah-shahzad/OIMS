@@ -51,3 +51,32 @@ exports.getAllEmployeeController = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+exports.getDashboardStatsController = async (req, res) => {
+  try {
+    const employeeDashboard = {};
+
+    // Core Stats
+    employeeDashboard.totalEmployees = await employeeModel.getEmployeeCount();
+    employeeDashboard.employeesByDesignation = await employeeModel.getEmployeesByDesignation();
+
+    // Additional HR stats
+    employeeDashboard.activeInactiveCount = await employeeModel.getActiveInactiveCount();
+    employeeDashboard.monthlyHiredEmployees = await employeeModel.getMonthlyHiredEmployees();
+    employeeDashboard.salarySummary = await employeeModel.getSalarySummary();
+    employeeDashboard.recentHires = await employeeModel.getRecentHires();
+
+    res.status(200).json({
+      success: true,
+      data: employeeDashboard
+    });
+  } catch (error) {
+    console.error("HR Dashboard Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch employee dashboard stats",
+      error: error.message
+    });
+  }
+};

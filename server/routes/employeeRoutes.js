@@ -14,7 +14,7 @@ router.put("/update/:id",authenticateToken,authenticateRoles("hr_manager","super
 
 router.get("/all",authenticateToken,authenticateRoles("hr_manager","super_admin"), employeeController.getAllEmployeeController);
 
-
+router.get("/dashboard",authenticateToken,authenticateRoles("hr_manager","super_admin"),employeeController.getDashboardStatsController)
 
 
 

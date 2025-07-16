@@ -1,0 +1,82 @@
+/* src/components/NavBar.css */
+
+.navbar {
+    background-color: #fff;
+    color: black;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  img{
+    width: 60px;
+    height: 60px;
+  }
+  
+  /* Nav links - desktop */
+  .navbar-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+  }
+  
+  .navbar-links li a {
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-links li a:hover {
+    color: #ff9800;
+  }
+  
+  /* Hamburger icon */
+  .hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: black;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+  
+    .navbar-links {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: #fff;
+      flex-direction: column;
+      width: 200px;
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      animation: slideDown 0.3s ease;
+    }
+  
+    .navbar-links.open {
+      display: flex;
+    }
+  
+    .navbar-links li {
+      margin-bottom: 10px;
+    }
+  
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  }
+  

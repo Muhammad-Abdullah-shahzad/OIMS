@@ -94,3 +94,86 @@ exports.getAllEmployeesModel = async () => {
   );
   return rows;
 };
+
+
+// 1. Total Active Employees
+exports.getEmployeeCount = async () => {
+  const db = database.pool;
+  const [rows] = await db.query("SELECT COUNT(*) AS totalEmployees FROM employees WHERE is_active = TRUE");
+  return rows[0].totalEmployees;
+};
+
+// 2. Employees by Designation
+exports.getEmployeesByDesignation = async () => {
+  const db = database.pool;
+  const [rows] = await db.query(`
+    SELECT designation, COUNT(*) AS count
+    FROM employees
+    WHERE is_active = TRUE
+    GROUP BY designation
+  `);
+  return rows;
+};
+
+// 3. Active vs Inactive Employees
+exports.getActiveInactiveCount = async () => {
+  const db = database.pool;
+  const [rows] = await db.query(`
+    SELECT 
+      is_active,
+      COUNT(*) AS count
+    FROM employees
+    GROUP BY is_active
+  `);
+  return {
+    active: rows.find(r => r.is_active === 1)?.count || 0,
+    inactive: rows.find(r => r.is_active === 0)?.count || 0
+  };
+};
+
+// 4. Monthly Hired Employees (Last 6 Months)
+exports.getMonthlyHiredEmployees = async () => {
+  const db = database.pool;
+  const [rows] = await db.query(`
+    SELECT 
+      DATE_FORMAT(hire_date, '%Y-%m') AS month,
+      COUNT(*) AS hired_count
+    FROM employees
+    WHERE hire_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    GROUP BY month
+    ORDER BY month DESC
+  `);
+  return rows;
+};
+
+// 5. Salary Summary
+exports.getSalarySummary = async () => {
+  const db = database.pool;
+  const [rows] = await db.query(`
+    SELECT 
+      MIN(salary) AS minSalary,
+      MAX(salary) AS maxSalary,
+      AVG(salary) AS avgSalary
+    FROM employees
+    WHERE is_active = TRUE
+  `);
+  return rows[0];
+};
+
+// 6. Recent Hires (Latest 5 Employees)
+exports.getRecentHires = async () => {
+  const db = database.pool;
+  const [rows] = await db.query(`
+    SELECT 
+      employee_id,
+      firstName,
+      lastName,
+      designation,
+      hire_date
+    FROM employees
+    WHERE is_active = TRUE
+    ORDER BY hire_date DESC
+    LIMIT 5
+  `);
+  return rows;
+};
