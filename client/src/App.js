@@ -9,10 +9,12 @@ import HRDashboardPage from './pages/HrDashboardPage';
 import FinanceDashboard from './dashboard/FinanceDashboard';
 import ProjectDashboard from './dashboard/ProjectDashboard';
 import EmployeePage from './pages/employeePage';
+import ProjectManagementPage from './pages/projectManagementPage';
 
 function App() {
   return (
       <Routes>
+        <Route path='/project-management' element={<ProjectManagementPage/>}/>
         <Route path="/" element={<WelcomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
