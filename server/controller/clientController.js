@@ -41,3 +41,12 @@ exports.deleteClientController = async (req, res) => {
   }
 };
 
+exports.getAllClientsController = async (req, res) => {
+  try {
+    const clients = await clientModel.getAllClients();
+    res.status(200).json({ success: true, data: clients });
+  } catch (error) {
+    console.error('Error fetching clients:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};

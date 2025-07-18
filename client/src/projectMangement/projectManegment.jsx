@@ -86,26 +86,37 @@ const ProjectManagement = () => {
         }
     }, []);
 
-    // Fetch Clients (for dropdown in project form)
-    const fetchClients = useCallback(async () => {
-        const token = localStorage.getItem("token");
-        try {
-            const response = await fetch(`${API_BASE_URL}/client/all`, { // Assuming an API for all clients
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+// Fetch Clients (for dropdown in project form)
+const fetchClients = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`${API_BASE_URL}/client/all`, { // Assuming an API for all clients
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
-            const data = await response.json();
-            setClients(data);
-        } catch (err) {
-            console.error('Failed to fetch clients:', err);
-            showToastMessage('Failed to load clients for project form.', 'error');
+        });
+        if (!response.ok) {
+            const errorData = await response.json(); // Try to parse error message
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-    }, []);
+        const result = await response.json(); // Get the full response object
+
+        // --- CHANGE START ---
+        // Check if 'success' is true and 'data' is an array, then set clients from 'data'
+        if (result.success && Array.isArray(result.data)) {
+            setClients(result.data);
+        } else {
+            // Handle cases where success is false or data is not an array
+            throw new Error(result.message || 'Unexpected data format from client API.');
+        }
+        // --- CHANGE END ---
+
+    } catch (err) {
+        console.error('Failed to fetch clients:', err);
+        showToastMessage('Failed to load clients for project form.', 'error');
+    }
+}, []); // Added showToastMessage to dependency array
 
     // Fetch Employees (for dropdown in assignment form)
     const fetchEmployees = useCallback(async () => {

@@ -1,4 +1,5 @@
 const projectModel = require("../model/projectModel")
+const paymentModel = require("../model/paymentModel")
 exports.getAllProjectsController = async (req, res) => {
     try {
       const projects = await projectModel.getAllProjectsModel();
@@ -79,6 +80,33 @@ exports.updateProjectAssignmentController = async (req,res)=>{
       res.status(500).json({ message: "Server error" });
     }
 }
+
+
+
+exports.getDashboardController = async (req,res) => {
+  const dashboard = {};
+  try {
+    // Basic Project Counts
+    dashboard.totalProjects = await projectModel.getTotalProjectsModel();
+    dashboard.ongoingProjects = await projectModel.getTotalOngoingProjectsModel();
+    dashboard.completedProjects = await projectModel.getTotalCompletedProjectsModel();
+    dashboard.holdProjects = await projectModel.getTotalHoldProjectsModel();
+    dashboard.cancelledProjects = await projectModel.getTotalCancelProjectsModel();
+
+    // Additional Insights
+    dashboard.totalAssignedProjects = await projectModel.getTotalAssignedProjectsModel();
+    dashboard.totalAssignedEmployees = await projectModel.getTotalAssignedEmployeesModel();
+    dashboard.totalOngoingBudget = await projectModel.getTotalOngoingBudgetModel();
+    dashboard.upcomingDeadlines = await projectModel.getUpcomingDeadlinesModel();
+    dashboard.projectsWithPendingPayments = await paymentModel.getPaymentSlipDataModel();
+    dashboard.topProjectsByBudget = await projectModel.getTopProjectsByBudgetModel();
+
+     res.status(200).json(dashboard);
+  } catch (error) {
+    console.log("Error in getDashboardController:", error);
+    res.status(415).json({message:"failed to get project manager dashboard"})
+  }
+};
 
 exports.getProjectDetails = ()=>{
     }

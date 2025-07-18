@@ -46,7 +46,16 @@ exports.deleteClientModel = async (id) => {
   };
 
 
-
+// Get all active clients
+exports.getAllClients = async () => {
+  const sql = `
+    SELECT * FROM clients
+    WHERE is_active = TRUE
+    ORDER BY created_at DESC
+  `;
+  const [rows] = await db.query(sql);
+  return rows;
+};
 
 
 

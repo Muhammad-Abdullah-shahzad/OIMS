@@ -4,8 +4,9 @@ const projectController = require("../controller/projectController")
 const {authenticateToken} = require("../middleware/verifyJWT")
 const {authenticateRoles} = require("../middleware/authenticateRole")
 
+router.get('/pro-dashboard', projectController.getDashboardController)
 
-router.get('/all',projectController.getAllProjectsController)
+router.get('/all',authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.getAllProjectsController)
 
 router.get('/:projectId/employee',authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.getProjectEmployees)
 
@@ -20,6 +21,7 @@ router.get("/:projectID",authenticateToken,authenticateRoles("project_manager","
 router.post("/assign",authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.assignProjectController)
 
 router.put("/assign/update/:projectId/employee/:employeeId",authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.updateProjectAssignmentController)
+
 
 
 module.exports = router;

@@ -201,6 +201,126 @@ const updateProjectAssignModel = async (projectId,employeeId, updatedFields) => 
     await db.query(query, values);
   };  
 
+
+
+  /**
+   * Get total number of projects
+   */
+  const getTotalProjectsModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(*) AS total FROM projects`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total number of ongoing projects
+   */
+  const getTotalOngoingProjectsModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(*) AS total FROM projects WHERE status = 'ongoing'`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total number of completed projects
+   */
+  const getTotalCompletedProjectsModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(*) AS total FROM projects WHERE status = 'completed'`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total number of hold projects
+   */
+  const getTotalHoldProjectsModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(*) AS total FROM projects WHERE status = 'hold'`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total number of cancelled projects
+   */
+  const getTotalCancelProjectsModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(*) AS total FROM projects WHERE status = 'cancelled'`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total number of distinct assigned projects
+   */
+  const getTotalAssignedProjectsModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(DISTINCT project_id) AS total FROM project_assignments`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total number of distinct assigned employees
+   */
+  const getTotalAssignedEmployeesModel = async () => {
+    const [rows] = await db.query(`SELECT COUNT(DISTINCT employee_id) AS total FROM project_assignments`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get total budget of ongoing projects
+   */
+  const getTotalOngoingBudgetModel = async () => {
+    const [rows] = await db.query(`SELECT IFNULL(SUM(budget), 0) AS total FROM projects WHERE status = 'ongoing'`);
+    return rows[0].total;
+  };
+  
+  /**
+   * Get projects with deadlines within the next 7 days
+   */
+  const getUpcomingDeadlinesModel = async () => {
+    const [rows] = await db.query(`
+      SELECT id, title, end_date 
+      FROM projects 
+      WHERE status = 'ongoing' AND end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+      ORDER BY end_date ASC
+    `);
+    return rows;
+  };
+  
+  /**
+   * Get projects with pending payments
+   */
+  const getProjectsWithPendingPaymentsModel = async () => {
+    const [rows] = await db.query(`
+      SELECT 
+        p.id AS project_id,
+        p.title AS project_title,
+        c.name AS client_name,
+        p.budget AS total_budget,
+        IFNULL(SUM(py.paidAmount), 0) AS total_paid,
+        (p.budget - IFNULL(SUM(py.paidAmount), 0)) AS remaining,
+        CASE
+          WHEN IFNULL(SUM(py.paidAmount), 0) = 0 THEN 'unpaid'
+          WHEN IFNULL(SUM(py.paidAmount), 0) < p.budget THEN 'partial'
+          WHEN IFNULL(SUM(py.paidAmount), 0) >= p.budget THEN 'paid'
+        END AS payment_status
+      FROM projects p
+      JOIN clients c ON p.client_id = c.id
+      LEFT JOIN payments py ON p.id = py.project_id
+      GROUP BY p.id
+      HAVING payment_status IN ('unpaid', 'partial')
+      ORDER BY remaining DESC
+    `);
+    return rows;
+  };
+  
+  /**
+   * Get top 3 projects by budget
+   */
+  const getTopProjectsByBudgetModel = async () => {
+    const [rows] = await db.query(`
+      SELECT id, title, budget
+      FROM projects
+      ORDER BY budget DESC
+      LIMIT 3
+    `);
+    return rows;
+  };
+  
+
 module.exports = {
   getAllProjectsModel,
   getProjectEmployeesModel,
@@ -208,5 +328,17 @@ module.exports = {
   updateProjectModel,
   deleteProjectModel,
   assignProjectToEmployeeModel,
-  updateProjectAssignModel
+  updateProjectAssignModel,
+  
+  getTotalProjectsModel,
+  getTotalOngoingProjectsModel,
+  getTotalCompletedProjectsModel,
+  getTotalHoldProjectsModel,
+  getTotalCancelProjectsModel,
+  getTotalAssignedProjectsModel,
+  getTotalAssignedEmployeesModel,
+  getTotalOngoingBudgetModel,
+  getUpcomingDeadlinesModel,
+  getProjectsWithPendingPaymentsModel,
+  getTopProjectsByBudgetModel
 };
