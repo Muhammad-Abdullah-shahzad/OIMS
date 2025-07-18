@@ -1,0 +1,40 @@
+.superadmin-dashboard {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f2f4f8;
+  min-height: 100vh;
+}
+
+.tab-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background: #7eb3e7;
+  padding: 15px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-bar button {
+  padding: 12px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-bar button:hover {
+  background-color: #1abc9c;
+  color: #fff;
+}
+
+.tab-bar button.active {
+  background-color: #1abc9c;
+  border-color: #16a085;
+  font-weight: bold;
+}
+
+.tab-content {
+  padding: 40px;
+}
