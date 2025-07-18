@@ -5,7 +5,7 @@ const {authenticateToken} = require("../middleware/verifyJWT")
 const {authenticateRoles} = require("../middleware/authenticateRole")
 
 
-router.get('/all',authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.getAllProjectsController)
+router.get('/all',projectController.getAllProjectsController)
 
 router.get('/:projectId/employee',authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.getProjectEmployees)
 

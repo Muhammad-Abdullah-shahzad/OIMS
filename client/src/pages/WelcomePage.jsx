@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../styles/WelcomePage.css';
 import logo from '../assets/company-logo.jpg';
 import bgMusic from '../assets/bg-music.mp3';
@@ -7,24 +7,31 @@ import { useNavigate } from 'react-router-dom';
 
 const WelcomePage = () => {
   const [darkMode, setDarkMode] = useState(true);
-  const [audio] = useState(new Audio(bgMusic));
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
+  const audioRef = useRef(new Audio(bgMusic));
   const navigate = useNavigate();
 
   useEffect(() => {
+    const audio = audioRef.current;
     audio.loop = true;
     audio.volume = 0.4;
-  }, [audio]);
+  }, []);
 
   const handleStart = () => {
+    const audio = audioRef.current;
     if (!isPlaying) {
-      audio.play().then(() => setIsPlaying(true)).catch(console.log);
+      audio.play().then(() => {
+        setIsPlaying(true);
+      }).catch((error) => {
+        console.log("Audio play failed:", error);
+      });
     }
   };
 
   const toggleMute = () => {
+    const audio = audioRef.current;
     audio.muted = !audio.muted;
     setIsMuted(audio.muted);
   };
@@ -35,15 +42,15 @@ const WelcomePage = () => {
 
   return (
     <div className={`welcome-root ${darkMode ? 'dark-mode' : 'light-mode'}`} onClick={handleStart}>
-      
+
       {/* 🔊 Sound Button */}
       <div className="sound-toggle">
-        <button onClick={toggleMute}>
+        <button onClick={(e) => { e.stopPropagation(); toggleMute(); }}>
           {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
         </button>
       </div>
 
-      {/* 🔘 Dark Mode Toggle */}
+      {/* 🌙 Dark Mode Toggle */}
       <div className="toggle-switch">
         <label className="switch">
           <input type="checkbox" onChange={() => setDarkMode(!darkMode)} />
@@ -51,7 +58,7 @@ const WelcomePage = () => {
         </label>
       </div>
 
-      {/* 🌟 Center Glass Card */}
+      {/* 🎉 Welcome Card */}
       <div className="welcome-content">
         <img src={logo} alt="OraDigitals Logo" className="logo" />
         <h1 className="title">OraDigitals</h1>
