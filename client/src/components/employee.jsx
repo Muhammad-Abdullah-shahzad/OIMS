@@ -222,11 +222,14 @@ const EmployeeManagement = () => {
         setLoading(true);
         try {
             const token = localStorage.token;
+            
             const response = await fetch(`${API_BASE_URL}/remove/${selectedEmployee.id}`, {
                 method: 'DELETE',
                 headers: { // DELETE requests can also have headers
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                   
                 }
+               
             });
 
             if (!response.ok) {
