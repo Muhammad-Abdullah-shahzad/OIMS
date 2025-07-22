@@ -14,6 +14,8 @@ const dashboardRoute = require("./routes/dashboardsRoutes")
 const paymentRoutes = require("./routes/paymentRoutes")
 const expenseRoutes = require("./routes/expenseRoute")
 const salaryRoutes = require("./routes/salaryRoutes")
+const userRoutes = require("./routes/userRoutes")
+
 app.use(cors());
 app.use(express.json())
 
@@ -26,6 +28,8 @@ POST http://localhost:5000/auth/signup
 
 app.use("/auth",authenticationRoutes);
 
+
+app.use("/users",userRoutes)
 // POST http://localhost:5000/employee/add 
 // DELETE http://localhost:5000/employee/remove/:id
 // PUT http://localhost:5000/employee/update/:id

@@ -3,7 +3,9 @@ const db = require("../Database/database").pool; // Make sure this is your mysql
 // 1. Get all expenses
 exports.getAllExpenses = async () => {
   const [rows] = await db.execute(
-    "SELECT * FROM expenses ORDER BY expense_date DESC"
+    `SELECT expenses.* , users.firstName,users.lastName,users.role FROM expenses INNER JOIN users
+    on expenses.approved_by = users.id
+    ORDER BY expenses.expense_date DESC`
   );
   return rows;
 };
@@ -40,15 +42,25 @@ exports.addExpense = async (expenseData) => {
 
 // 3. Update existing expense
 exports.updateExpense = async (id, data) => {
+  if(data.created_at){
+    delete data.created_at;
+  }
+
+  if(data.updated_at){
+    delete data.updated_at;
+  }
+  
   if (!id || Object.keys(data).length === 0) return false;
 
-  // Prepare query fragments
+ // Prepare query fragments
   const fields = [];
   const values = [];
 
-  for (const [key, value] of Object.entries(data)) {
+  for (const [key, value] of Object.entries(data))  {
+
     fields.push(`${key} = ?`);
     values.push(value);
+
   }
 
   // Final query

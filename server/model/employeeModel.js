@@ -37,11 +37,11 @@ exports.addEmployeeModel = async (
 };
 
 // Delete employee by ID
-exports.deleteEmployeeModel = async (id, employee_id) => {
+exports.deleteEmployeeModel = async (id) => {
   const pool = await database.pool;
-  await pool.query("DELETE FROM employees WHERE id = ? and employee_id = ? ", [
+  await pool.query("DELETE FROM employees WHERE id = ?  ", [
     id,
-    employee_id,
+  
   ]);
 };
 

@@ -18,9 +18,10 @@ exports.addNewEmployeeController = async (req, res) => {
 
 exports.deleteEmployeeController = async (req, res) => {
   const { id } = req.params;
-  const {employee_id} = req.body;
+ 
+  // console.log("id and employee_id recieved from front end ",id,employee_id);
   try {
-    await employeeModel.deleteEmployeeModel(id,employee_id);
+    await employeeModel.deleteEmployeeModel(id);
     res.status(200).json({ message: "Employee deleted successfully" });
   } catch (err) {
     console.error("Delete Employee Error:", err.message);

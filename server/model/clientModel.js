@@ -21,22 +21,40 @@ exports.addNewClientModel = async (clientData) => {
     return result.insertId;
   };
   
+  function formatMySQLDate(date) {
+    return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+  }
+  
 // Update client
 exports.updateClientModel = async (id, updateData) => {
-    const fields = [];
-    const values = [];
-  
-    for (const key in updateData) {
-      fields.push(`${key} = ?`);
-      values.push(updateData[key]);
-    }
-  
-    values.push(id); // for WHERE clause
-  
-    const sql = `UPDATE clients SET ${fields.join(", ")} WHERE id = ?`;
-    const [result] = await db.query(sql, values);
-    return result;
-  };
+  // Remove unwanted keys without overwriting the whole object
+  if (updateData.created_at) {
+    updateData.created_at = formatMySQLDate(updateData.created_at);
+  }
+
+  if (updateData.updated_at) {
+    updateData.updated_at = formatMySQLDate(updateData.updated_at);
+  }
+
+  const fields = [];
+  const values = [];
+
+  for (const key in updateData) {
+    fields.push(`${key} = ?`);
+    values.push(updateData[key]);
+  }
+
+  // Safety check: ensure we have something to update
+  if (fields.length === 0) {
+    throw new Error("No valid fields provided for update");
+  }
+
+  values.push(id); // for WHERE clause
+
+  const sql = `UPDATE clients SET ${fields.join(", ")} WHERE id = ?`;
+  const [result] = await db.query(sql, values);
+  return result;
+};
   
 // Delete client
 exports.deleteClientModel = async (id) => {

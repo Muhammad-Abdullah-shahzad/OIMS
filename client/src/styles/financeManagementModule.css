@@ -1,0 +1,574 @@
+/* financeManagementModule.css */
+
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global Styles - Reusing common styles for consistency */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #FFF; /* Lighter background */
+    color: #374151; /* Dark gray text */
+}
+
+.finance-management-container {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 1.5rem; /* p-6 equivalent */
+}
+
+.main-title {
+    font-size: 2.5rem; /* text-5xl equivalent */
+    font-weight: 800; /* font-extrabold equivalent */
+    margin-bottom: 2.5rem; /* mb-10 equivalent */
+    color: #1a202c; /* text-gray-900 equivalent */
+    text-align: center;
+    letter-spacing: -0.025em; /* tracking-tight equivalent */
+}
+
+/* Section Title */
+.section-title {
+    font-size: 1.875rem; /* text-3xl equivalent */
+    font-weight: 700; /* font-bold equivalent */
+    color: #1f2937; /* text-gray-900 equivalent */
+    margin-bottom: 1.5rem; /* mb-6 equivalent */
+    text-align: left;
+}
+
+/* Buttons */
+.button {
+    padding: 0.75rem 1.5rem; /* px-6 py-3 equivalent */
+    font-weight: 600; /* font-semibold equivalent */
+    border-radius: 0.5rem; /* rounded-lg equivalent */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md equivalent */
+    transition: all 0.3s ease-in-out;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button:hover {
+    transform: translateY(-2px); /* Slightly lift on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 equivalent */
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.button-primary {
+    background-color: #2563eb; /* bg-blue-600 equivalent */
+    color: #ffffff; /* text-white equivalent */
+}
+
+.button-primary:hover {
+    background-color: #1d4ed8; /* hover:bg-blue-700 equivalent */
+}
+
+.button-secondary {
+    background-color: #e5e7eb; /* bg-gray-200 equivalent */
+    color: #374151; /* text-gray-800 equivalent */
+}
+
+.button-secondary:hover {
+    background-color: #d1d5db; /* hover:bg-gray-300 equivalent */
+}
+
+.button-danger {
+    background-color: #dc2626; /* bg-red-600 equivalent */
+    color: #ffffff; /* text-white equivalent */
+}
+
+.button-danger:hover {
+    background-color: #b91c1c; /* hover:bg-red-700 equivalent */
+}
+
+.button-icon {
+    margin-right: 0.5rem; /* mr-2 equivalent */
+}
+
+/* Section Header with Button */
+.section-header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem; /* mb-8 equivalent */
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    background-color: #ffffff; /* bg-white equivalent */
+    border-radius: 0.75rem; /* rounded-xl equivalent */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg equivalent */
+    margin-bottom: 2.5rem; /* mb-10 equivalent */
+}
+
+.data-table {
+    min-width: 100%;
+    border-collapse: separate; /* Use separate for rounded corners on cells */
+    border-spacing: 0;
+}
+
+.data-table thead {
+    background-color: #f9fafb; /* bg-gray-50 equivalent */
+}
+
+.table-header {
+    padding: 1rem 1.5rem; /* px-6 py-4 equivalent */
+    text-align: left;
+    font-size: 0.8rem; /* text-xs equivalent */
+    font-weight: 600; /* font-semibold equivalent */
+    color: #6b7280; /* text-gray-500 equivalent */
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* tracking-wider equivalent */
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header:first-child {
+    border-top-left-radius: 0.75rem; /* rounded-tl-xl equivalent */
+}
+
+.table-header:last-child {
+    border-top-right-radius: 0.75rem; /* rounded-tr-xl equivalent */
+}
+
+.data-table tbody {
+    background-color: #ffffff; /* bg-white equivalent */
+}
+
+.table-row {
+    transition: background-color 0.15s ease-in-out; /* transition-colors duration-150 equivalent */
+}
+
+.table-row:last-child .table-data {
+    border-bottom: none; /* No border for the last row's data cells */
+}
+
+.table-row:hover {
+    background-color: #f3f4f6; /* hover:bg-gray-50 equivalent */
+}
+
+.table-data {
+    padding: 1rem 1.5rem; /* px-6 py-4 equivalent */
+    white-space: nowrap;
+    font-size: 0.9rem; /* text-sm equivalent */
+    color: #4b5563; /* text-gray-700 equivalent */
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-data.font-medium {
+    font-weight: 500;
+    color: #1f2937; /* text-gray-900 equivalent */
+}
+
+.table-actions {
+    text-align: center; /* Center actions */
+}
+
+.action-buttons-group {
+    display: flex;
+    gap: 0.75rem; /* space-x-3 equivalent */
+    justify-content: center; /* Center align buttons in group */
+}
+
+.action-button {
+    padding: 0.6rem; /* Slightly larger padding for better touch target */
+    border-radius: 9999px; /* rounded-full equivalent */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+.action-button:hover {
+    transform: translateY(-1px); /* Slight lift on hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-button {
+    color: #2563eb; /* text-blue-600 equivalent */
+    background-color: #eff6ff; /* bg-blue-50 equivalent */
+}
+
+.edit-button:hover {
+    color: #1e40af; /* hover:text-blue-900 equivalent */
+    background-color: #dbeafe; /* hover:bg-blue-100 equivalent */
+}
+
+.delete-button {
+    color: #dc2626; /* text-red-600 equivalent */
+    background-color: #fee2e2; /* bg-red-50 equivalent */
+}
+
+.delete-button:hover {
+    color: #991b1b; /* hover:text-red-900 equivalent */
+    background-color: #fecaca; /* hover:bg-red-100 equivalent */
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px; /* rounded-full */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* font-semibold */
+    text-transform: capitalize;
+}
+
+/* Payment Status Specific Badges */
+.status-paid {
+    background-color: #d1fae5; /* bg-green-100 */
+    color: #059669; /* text-green-700 */
+}
+
+.status-partial {
+    background-color: #fffbeb; /* bg-yellow-100 */
+    color: #b45309; /* text-yellow-700 */
+}
+
+.status-unpaid {
+    background-color: #fee2e2; /* bg-red-100 */
+    color: #dc2626; /* text-red-700 */
+}
+
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(55, 65, 81, 0.75); /* bg-gray-700 bg-opacity-75 equivalent */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40; /* z-40 equivalent */
+    padding: 1rem; /* p-4 equivalent */
+}
+
+.modal-content {
+    background-color: #ffffff; /* bg-white equivalent */
+    border-radius: 0.75rem; /* rounded-xl equivalent */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); /* shadow-xl equivalent */
+    max-width: 48rem; /* max-w-3xl equivalent, slightly wider */
+    width: 100%;
+    position: relative;
+    transform: scale(0.95); /* Initial scale for animation */
+    opacity: 0; /* Initial opacity for animation */
+    transition: all 0.3s ease-out; /* transition-all duration-300 ease-out equivalent */
+}
+
+/* Generic narrower form modal */
+.modal-content-form-narrow {
+    max-width: 36rem; /* max-w-xl equivalent, making it narrower */
+}
+
+/* Modal Animation */
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.animate-scaleIn {
+    animation: scaleIn 0.3s ease-out forwards;
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 1rem; /* top-4 equivalent */
+    right: 1rem; /* right-4 equivalent */
+    padding: 0.6rem; /* p-2.5 equivalent */
+    border-radius: 9999px; /* rounded-full equivalent */
+    color: #9ca3af; /* text-gray-400 equivalent */
+    background: #f3f4f6; /* bg-gray-100 */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.modal-close-button:hover {
+    background-color: #e5e7eb; /* hover:bg-gray-200 equivalent */
+    color: #4b5563; /* hover:text-gray-600 equivalent */
+}
+
+.modal-form {
+    padding: 2rem; /* p-8 equivalent */
+}
+
+.modal-title {
+    font-size: 1.875rem; /* text-3xl equivalent */
+    font-weight: 700; /* font-bold equivalent */
+    margin-bottom: 1.5rem; /* mb-6 equivalent */
+    color: #1f2937; /* text-gray-800 equivalent */
+    text-align: center;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem; /* gap-5 equivalent */
+}
+
+@media (min-width: 768px) { /* md: breakpoint */
+    .form-grid {
+        grid-template-columns: 1fr 1fr; /* md:grid-cols-2 equivalent */
+    }
+    .form-group-full {
+        grid-column: span 2; /* md:col-span-2 equivalent */
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.875rem; /* text-sm equivalent */
+    font-weight: 600; /* font-semibold equivalent */
+    color: #374151; /* text-gray-700 equivalent */
+    margin-bottom: 0.375rem; /* mb-1.5 equivalent */
+}
+
+.form-input, .form-select, .form-textarea {
+    padding: 0.75rem 1rem; /* px-4 py-3 equivalent */
+    border: 1px solid #d1d5db; /* border border-gray-300 equivalent */
+    border-radius: 0.5rem; /* rounded-md equivalent */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    font-size: 0.9rem;
+    color: #374151;
+    background-color: #ffffff;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6; /* focus:ring-2 focus:ring-blue-500 equivalent */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* focus:ring-2 focus:ring-blue-500 equivalent */
+}
+
+.input-error {
+    border-color: #ef4444; /* border-red-500 equivalent */
+}
+
+.error-message {
+    color: #ef4444; /* text-red-500 equivalent */
+    font-size: 0.75rem; /* text-xs equivalent */
+    margin-top: 0.25rem; /* mt-1 equivalent */
+}
+
+.form-actions {
+    margin-top: 2rem; /* mt-8 equivalent */
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem; /* space-x-3 equivalent */
+}
+
+/* Checkbox Group Styling */
+.checkbox-group {
+    flex-direction: row; /* Arrange checkbox and label horizontally */
+    align-items: center;
+    gap: 0.5rem; /* Space between checkbox and label */
+    margin-top: 0.5rem; /* Adjust margin as needed */
+}
+
+.form-checkbox {
+    width: 1.25rem; /* w-5 */
+    height: 1.25rem; /* h-5 */
+    border-radius: 0.25rem; /* rounded */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    appearance: none; /* Hide default checkbox */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-checkbox:checked {
+    background-color: #2563eb; /* bg-blue-600 */
+    border-color: #2563eb; /* border-blue-600 */
+}
+
+.form-checkbox:checked::before {
+    content: '✔'; /* Checkmark character */
+    display: block;
+    color: #fff;
+    font-size: 0.75rem; /* text-xs */
+    line-height: 1;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.form-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* focus:ring-2 focus:ring-blue-500 */
+}
+
+
+/* Delete Modal Specific Styles */
+.delete-modal-content {
+    padding: 2rem; /* p-8 equivalent */
+    text-align: center;
+}
+
+.modal-text {
+    color: #4b5563; /* text-gray-700 equivalent */
+    margin-bottom: 1.5rem; /* mb-6 equivalent */
+    line-height: 1.6;
+}
+
+.project-title-display { /* Reused for payment titles */
+    font-weight: 700; /* font-bold equivalent */
+    color: #1f2937;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; /* space-x-4 equivalent */
+}
+
+/* Loading and Error States */
+.loading-container, .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 20rem; /* h-80 equivalent */
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.spinner {
+    border: 0.25rem solid #bfdbfe; /* border-b-2 border-blue-500 equivalent */
+    border-top: 0.25rem solid #3b82f6;
+    border-radius: 50%;
+    width: 3.5rem; /* w-14 equivalent */
+    height: 3.5rem; /* h-14 equivalent */
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 1.25rem; /* text-xl equivalent */
+    color: #4b5563; /* text-gray-600 equivalent */
+    font-weight: 500;
+}
+
+.error-container {
+    color: #dc2626; /* text-red-600 equivalent */
+}
+
+.error-icon {
+    width: 3.5rem; /* size={56} equivalent, adjust as needed */
+    height: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.error-message-large {
+    margin-top: 1rem; /* mt-4 equivalent */
+    font-size: 1.35rem; /* text-2xl equivalent */
+    font-weight: 600; /* font-semibold equivalent */
+    text-align: center;
+}
+
+/* No Data Found Message */
+.no-data-found {
+    text-align: center;
+    padding: 2.5rem; /* py-10 equivalent */
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    color: #6b7280; /* text-gray-500 equivalent */
+    font-size: 1.125rem; /* text-lg equivalent */
+    margin-bottom: 2.5rem;
+}
+
+/* Toast Notification */
+.toast-notification {
+    position: fixed;
+    top: 1.5rem; /* top-6 equivalent */
+    right: 1.5rem; /* right-6 equivalent */
+    padding: 1rem 1.25rem; /* p-4 px-5 equivalent */
+    border-radius: 0.625rem; /* rounded-xl equivalent */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg equivalent */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* space-x-3 equivalent */
+    z-index: 50; /* z-50 equivalent */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* More refined transition */
+    transform: translateX(120%); /* Start off-screen more */
+    opacity: 0;
+    min-width: 250px;
+}
+
+.toast-show {
+    transform: translateX(0); /* Slide in */
+    opacity: 1;
+}
+
+.toast-success {
+    background-color: #10b981; /* bg-green-500 equivalent */
+    color: #ffffff; /* text-white equivalent */
+}
+
+.toast-error {
+    background-color: #ef4444; /* bg-red-500 equivalent */
+    color: #ffffff; /* text-white equivalent */
+}
+
+.toast-close-button {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    opacity: 0.8;
+}
+
+.toast-close-button:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+}

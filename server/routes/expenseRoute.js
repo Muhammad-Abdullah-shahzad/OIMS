@@ -5,7 +5,7 @@ const {authenticateRoles} = require("../middleware/authenticateRole")
 const expenseController = require("../controller/expenseController")
 
 
-router.get("/all",authenticateToken,authenticateRoles("finance_manager","super_admin"),  expenseController.getAllExpenseController);
+router.get("/all",  expenseController.getAllExpenseController);
 
 router.get("/get-report/:startDate/:endDate",authenticateToken,authenticateRoles("finance_manager","super_admin"),  expenseController.getExpenseReportController);
 

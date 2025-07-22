@@ -13,22 +13,35 @@ exports.getAllPaymentsModel = async () => {
 
 exports.addPaymentModel = async (payment) => {
   const {
-    project_id, client_id, amount, payment_date, payment_method,
+    project_id, client_id, paidAmount, payment_date, payment_method,
     payment_status, reference_number, invoice_file, notes,
   } = payment;
 
   const [result] = await pool.query(`
     INSERT INTO payments (
-      project_id, client_id, amount, payment_date, payment_method,
+      project_id, client_id, paidAmount, payment_date, payment_method,
       payment_status, reference_number, invoice_file, notes
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `, [project_id, client_id, amount, payment_date, payment_method,
+  `, [project_id, client_id, paidAmount, payment_date, payment_method,
       payment_status, reference_number, invoice_file, notes]);
 
   return result.insertId;
 };
 
 exports.updatePaymentModel = async (id, updates) => {
+    if(updates.project_title){
+      delete updates.project_title
+    }
+    if(updates.client_name){
+      delete updates.client_name;
+    }
+    if(updates.updated_at){
+      delete updates.updated_at;
+    }
+    if(updates.created_at){
+      delete updates.created_at;
+    }
+
   const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
   const values = Object.values(updates);
 

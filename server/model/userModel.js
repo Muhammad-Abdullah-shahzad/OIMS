@@ -13,3 +13,13 @@ exports.createUser = async (email, hashedPassword, firstName, lastName ,role) =>
     [email, hashedPassword, firstName, lastName ,role]
   );
 };
+
+exports.getAllUsers = async () => {
+    const pool = await database.pool;
+    const [rows] = await pool.query(
+      `SELECT id, firstName, lastName, email, role, is_active, created_at, updated_at 
+       FROM users 
+       ORDER BY created_at DESC`
+    );
+    return rows;
+  };

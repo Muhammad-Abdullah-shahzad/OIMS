@@ -15,7 +15,7 @@ exports.getAllPaymentController = async (req, res) => {
 exports.addNewPaymentController = async (req, res) => {
   try {
     const paymentData = req.body;
-    const inserted = await paymentModel.getPaymentSlipDataModel(paymentData);
+    const inserted = await paymentModel.addPaymentModel(paymentData);
     res.status(201).json({ message: "Payment added", inserted });
   } catch (err) {
     console.error("Error in addNewPaymentController:", err);
@@ -26,8 +26,10 @@ exports.addNewPaymentController = async (req, res) => {
 // Update a payment
 exports.updatePaymentController = async (req, res) => {
   try {
+  
     const paymentId = req.params.paymentId;
     const updates = req.body;
+    
     const updated = await paymentModel.updatePaymentModel(paymentId, updates);
     res.status(200).json({ message: "Payment updated", updated });
   } catch (err) {

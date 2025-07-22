@@ -94,13 +94,28 @@ const updateProjectModel = async (projectId, updates) => {
   const fields = [];
   const values = [];
 
+  // Define allowed columns for the projects table based on your CREATE TABLE statement
+  const allowedColumns = [
+    'title',
+    'description',
+    'client_id',
+    'start_date',
+    'end_date',
+    'status',
+    'budget'
+  ];
+
   for (const key in updates) {
-    fields.push(`${key} = ?`);
-    values.push(updates[key]);
+    // Only include keys that are in the allowedColumns list
+    if (allowedColumns.includes(key)) {
+      fields.push(`${key} = ?`);
+      values.push(updates[key]);
+    }
   }
 
   if (fields.length === 0) {
-    throw new Error("No fields to update");
+    // If no valid fields are provided for update after filtering
+    throw new Error("No valid fields to update");
   }
 
   const query = `
@@ -108,17 +123,17 @@ const updateProjectModel = async (projectId, updates) => {
     SET ${fields.join(", ")} 
     WHERE id = ?
   `;
-  values.push(projectId);
+  values.push(projectId); // Add the projectId to the values array for the WHERE clause
 
   try {
     const [result] = await db.query(query, values);
     return result;
   } catch (error) {
     console.error("Error in updateProject:", error);
+    // Re-throw a more generic error for the caller
     throw new Error("Failed to update project");
   }
 };
-
 /**
  * Delete a project by ID.
  * @param {number} projectId 
