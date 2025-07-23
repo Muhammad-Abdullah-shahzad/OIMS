@@ -4,10 +4,10 @@ import React from "react";
 function EmployeePage(){
     return(
        <>
-       <NavBar/>
+       <NavBar dashboardRoute={"/hr-dashboard"}/>
         <EmployeeManagement/>
        </>
     )
 }
 
-export default EmployeePage
+export default EmployeePage;

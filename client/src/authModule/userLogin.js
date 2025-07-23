@@ -10,7 +10,7 @@ const loginUser = async ({ email, password, Base_Url }) => {
       });
   
       const data = await response.json();
-      console.log("data recieved after login ",data);
+    
       localStorage.setItem("token",data.token)
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');

@@ -263,38 +263,50 @@ const ProjectManagement = () => {
         setValidationErrors({}); // Clear previous validation errors
         setAssignedEmployees([]); // Clear assigned employees when opening any other modal
 
-        if (mode.includes('project')) { // Project related modals
-            setSelectedProject(item);
-            if (mode === 'create') {
-                setFormData({
-                    title: '', description: '', client_id: '',
-                    start_date: '', end_date: '', status: 'ongoing', budget: '',
-                });
-            } else if (mode === 'edit' && item) {
-                const formattedStartDate = item.start_date ? new Date(item.start_date).toISOString().split('T')[0] : '';
-                const formattedEndDate = item.end_date ? new Date(item.end_date).toISOString().split('T')[0] : '';
-                setFormData({
-                    ...item, client_id: item.client_id || '',
-                    start_date: formattedStartDate, end_date: formattedEndDate,
-                    budget: item.budget != null ? String(item.budget) : '',
-                });
-            } else if (mode === 'assign' && item) {
-                setAssignmentFormData({
-                    project_id: item.id, employee_id: '', role_in_project: '',
-                    assigned_date: new Date().toISOString().split('T')[0],
-                });
-            } else if (mode === 'view_assignments' && item) {
-                fetchAssignedEmployees(item.id);
+        // IMPORTANT FIX: Only clear selectedProject/Client if creating a new one
+        // Otherwise, keep the 'item' passed for edit/delete operations.
+        if (mode === 'create') {
+            setSelectedProject(null);
+            setFormData({
+                title: '', description: '', client_id: '',
+                start_date: '', end_date: '', status: 'ongoing', budget: '',
+            });
+        } else if (mode === 'create_client') {
+            setSelectedClient(null);
+            setClientFormData({
+                name: '', company: '', email: '', phone: '', whatsapp: '',
+                address: '', city: '', country: 'Pakistan', contract_file: '', is_active: true,
+            });
+        } else {
+            // For 'edit', 'delete', 'assign', 'view_assignments'
+            // The 'item' passed will be the project or client to operate on.
+            
+              if (mode.includes('client')) {
+                setSelectedClient(item);
+                if (mode === 'edit_client' && item) {
+                    setClientFormData({ ...item });
+                }
             }
-        } else if (mode.includes('client')) { // New: Client related modals
-            setSelectedClient(item);
-            if (mode === 'create_client') {
-                setClientFormData({
-                    name: '', company: '', email: '', phone: '', whatsapp: '',
-                    address: '', city: '', country: 'Pakistan', contract_file: '', is_active: true,
-                });
-            } else if (mode === 'edit_client' && item) {
-                setClientFormData({ ...item });
+            else{
+                setSelectedProject(item);
+                console.log("selected project " , item);
+                if (mode === 'edit' && item) {
+                    const formattedStartDate = item.start_date ? new Date(item.start_date).toISOString().split('T')[0] : '';
+                    const formattedEndDate = item.end_date ? new Date(item.end_date).toISOString().split('T')[0] : '';
+                    setFormData({
+                        ...item, client_id: item.client_id || '',
+                        start_date: formattedStartDate, end_date: formattedEndDate,
+                        budget: item.budget != null ? String(item.budget) : '',
+                    });
+                } else if (mode === 'assign' && item) {
+                    setAssignmentFormData({
+                        project_id: item.id, employee_id: '', role_in_project: '',
+                        assigned_date: new Date().toISOString().split('T')[0],
+                    });
+                } else if (mode === 'view_assignments' && item) {
+                    fetchAssignedEmployees(item.id);
+                }
+            
             }
         }
         setShowModal(true);
@@ -304,7 +316,7 @@ const ProjectManagement = () => {
     const closeModal = () => {
         setShowModal(false);
         setModalMode('');
-        setSelectedProject(null);
+        setSelectedProject(null); // Clear selected project
         setSelectedClient(null); // Clear selected client
         setValidationErrors({});
         setAssignedEmployees([]); // Clear assigned employees when closing assignment view
@@ -367,8 +379,9 @@ const ProjectManagement = () => {
 
     // Handle Delete Project
     const handleDeleteProject = async () => {
+        console.log("selected project " , selectedProject);
         if (!selectedProject) return;
-
+      
         setLoading(true);
         try {
             const token = localStorage.token;
@@ -441,15 +454,16 @@ const ProjectManagement = () => {
     };
 
     // Handle Deassign Employee from Project
-    const handleDeassignEmployee = async (projectAssignmentId) => {
+    const handleDeassignEmployee = async (employeeId,projectId,assignment) => {
+        console.log("project assignment  " , employeeId , projectId);
         setLoading(true);
         try {
             const token = localStorage.token;
-            const response = await fetch(`${API_BASE_URL}/project/assign/remove/${projectAssignmentId}`, {
+            const response = await fetch(`${API_BASE_URL}/project/assign/remove/${employeeId}/${projectId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
+   console.log("response " , response);
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -783,15 +797,15 @@ const ProjectManagement = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {assignedEmployees.map((assignment) => (
-                                            <tr key={assignment.assignment_id}>
+                                        {assignedEmployees.map((assignment,index) => (
+                                            <tr key={index}>
                                                 <td>{assignment.firstName} {assignment.lastName}</td>
                                                 <td>{assignment.designation}</td>
                                                 <td>{assignment.role_in_project}</td>
                                                 <td>{assignment.assigned_date ? new Date(assignment.assigned_date).toLocaleDateString() : 'N/A'}</td>
                                                 <td>
                                                     <button
-                                                        onClick={() => handleDeassignEmployee(assignment.assignment_id)}
+                                                        onClick={() => handleDeassignEmployee(assignment.id,assignment.project_id,assignment)}
                                                         className="deassign-button"
                                                         title="Deassign Employee"
                                                         disabled={loading}

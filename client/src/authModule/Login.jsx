@@ -28,10 +28,12 @@ const Login = () => {
 
     if (result.success) {
       setSuccessMessage('Login successful!');
+    
+      if(result.data.role==="super_admin"){
+        navigate("/fm")
+      }
       // Optionally store token: localStorage.setItem('token', result.data.token)
-      setTimeout(() => {
-        navigate('/dashboard'); // Redirect to dashboard or homepage
-      }, 1000);
+     
     } else {
       setError(result.message);
     }

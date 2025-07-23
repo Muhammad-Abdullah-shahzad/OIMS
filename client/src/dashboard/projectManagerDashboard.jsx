@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-    PieChart, Pie, Cell // Added for potential future use or if a pie chart makes sense for some data
+    PieChart, Pie, Cell, LineChart, Line // Added LineChart and Line for potential use if needed, but BarChart is used here
 } from 'recharts';
 import {
     LayoutDashboard, FolderKanban, Clock, DollarSign, Users, CheckCircle, AlertCircle, Loader, Info, X,
@@ -59,17 +59,13 @@ const ProjectDashboard = () => {
             const result = await response.json(); // Parse the JSON response
             console.log('Full API Response Result:', result); // Log the entire parsed response
 
-            // --- START OF CHANGE ---
-            // The API response for pro-dashboard is a direct object, not wrapped in { success: true, data: ... }
             if (result && typeof result === 'object' && result !== null) {
                 setDashboardData(result); // Directly set the result as dashboardData
                 console.log('Dashboard data set:', result);
             } else {
-                // This block handles cases where the response is not the expected object structure
                 console.error('Unexpected data format from project dashboard API:', result);
                 throw new Error('Unexpected data format from project dashboard API.');
             }
-            // --- END OF CHANGE ---
 
         } catch (err) {
             console.error('Caught error during fetchDashboardData:', err);
@@ -121,8 +117,6 @@ const ProjectDashboard = () => {
             );
         }
 
-        // Specific 'no data' messages when data is explicitly empty after loading
-        // This check should only happen if not loading and no error, and dashboardData is null
         if (!dashboardData) {
             return (
                 <div className="dashboard-no-data">
@@ -132,7 +126,6 @@ const ProjectDashboard = () => {
             );
         }
 
-        // Specific no data messages for individual sections if their data is empty
         if (selectedSection === 'upcoming-deadlines' && (!dashboardData.upcomingDeadlines || dashboardData.upcomingDeadlines.length === 0)) {
             return (
                 <div className="dashboard-no-data">
@@ -168,7 +161,25 @@ const ProjectDashboard = () => {
             return status;
         }
 
-        // If data is available and no loading/error, render the specific content
+        // Prepare data for upcoming deadlines chart
+        const projectsForDeadlineChart = dashboardData?.upcomingDeadlines?.map(project => {
+            const endDate = new Date(project.end_date);
+            const today = new Date();
+            // Set hours, minutes, seconds, milliseconds to 0 for accurate day calculation
+            endDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            const diffTime = endDate.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Days remaining
+
+            return {
+                project_title: project.title, // Use title for X-axis
+                days_until_deadline: diffDays,
+                formatted_end_date: new Date(project.end_date).toLocaleDateString() // For tooltip
+            };
+        }) || [];
+
+
         return (
             <>
                 {/* Toast Notification - display regardless of section */}
@@ -249,33 +260,40 @@ const ProjectDashboard = () => {
                 {selectedSection === 'upcoming-deadlines' && dashboardData && dashboardData.upcomingDeadlines && dashboardData.upcomingDeadlines.length > 0 && (
                     <div className="content-section">
                         <h1 className="content-section-title">Upcoming Deadlines</h1>
-                        <div className="table-responsive">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th className="table-header">Project Title</th>
-                                        <th className="table-header">Client Name</th>
-                                        <th className="table-header">End Date</th>
-                                        <th className="table-header">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {dashboardData.upcomingDeadlines.map((project) => (
-                                        <tr key={project.project_id} className="table-row">
-                                            <td className="table-data">{project.project_title}</td>
-                                            <td className="table-data">{project.client_name}</td>
-                                            <td className="table-data">
-                                                {project.end_date ? new Date(project.end_date).toLocaleDateString() : 'N/A'}
-                                            </td>
-                                            <td className="table-data">
-                                                <span className={`status-badge status-${project.status.replace('_', '-')}`}>
-                                                    {project.status.replace(/_/g, ' ')}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div className="chart-container full-width-chart">
+                            <ResponsiveContainer width="100%" height={400}>
+                                <BarChart
+                                    data={projectsForDeadlineChart}
+                                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+                                    <XAxis
+                                        dataKey="project_title"
+                                        angle={-30}
+                                        textAnchor="end"
+                                        height={80}
+                                        interval={0}
+                                        // Optional: Add a custom tick formatter for project titles if they are too long
+                                        // tickFormatter={(value) => value.length > 15 ? value.substring(0, 12) + '...' : value}
+                                    />
+                                    <YAxis
+                                        label={{ value: 'Days Until Deadline', angle: -90, position: 'insideLeft' }}
+                                        domain={[0, 7]} // Set Y-axis domain from 0 to 7
+                                        tickCount={8} // Ensure ticks for 0, 1, 2, 3, 4, 5, 6, 7
+                                        allowDecimals={false} // Ensure integer ticks
+                                    />
+                                    <Tooltip
+                                        formatter={(value) => [`${value} days`, 'Days Until Deadline']}
+                                        labelFormatter={(label, payload) => {
+                                            // Find the project data for the current label
+                                            const project = payload[0]?.payload;
+                                            return `Project: ${project?.project_title || label}\nDue: ${project?.formatted_end_date || 'N/A'}`;
+                                        }}
+                                    />
+                                    <Legend />
+                                    <Bar dataKey="days_until_deadline" fill="#6366F1" barSize={40} radius={[10, 10, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
                 )}
