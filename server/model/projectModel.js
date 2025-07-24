@@ -33,7 +33,7 @@ const getProjectEmployeesModel = async (projectId) => {
   try {
     const [employees] = await db.query(`
       SELECT 
-        e.id, e.employee_id, e.firstName,e.lastName,e.designation, 
+        e.id, e.employee_id, e.firstName,e.lastName,e.designation, pa.project_id,
         pa.role_in_project, pa.assigned_date
       FROM project_assignments pa
       JOIN employees e ON pa.employee_id = e.id
@@ -334,7 +334,16 @@ const updateProjectAssignModel = async (projectId,employeeId, updatedFields) => 
     `);
     return rows;
   };
-  
+
+  const deleteAssignment = async (employeeId,projectId) =>{
+   [result] = await db.query(
+    `
+    DELETE FROM project_assignments 
+    WHERE employee_id = ? and project_id = ?
+    ` , [employeeId,projectId])
+
+    return result;
+  }
 
 module.exports = {
   getAllProjectsModel,
@@ -344,7 +353,7 @@ module.exports = {
   deleteProjectModel,
   assignProjectToEmployeeModel,
   updateProjectAssignModel,
-  
+  deleteAssignment,
   getTotalProjectsModel,
   getTotalOngoingProjectsModel,
   getTotalCompletedProjectsModel,

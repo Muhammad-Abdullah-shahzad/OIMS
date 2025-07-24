@@ -108,6 +108,30 @@ exports.getDashboardController = async (req,res) => {
   }
 };
 
+exports.deleteAssignmentController = async (req,res)=>{
+     try {
+     const employeeId = req.params.employeeId;
+     const projectId = req.params.projectId;
+     const result = await projectModel.deleteAssignment(employeeId,projectId);
+     if(result.affectedRows > 0){
+      res.status(200).json({
+        message:"assignment deleted successfully "
+      })
+     }
+     else{
+      res.status(400).json({
+        message:"assignment not deleted  "
+      })
+     }
+     
+     } catch (error) {
+      console.log("error deleting assignment ", error);
+      res.status(404).json({
+        message:"failed to delete assignment"
+      })
+     }
+}
+
 exports.getProjectDetails = ()=>{
     }
 

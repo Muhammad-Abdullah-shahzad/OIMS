@@ -12,6 +12,16 @@ body {
     color: #374151; /* Dark gray text */
 }
 
+.expense-buttons-group , .salary-buttons-group {
+    display: flex;
+    gap: 10px;
+}
+
+.export-pdf-button {
+    background: #DC2626;
+    color:#FFFFFF;
+}
+
 .finance-management-container {
     max-width: 1800px;
     margin: 0 auto;

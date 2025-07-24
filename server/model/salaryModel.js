@@ -67,6 +67,24 @@ exports.addSalary = async (data) => {
 
 // UPDATE salary record by ID with partial fields
 exports.updateSalary = async (id, fields) => {
+  if(fields.employee_name){
+   delete fields.employee_name;
+  }
+  if(fields.designation){
+   delete fields.designation;
+  }
+  if(fields.system_employee_id){
+   delete fields.system_employee_id;
+  }
+  
+  if(fields.updated_at){
+   delete fields.updated_at;
+  }
+  
+  if(fields.created_at){
+   delete fields.created_at;
+  }
+
   const keys = Object.keys(fields);
   const values = Object.values(fields);
 

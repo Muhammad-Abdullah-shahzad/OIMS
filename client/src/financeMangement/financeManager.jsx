@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle, DollarSign, FileText } from 'lucide-react';
+import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle, DollarSign, FileText, Download } from 'lucide-react'; // Added Download icon
 import '../styles/financeManagementModule.css'; // Import the vanilla CSS file
 
 // --- Utility Functions ---
@@ -48,6 +48,18 @@ const validateSalaryForm = (formData) => {
     return errors;
 };
 
+// New: Validate Salary Report Form
+const validateSalaryReportForm = (formData) => {
+    const errors = {};
+    if (!formData.id) errors.id = 'Employee is required.';
+    if (!formData.month) errors.month = 'Month is required.';
+    if (!formData.year) errors.year = 'Year is required.';
+    if (isNaN(parseInt(formData.year)) || parseInt(formData.year) < 2000 || parseInt(formData.year) > new Date().getFullYear() + 5) {
+        errors.year = 'Valid Year is required.';
+    }
+    return errors;
+};
+
 // --- FinanceManager Component ---
 export default function FinanceManager() {
     const [payments, setPayments] = useState([]);
@@ -61,7 +73,7 @@ export default function FinanceManager() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [modalMode, setModalMode] = useState(''); // 'create_payment', 'edit_payment', 'delete_payment', 'create_expense', 'edit_expense', 'delete_expense', 'create_salary', 'edit_salary', 'delete_salary'
+    const [modalMode, setModalMode] = useState(''); // 'create_payment', 'edit_payment', 'delete_payment', 'create_expense', 'edit_expense', 'delete_expense', 'create_salary', 'edit_salary', 'delete_salary', 'export_pdf_dates', 'export_salary_pdf'
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [selectedExpense, setSelectedExpense] = useState(null);
     const [selectedSalaryPayment, setSelectedSalaryPayment] = useState(null); // New: For salary operations
@@ -86,6 +98,19 @@ export default function FinanceManager() {
         payment_method: '',
         reference_number: '',
         notes: '',
+    });
+
+    // New: State for PDF report dates (Expense Report)
+    const [reportDates, setReportDates] = useState({
+        startDate: '',
+        endDate: '',
+    });
+
+    // New: State for Salary PDF report data
+    const [salaryReportData, setSalaryReportData] = useState({
+        employee_id: '',
+        month: new Date().getMonth() + 1, // Default to current month
+        year: new Date().getFullYear(), // Default to current year
     });
 
     const [validationErrors, setValidationErrors] = useState({});
@@ -328,7 +353,33 @@ export default function FinanceManager() {
         }
     };
 
-    // Open Modal for Payment/Expense/Salary Operations
+    // New: Handle Expense Report Dates Change
+    const handleReportDatesChange = (e) => {
+        const { name, value } = e.target;
+        setReportDates(prev => ({ ...prev, [name]: value }));
+        if (validationErrors[name]) {
+            setValidationErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    };
+
+    // New: Handle Salary Report Data Change
+    const handleSalaryReportDataChange = (e) => {
+        const { name, value } = e.target;
+        setSalaryReportData(prev => ({ ...prev, [name]: value }));
+        if (validationErrors[name]) {
+            setValidationErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    };
+
+    // Open Modal for Payment/Expense/Salary/Report Operations
     const openModal = (mode, item = null) => {
         setModalMode(mode);
         setValidationErrors({}); // Clear previous validation errors
@@ -386,6 +437,19 @@ export default function FinanceManager() {
                     payment_date: item.payment_date ? new Date(item.payment_date).toISOString().split('T')[0] : '',
                 });
             }
+        } else if (mode === 'export_pdf_dates') { // For Expense PDF export date selection
+            const today = new Date();
+            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            setReportDates({
+                startDate: firstDayOfMonth.toISOString().split('T')[0],
+                endDate: today.toISOString().split('T')[0],
+            });
+        } else if (mode === 'export_salary_pdf') { // New: For Salary PDF export selection
+            setSalaryReportData({
+                id: '',
+                month: new Date().getMonth() + 1,
+                year: new Date().getFullYear(),
+            });
         }
         setShowModal(true);
     };
@@ -398,6 +462,12 @@ export default function FinanceManager() {
         setSelectedExpense(null);
         setSelectedSalaryPayment(null); // Clear selected salary payment
         setValidationErrors({});
+        setReportDates({ startDate: '', endDate: '' }); // Clear expense report dates on close
+        setSalaryReportData({ // Clear salary report data on close
+            id: '',
+            month: new Date().getMonth() + 1,
+            year: new Date().getFullYear(),
+        });
     };
 
     // Handle Add/Edit Payment Submission
@@ -660,6 +730,99 @@ export default function FinanceManager() {
         }
     };
 
+    // New: Handle Export PDF for Expenses
+    const handleExportPdf = async (e) => {
+        e.preventDefault();
+        const { startDate, endDate } = reportDates;
+
+        if (!startDate || !endDate) {
+            setValidationErrors({ startDate: 'Start date is required.', endDate: 'End date is required.' });
+            showToastMessage('Please select both start and end dates.', 'error');
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            setValidationErrors({ endDate: 'End date cannot be before start date.' });
+            showToastMessage('End date cannot be before start date.', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const token = localStorage.token;
+            const response = await fetch(`${API_BASE_URL}/expense/get-report/${startDate}/${endDate}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text(); // Get raw text for better debugging
+                console.error('PDF Report Error Response:', errorText);
+                throw new Error(`Failed to generate PDF report: ${response.statusText || 'Unknown error'}. Details: ${errorText.substring(0, 100)}...`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank'); // Open PDF in a new tab
+
+            showToastMessage('Expense report generated successfully!', 'success');
+            closeModal();
+        } catch (err) {
+            console.error('Error generating PDF report:', err);
+            setError(`Failed to generate PDF report: ${err.message}`);
+            showToastMessage(`Failed to generate PDF report: ${err.message}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // New: Handle Export Salary PDF
+    const handleExportSalaryPdf = async (e) => {
+        e.preventDefault();
+        const { id, month, year } = salaryReportData;
+
+        const errors = validateSalaryReportForm(salaryReportData);
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            showToastMessage('Please correct the form errors.', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const token = localStorage.token;
+            const response = await fetch(`${API_BASE_URL}/salary/report/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ month: parseInt(month, 10), year: parseInt(year, 10) }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Salary PDF Report Error Response:', errorText);
+                throw new Error(`Failed to generate Salary PDF report: ${response.statusText || 'Unknown error'}. Details: ${errorText.substring(0, 100)}...`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank'); // Open PDF in a new tab
+
+            showToastMessage('Salary report generated successfully!', 'success');
+            closeModal();
+        } catch (err) {
+            console.error('Error generating Salary PDF report:', err);
+            setError(`Failed to generate Salary PDF report: ${err.message}`);
+            showToastMessage(`${err.message}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     // Helper to get project title by ID
     const getProjectTitle = (projectId) => {
@@ -707,7 +870,8 @@ export default function FinanceManager() {
         // Determine if the current modal is a form that should be narrower
         const isNarrowFormModal = modalMode === 'create_payment' || modalMode === 'edit_payment' ||
                                   modalMode === 'create_expense' || modalMode === 'edit_expense' ||
-                                  modalMode === 'create_salary' || modalMode === 'edit_salary'; // New: include salary forms
+                                  modalMode === 'create_salary' || modalMode === 'edit_salary' ||
+                                  modalMode === 'export_pdf_dates' || modalMode === 'export_salary_pdf'; // New: include salary PDF export form
         const modalContentClasses = `modal-content animate-scaleIn ${isNarrowFormModal ? 'modal-content-form-narrow' : ''}`;
 
         switch (modalMode) {
@@ -1223,6 +1387,133 @@ export default function FinanceManager() {
                         </div>
                     </div>
                 );
+            case 'export_pdf_dates': // Expense PDF Export Date Selection Modal
+                return (
+                    <div className={modalContentClasses}>
+                        <button
+                            onClick={closeModal}
+                            className="modal-close-button"
+                            title="Close"
+                        >
+                            <X size={24} />
+                        </button>
+                        <form onSubmit={handleExportPdf} className="modal-form">
+                            <h2 className="modal-title">Generate Expense Report (PDF)</h2>
+                            <div className="form-grid">
+                                <div className="form-group">
+                                    <label htmlFor="reportStartDate">Start Date</label>
+                                    <input
+                                        type="date"
+                                        id="reportStartDate"
+                                        name="startDate"
+                                        value={reportDates.startDate}
+                                        onChange={handleReportDatesChange}
+                                        className={`form-input ${validationErrors.startDate ? 'input-error' : ''}`}
+                                        required
+                                    />
+                                    {validationErrors.startDate && <p className="error-message">{validationErrors.startDate}</p>}
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="reportEndDate">End Date</label>
+                                    <input
+                                        type="date"
+                                        id="reportEndDate"
+                                        name="endDate"
+                                        value={reportDates.endDate}
+                                        onChange={handleReportDatesChange}
+                                        className={`form-input ${validationErrors.endDate ? 'input-error' : ''}`}
+                                        required
+                                    />
+                                    {validationErrors.endDate && <p className="error-message">{validationErrors.endDate}</p>}
+                                </div>
+                            </div>
+                            <div className="form-actions">
+                                <button type="button" onClick={closeModal} className="button button-secondary">
+                                    Cancel
+                                </button>
+                                <button type="submit" className="button button-primary" disabled={loading}>
+                                    {loading ? 'Generating...' : 'Generate Report'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                );
+            case 'export_salary_pdf': // New: Salary PDF Export Modal
+                return (
+                    <div className={modalContentClasses}>
+                        <button
+                            onClick={closeModal}
+                            className="modal-close-button"
+                            title="Close"
+                        >
+                            <X size={24} />
+                        </button>
+                        <form onSubmit={handleExportSalaryPdf} className="modal-form">
+                            <h2 className="modal-title">Generate Salary Report (PDF)</h2>
+                            <div className="form-grid">
+                                <div className="form-group form-group-full">
+                                    <label htmlFor="salaryReportEmployeeId">Employee</label>
+                                    <select
+                                        id="salaryReportEmployeeId"
+                                        name="id"
+                                        value={salaryReportData.id}
+                                        onChange={handleSalaryReportDataChange}
+                                        className={`form-select ${validationErrors.id ? 'input-error' : ''}`}
+                                        required
+                                    >
+                                        <option value="">Select an Employee</option>
+                                        {employees.map(emp => (
+                                            <option key={emp.id} value={emp.id}>
+                                                {emp.firstName} {emp.lastName} (ID: {emp.id})
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {validationErrors.id && <p className="error-message">{validationErrors.id}</p>}
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="salaryReportMonth">Month</label>
+                                    <select
+                                        id="salaryReportMonth"
+                                        name="month"
+                                        value={salaryReportData.month}
+                                        onChange={handleSalaryReportDataChange}
+                                        className={`form-select ${validationErrors.month ? 'input-error' : ''}`}
+                                        required
+                                    >
+                                        <option value="">Select Month</option>
+                                        {[...Array(12).keys()].map(i => (
+                                            <option key={i + 1} value={i + 1}>{getMonthName(i + 1)}</option>
+                                        ))}
+                                    </select>
+                                    {validationErrors.month && <p className="error-message">{validationErrors.month}</p>}
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="salaryReportYear">Year</label>
+                                    <input
+                                        type="number"
+                                        id="salaryReportYear"
+                                        name="year"
+                                        value={salaryReportData.year}
+                                        onChange={handleSalaryReportDataChange}
+                                        className={`form-input ${validationErrors.year ? 'input-error' : ''}`}
+                                        required
+                                        min="2000" // Adjust as needed
+                                        max={new Date().getFullYear() + 5} // Adjust as needed
+                                    />
+                                    {validationErrors.year && <p className="error-message">{validationErrors.year}</p>}
+                                </div>
+                            </div>
+                            <div className="form-actions">
+                                <button type="button" onClick={closeModal} className="button button-secondary">
+                                    Cancel
+                                </button>
+                                <button type="submit" className="button button-primary" disabled={loading}>
+                                    {loading ? 'Generating...' : 'Generate Report'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -1355,12 +1646,20 @@ export default function FinanceManager() {
             {/* Expense Management Section */}
             <div className="section-header-with-button" style={{ marginTop: '3rem' }}>
                 <h2 className="section-title">Expense Records</h2>
-                <button
-                    onClick={() => openModal('create_expense')}
-                    className="button button-primary add-expense-button"
-                >
-                    <Plus size={20} className="button-icon" /> Record New Expense
-                </button>
+                <div className="expense-buttons-group"> {/* New div for grouping buttons */}
+                    <button
+                        onClick={() => openModal('create_expense')}
+                        className="button button-primary add-expense-button"
+                    >
+                        <Plus size={20} className="button-icon" /> Record New Expense
+                    </button>
+                    <button
+                        onClick={() => openModal('export_pdf_dates')} 
+                        className="button  export-pdf-button"
+                    >
+                        <Download size={20} className="button-icon" /> Export PDF Report
+                    </button>
+                </div>
             </div>
 
             {expenses.length === 0 && !loading && !error && !(modalMode.includes('expense')) ? (
@@ -1433,12 +1732,20 @@ export default function FinanceManager() {
             {/* New: Salary Management Section */}
             <div className="section-header-with-button" style={{ marginTop: '3rem' }}>
                 <h2 className="section-title">Salary Records</h2>
-                <button
-                    onClick={() => openModal('create_salary')}
-                    className="button button-primary add-salary-button"
-                >
-                    <Plus size={20} className="button-icon" /> Record New Salary Payment
-                </button>
+                <div className="salary-buttons-group"> {/* New div for grouping buttons */}
+                    <button
+                        onClick={() => openModal('create_salary')}
+                        className="button button-primary add-salary-button"
+                    >
+                        <Plus size={20} className="button-icon" /> Record New Salary Payment
+                    </button>
+                    <button
+                        onClick={() => openModal('export_salary_pdf')} 
+                        className="button export-pdf-button"
+                    >
+                        <Download size={20} className="button-icon" /> Export Salary PDF
+                    </button>
+                </div>
             </div>
 
             {salaryPayments.length === 0 && !loading && !error && !(modalMode.includes('salary')) ? (

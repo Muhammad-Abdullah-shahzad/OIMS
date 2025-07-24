@@ -58,7 +58,7 @@ exports.loginController = async (req, res) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
 
-    res.json({ message: "Login successful", token });
+    res.json({ message: "Login successful", token , role:user.role });
   } catch (err) {
     console.error("Login Error:", err.message);
     res.status(500).json({ message: "Server error" });

@@ -120,7 +120,7 @@ exports.generateReportController = async (req, res) => {
     const { employeeId } = req.params;
     const {month,year} = req.body;
 
-    const employeeSalaryData = await salaryModel.getSalary(employeeId,month.year);
+    const employeeSalaryData = await salaryModel.getSalary(employeeId,month,year);
 
     if (!employeeSalaryData || employeeSalaryData.length === 0) {
       return res.status(404).json({ message: "No salary data found" });
