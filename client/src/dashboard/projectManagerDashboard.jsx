@@ -362,7 +362,7 @@ const ProjectDashboard = () => {
         <div className="dashboard-layout">
             <aside className="dashboard-sidebar">
                 <div className="sidebar-header">
-                    <h3>Project Hub</h3>
+                    <h3>Project Dashboard</h3>
                 </div>
                 <nav className="sidebar-nav">
                     <ul>

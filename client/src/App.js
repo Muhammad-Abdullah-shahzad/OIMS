@@ -10,8 +10,8 @@ import HRDashboard from "./dashboard/HRDashboard";
 
 import ProjectDashboard from "./dashboard/projectManagerDashboard";
 import ProjectManagerPage from "./pages/projectManagementPage";
-
 import FinanceDashboard from "./dashboard/FinanceDashboard";
+
 import FinanceManagerSection from "./pages/FinanceManager";
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
       <Route path="/signup" element={<SignupPage />} />
       {/* finance manager section */}
       <Route path="/fm" element={<FinanceManagerSection />} />
+      <Route  path="/fm-dashboard" element={<FinanceDashboard/>} />
       {/* <Route path="/fm-dashboard" /> */}
       {/* hr manager routes */}
       <Route path="/hr" element={<HRPage />} />

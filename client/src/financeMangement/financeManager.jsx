@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle, DollarSign, FileText, Download } from 'lucide-react'; // Added Download icon
+
 import '../styles/financeManagementModule.css'; // Import the vanilla CSS file
 
 // --- Utility Functions ---
+
 const validatePaymentForm = (formData) => {
     const errors = {};
     if (!formData.project_id) errors.project_id = 'Project is required.';

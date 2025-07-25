@@ -91,7 +91,78 @@ LEFT JOIN payments py ON p.id = py.project_id
   return rows;
 };
 
+exports.getMonthlyIncome = async () => {
+  const [rows] = await pool.query(`
+    SELECT 
+        MONTH(payment_date) AS month,
+        YEAR(payment_date) AS year,
+        SUM(paidAmount) AS monthly_income
+    FROM payments 
+    WHERE payment_status = 'paid'
+    GROUP BY MONTH(payment_date), YEAR(payment_date)
+    ORDER BY year DESC, month DESC
+  `);
+  return rows;
+};
 
+// Get payment status summary by project
+exports.getProjectPaymentSummary = async () => {
+  const [rows] = await pool.query(`
+    SELECT
+        p.id AS project_id,
+        p.title AS project_title,
+        c.id AS client_id,
+        c.name AS client_name,
+        p.budget AS total_project_amount,
+        IFNULL(SUM(py.paidAmount), 0) AS total_paid_amount,
+        (p.budget - IFNULL(SUM(py.paidAmount), 0)) AS remaining_amount,
+        CASE
+            WHEN IFNULL(SUM(py.paidAmount), 0) = 0 THEN 'unpaid'
+            WHEN IFNULL(SUM(py.paidAmount), 0) < p.budget THEN 'partial'
+            WHEN IFNULL(SUM(py.paidAmount), 0) >= p.budget THEN 'paid'
+        END AS payment_status
+    FROM projects p
+    JOIN clients c ON p.client_id = c.id
+    LEFT JOIN payments py ON p.id = py.project_id
+    GROUP BY p.id, p.title, c.id, c.name, p.budget
+    ORDER BY p.id
+  `);
+  return rows;
+};
+
+// Get pending payments
+exports.getPendingPayments = async () => {
+  const [rows] = await pool.query(`
+    SELECT 
+        p.title AS project_title,
+        c.name AS client_name,
+        py.paidAmount,
+        py.payment_date,
+        py.payment_status
+    FROM payments py
+    JOIN projects p ON py.project_id = p.id
+    JOIN clients c ON py.client_id = c.id
+    WHERE py.payment_status IN ('unpaid', 'partial')
+    ORDER BY py.payment_date DESC
+  `);
+  return rows;
+};
+
+// Get top paying clients
+exports.getTopPayingClients = async () => {
+  const [rows] = await pool.query(`
+    SELECT 
+        c.name AS client_name,
+        c.company,
+        SUM(p.paidAmount) AS total_paid
+    FROM clients c
+    JOIN payments p ON c.id = p.client_id
+    WHERE p.payment_status = 'paid'
+    GROUP BY c.id, c.name, c.company
+    ORDER BY total_paid DESC
+  `);
+  return rows;
+};
 
 
 

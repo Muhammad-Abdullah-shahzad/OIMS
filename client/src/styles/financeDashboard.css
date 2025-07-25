@@ -1,0 +1,542 @@
+/* financeDashboard.css */
+
+/* General Styles */
+.finance-dashboard-container {
+    font-family: 'Inter', sans-serif ;
+    background-color: #f8f9fa;
+    color: #333;
+    min-height: 100vh;
+    display: flex; /* Use flexbox for overall layout */
+    flex-direction: column; /* Default to column for mobile stacking */
+}
+
+/* Dashboard Wrapper for Sidebar and Main Content */
+.dashboard-wrapper {
+    display: flex;
+    flex-grow: 1; /* Allow it to take available space */
+    width: 100%;
+    max-width: 100%;
+    /* No gap here, controlled by individual components' margins/paddings */
+}
+
+/* Sidebar (Desktop View) */
+.sidebar-desktop {
+    display: none; /* Hidden by default on mobile, shown on desktop */
+    width: 250px; /* Fixed width for desktop sidebar */
+    min-width: 250px;
+    flex-shrink: 0; /* Prevent shrinking */
+    background: #1e293b; /* Dark background for sidebar */
+    border-radius: 0rem 1rem 1rem 0rem; /* Rounded corners on the right */
+    padding: 1.5rem;
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
+    position: sticky; /* Sticky for desktop */
+    top: 0;
+    height: 100vh; /* Full viewport height */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    color: #fff;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.sidebar-header-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #fff;
+    text-align: left;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    width: 100%;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    cursor: pointer;
+    background: transparent; /* Ensure button background is transparent by default */
+    border: none; /* Remove button border */
+    text-align: left; /* Align text to left for buttons */
+}
+
+.sidebar-nav-link:hover {
+    background: rgba(79, 70, 229, 0.15); /* Hover background */
+    color: #fff;
+    transform: translateX(5px); /* Slight slide effect on hover */
+}
+
+.sidebar-nav-link.active {
+    background: linear-gradient(45deg, #4F46E5, #7C3AED); /* Active background */
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    transform: translateX(0); /* No slide for active */
+}
+
+.sidebar-nav-icon {
+    margin-right: 0.75rem;
+    width: 20px;
+    height: 20px;
+}
+
+/* Main Content Area */
+.main-content-area {
+    flex-grow: 1;
+    padding: 2rem; /* Padding for the main content */
+    background-color: #f8f9fa; /* Match container background */
+}
+
+.header-section {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.main-title {
+    font-size: 2.5em;
+    color: #1a202c;
+    margin-bottom: 0.5rem; /* Adjusted margin */
+    font-weight: 700;
+    text-align: left; /* Align to left */
+}
+
+.subtitle-text {
+    font-size: 1.1rem;
+    color: #64748b;
+    line-height: 1.7;
+    margin-top: 0;
+}
+
+/* Hamburger Menu (Mobile Only) */
+.hamburger-menu {
+    display: none; /* Hidden by default on desktop */
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 1005; /* Above main content */
+    color: #1e293b;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Mobile Sidebar Overlay */
+.mobile-sidebar-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    inset: 0; /* Top, right, bottom, left 0 */
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999; /* Below sidebar, above main content */
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.mobile-sidebar-overlay.open {
+    display: block;
+    opacity: 1;
+}
+
+/* Mobile Sliding Sidebar */
+.mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: -380px; /* Start off-screen to the left */
+    width: 280px; /* Fixed width for the sidebar */
+    height: 100vh; /* Full viewport height */
+    background: #1e293b; /* Dark background */
+    color: white;
+    z-index: 1000; /* On top */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    transition: left 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.mobile-sidebar.open {
+    left: 0; /* Slide into view */
+}
+
+.mobile-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.mobile-sidebar-header .close-icon {
+    cursor: pointer;
+    color: white;
+}
+
+
+/* Toast Notification */
+.dashboard-toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50; /* Green for success */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    z-index: 1000;
+}
+
+.dashboard-toast-notification.toast-error {
+    background-color: #F44336; /* Red for error */
+}
+
+.dashboard-toast-notification.toast-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dashboard-toast-close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 0;
+    line-height: 1;
+}
+
+/* Loading and Error States */
+.dashboard-loading-container,
+.dashboard-error-container,
+.dashboard-no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+}
+
+.dashboard-spinner {
+    animation: spin 1s linear infinite;
+    color: #4F46E5;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.dashboard-loading-text,
+.dashboard-error-message,
+.dashboard-no-data-text {
+    font-size: 1.2em;
+    color: #555;
+}
+
+.dashboard-error-icon {
+    color: #EF4444;
+    margin-bottom: 20px;
+}
+
+.dashboard-info-icon {
+    color: #6B7280;
+    margin-bottom: 20px;
+}
+
+.dashboard-retry-button {
+    background-color: #4F46E5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dashboard-retry-button:hover {
+    background-color: #6366F1;
+    transform: translateY(-2px);
+}
+
+/* Dashboard Cards Grid */
+.dashboard-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.dashboard-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.card-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.card-icon {
+    color: #4F46E5; /* Default icon color */
+}
+
+.primary-card .card-icon { color: #4F46E5; }
+.secondary-card .card-icon { color: #7C3AED; }
+.success-card .card-icon { color: #10B981; }
+.info-card .card-icon { color: #3B82F6; }
+.danger-card .card-icon { color: #EF4444; }
+
+
+.card-value {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+}
+
+/* Charts Section */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.chart-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 380px; /* Ensure consistent height for charts */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.chart-card.full-width-chart {
+    grid-column: 1 / -1; /* Make it span full width */
+    min-height: 450px;
+}
+
+.chart-title {
+    font-size: 1.5em;
+    color: #1a202c;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Recharts specific styling adjustments */
+.recharts-wrapper {
+    overflow: visible !important; /* Allow tooltips to go outside */
+}
+
+.recharts-tooltip-wrapper {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-size: 0.9em;
+    color: #333;
+}
+
+.recharts-tooltip-item {
+    margin-bottom: 5px;
+}
+
+.recharts-legend-wrapper {
+    margin-top: 15px !important;
+}
+
+.recharts-legend-item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.recharts-surface {
+    overflow: visible;
+}
+
+/* Responsive adjustments */
+/* Mobile-first approach */
+@media (max-width: 1024px) {
+    .finance-dashboard-container {
+        padding: 0; /* Remove padding from container, handled by main-content-area */
+    }
+
+    .dashboard-wrapper {
+        flex-direction: column; /* Stack sidebar and main content vertically */
+    }
+
+    .sidebar-desktop {
+        display: none; /* Hide desktop sidebar on smaller screens */
+    }
+
+    .main-content-area {
+        width: 100%;
+        padding: 1rem; /* Adjust padding for mobile */
+    }
+
+    .header-section {
+        text-align: center; /* Center header content on mobile */
+    }
+
+    .main-title {
+        font-size: 2em; /* Smaller title */
+        text-align: center;
+    }
+
+    .subtitle-text {
+        font-size: 1rem; /* Smaller subtitle */
+    }
+
+    .dashboard-cards-grid,
+    .charts-grid {
+        grid-template-columns: 1fr; /* Stack cards/charts on mobile */
+        gap: 1rem; /* Smaller gap */
+    }
+
+    .dashboard-card {
+        padding: 20px;
+    }
+
+    .card-value {
+        font-size: 1.8em;
+    }
+
+    .chart-card {
+        padding: 20px;
+        min-height: 300px;
+    }
+
+    .chart-card.full-width-chart {
+        min-height: 350px;
+    }
+
+    .chart-title {
+        font-size: 1.3em;
+    }
+
+    .hamburger-menu {
+        display: block; /* Show hamburger menu on mobile */
+    }
+}
+
+/* Tablet and larger phones */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .dashboard-cards-grid,
+    .charts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Two columns on tablets */
+        gap: 20px;
+    }
+    .chart-card.full-width-chart {
+        grid-column: 1 / -1; /* Still span full width if needed */
+    }
+}
+
+
+/* Desktop adjustments */
+@media (min-width: 1025px) {
+    .finance-dashboard-container {
+        padding: 0; /* No padding on container itself */
+    }
+
+    .dashboard-wrapper {
+        flex-direction: row; /* Side-by-side layout for desktop */
+    }
+
+    .sidebar-desktop {
+        display: flex; /* Show desktop sidebar */
+    }
+
+    .hamburger-menu {
+        display: none; /* Hide hamburger menu on desktop */
+    }
+
+    .main-content-area {
+        padding: 2rem; /* Default padding for desktop */
+    }
+
+    .header-section {
+        text-align: left;
+    }
+
+    .main-title {
+        font-size: 2.5em;
+        text-align: left;
+    }
+
+    .subtitle-text {
+        font-size: 1.1rem;
+    }
+
+    .dashboard-cards-grid,
+    .charts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Default desktop grid */
+        gap: 25px;
+    }
+
+    .chart-card.full-width-chart {
+        grid-column: 1 / -1; /* Still span full width */
+    }
+}

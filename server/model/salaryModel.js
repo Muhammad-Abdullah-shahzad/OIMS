@@ -111,3 +111,35 @@ exports.deleteSalary = async (id) => {
   `, [id]);
   return result;
 };
+
+
+exports.getEmployeeSalarySummary = async () => {
+  const [rows] = await db.pool.query(`
+    SELECT 
+        e.firstName,
+        e.lastName,
+        e.designation,
+        e.salary AS monthly_salary,
+        COUNT(sp.id) AS months_paid,
+        SUM(sp.amount) AS total_paid
+    FROM employees e
+    LEFT JOIN salary_payments sp ON e.id = sp.employee_id
+    GROUP BY e.id, e.firstName, e.lastName, e.designation, e.salary
+    ORDER BY e.salary DESC
+  `);
+  return rows;
+};
+
+// Get monthly salary disbursement
+exports.getMonthlySalaryReport = async () => {
+  const [rows] = await db.pool.query(`
+    SELECT 
+        salary_month,
+        salary_year,
+        SUM(amount) AS total_salaries
+    FROM salary_payments 
+    GROUP BY salary_month, salary_year
+    ORDER BY salary_year DESC, salary_month DESC
+  `);
+  return rows;
+};

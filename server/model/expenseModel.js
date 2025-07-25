@@ -105,3 +105,43 @@ exports.getMonthlyExpenseReport = async (startDate = "", endDate = "", condition
   const [rows] = await db.execute(query, queryParams);
   return rows;
 };
+
+
+exports.getMonthlyExpenses = async () => {
+  const [rows] = await db.query(`
+    SELECT 
+        MONTH(expense_date) AS month,
+        YEAR(expense_date) AS year,
+        SUM(amount) AS monthly_expenses
+    FROM expenses 
+    GROUP BY MONTH(expense_date), YEAR(expense_date)
+    ORDER BY year DESC, month DESC
+  `);
+  return rows;
+};
+
+// Get yearly expense report
+exports.getYearlyExpenses = async () => {
+  const [rows] = await db.query(`
+    SELECT 
+        YEAR(expense_date) AS year,
+        SUM(amount) AS total_expense
+    FROM expenses 
+    GROUP BY YEAR(expense_date)
+  `);
+  return rows;
+};
+
+// Get expense summary by category
+exports.getExpenseCategorySummary = async () => {
+  const [rows] = await db.query(`
+    SELECT 
+        category,
+        COUNT(*) AS expense_count,
+        SUM(amount) AS total_amount
+    FROM expenses 
+    GROUP BY category
+    ORDER BY total_amount DESC
+  `);
+  return rows;
+};

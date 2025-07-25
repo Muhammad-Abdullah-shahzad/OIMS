@@ -1,22 +1,33 @@
 const express = require("express")
 // In Express backend:
 const cors = require('cors');
-const dotenv = require("dotenv").config();
 
+const dotenv = require("dotenv").config();
 
 const app = express();
 
 const authenticationRoutes = require("./routes/authenticationRoutes")
+
 const employeeRoutes = require("./routes/employeeRoutes")
+
 const projectRoutes = require("./routes/projectsRoutes")
+
 const clientRoutes = require("./routes/clientRoutes")
+
 const dashboardRoute = require("./routes/dashboardsRoutes")
+
 const paymentRoutes = require("./routes/paymentRoutes")
+
 const expenseRoutes = require("./routes/expenseRoute")
+
 const salaryRoutes = require("./routes/salaryRoutes")
+
 const userRoutes = require("./routes/userRoutes")
 
+const financeRoute = require("./routes/financeRoute")
+
 app.use(cors());
+
 app.use(express.json())
 
 
@@ -27,7 +38,6 @@ POST http://localhost:5000/auth/signup
 */
 
 app.use("/auth",authenticationRoutes);
-
 
 app.use("/users",userRoutes)
 // POST http://localhost:5000/employee/add 
@@ -76,12 +86,12 @@ returns
 }
 
 DELETE http://localhost:5000/project/delete/1
+
 deletes a project
 returns
 {
     "message":"Project deleted"
 }
-
 
 GET http://localhost:5000/project/1/employee
 returns employees linked to project no 1
@@ -107,7 +117,8 @@ expects
     "country": "Pakistan",
     "is_active": true
   }
-*/
+
+  */
 // DELETE http://localhost:5000/client/delete/4  -> deletes client with id 4
 // DELETE http://localhost:5000/client/edit/4  -> updates client with id 4 ->expects json data that you want to update like {name:"abdullah"}
 
@@ -120,6 +131,9 @@ app.use("/payment",paymentRoutes)
 app.use("/expense",expenseRoutes)
 
 app.use("/salary",salaryRoutes)
+
+app.use("/finance",financeRoute)
+
 app.listen(port,()=>{
     console.log("server listening on port ", port);
 })
