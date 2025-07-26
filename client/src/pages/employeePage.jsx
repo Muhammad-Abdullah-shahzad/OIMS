@@ -1,10 +1,19 @@
 import EmployeeManagement from "../components/employee";
 import NavBar from "../components/navbar";
 import React from "react";
-function EmployeePage(){
+function EmployeePage( ) {
     return(
        <>
-       <NavBar dashboardRoute={"/hr-dashboard"}/>
+       <NavBar navLinks={[
+        {
+            name:"Home",
+            path:"/"
+        },
+        {
+            name:"Dashboard",
+            path:"/hr-dashboard"
+        }
+       ]}/>
         <EmployeeManagement/>
        </>
     )

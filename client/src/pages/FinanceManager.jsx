@@ -3,7 +3,16 @@ import Navbar from "../components/navbar"
 export default function FinanceManager(){
     return(
         <>
-        <Navbar dashboardRoute={"/fm-dashboard"} />
+        <Navbar navLinks={[
+        {
+            name:"Home",
+            path:"/"
+        },
+        {
+            name:"Dashboard",
+            path:"/fm-dashboard"
+        }
+       ]}/>
         <FinanceManagement/>
         </>
     )

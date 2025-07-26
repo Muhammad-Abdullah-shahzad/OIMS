@@ -30,6 +30,15 @@ const Login = () => {
       setSuccessMessage('Login successful!');
     
       if(result.data.role==="super_admin"){
+        navigate("/s-hr")
+      }
+      else if(result.data.role==="project_manager"){
+        navigate("/pm")
+      }
+      else if (result.data.role === "hr_manager"){
+        navigate("/hr")
+      }
+      else{
         navigate("/fm")
       }
       // Optionally store token: localStorage.setItem('token', result.data.token)

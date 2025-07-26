@@ -4,7 +4,7 @@ import './NavBar.css';
 import { Link } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import logo from "../assets/company-logo.jpg"
-const NavBar = ({dashboardRoute}) => {
+const NavBar = ({navLinks}) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -19,8 +19,12 @@ const NavBar = ({dashboardRoute}) => {
       </div>
 
       <ul className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-        <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-        <li><Link to={dashboardRoute} onClick={closeMenu}>Dashboard</Link></li>
+        
+        {
+          navLinks.map((navLink,index)=>{
+              return <li><Link to={navLink.path} onClick={closeMenu}>{navLink.name}</Link></li>
+          })
+        }
       </ul>
     </nav>
   );

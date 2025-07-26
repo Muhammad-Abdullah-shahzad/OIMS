@@ -5,7 +5,16 @@ import NavBar from "../components/navbar";
 function HRDashboardPage(){
     return(
         <>
-        <NavBar/>
+        <NavBar navLinks={[
+        {
+            name:"Home",
+            path:"/"
+        },
+        {
+            name:"HR Section",
+            path:"/hr"
+        }
+       ]}/>
         <EmployeeDashboard/>
         </>
     )
