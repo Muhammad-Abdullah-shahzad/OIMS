@@ -498,7 +498,7 @@ export default function FinanceManager() {
                     body: JSON.stringify(dataToSubmit),
                 });
             } else if (modalMode === 'edit_payment' && selectedPayment) {
-                response = await fetch(`${API_BASE_URL}/payment/update/${selectedPayment.id}`, {
+                response = await fetch(`${API_BASE_URL}/payment/edit/${selectedPayment.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` },
                     body: JSON.stringify(dataToSubmit),

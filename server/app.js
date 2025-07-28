@@ -26,6 +26,8 @@ const userRoutes = require("./routes/userRoutes")
 
 const financeRoute = require("./routes/financeRoute")
 
+const adminRoute = require("./routes/adminRoute")
+
 app.use(cors());
 
 app.use(express.json())
@@ -133,6 +135,8 @@ app.use("/expense",expenseRoutes)
 app.use("/salary",salaryRoutes)
 
 app.use("/finance",financeRoute)
+
+app.use("/admin",adminRoute)
 
 app.listen(port,()=>{
     console.log("server listening on port ", port);

@@ -17,6 +17,7 @@ import FinanceManagerSection from "./pages/FinanceManager";
 import SuperAdminEmployeePage from "./pages/SuperAdminEmployeePage";
 import SuperAdminProjectPage from "./pages/SuperAdminProjectPage";
 import SuperAdminFinancePage from "./pages/SuperAdminFinancePage";
+import SuperAdminDashboardPage from "./pages/SuperAdminDashboardPage";
 function App() {
   return (
     <Routes>
@@ -28,6 +29,7 @@ function App() {
       <Route path="s-hr" element={<SuperAdminEmployeePage />} />
       <Route path="s-pm" element={<SuperAdminProjectPage />} />
       <Route path="s-fm" element={<SuperAdminFinancePage />} />
+      <Route path = "s-dashboard" element={<SuperAdminDashboardPage/>}/>
 
       {/* finance manager section */}
       <Route path="/fm" element={<FinanceManagerSection />} />

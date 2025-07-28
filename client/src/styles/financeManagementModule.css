@@ -22,6 +22,9 @@ body {
     color:#FFFFFF;
 }
 
+
+
+
 .finance-management-container {
     max-width: 1800px;
     margin: 0 auto;
@@ -349,6 +352,7 @@ body {
     .form-group-full {
         grid-column: span 2; /* md:col-span-2 equivalent */
     }
+   
 }
 
 .form-group {
@@ -581,4 +585,17 @@ body {
 .toast-close-button:hover {
     opacity: 1;
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+@media  screen and (max-width:480px) {
+    .add-expense-button , .export-pdf-button ,.add-salary-button{
+        font-size: 11px;
+    }
+    
+}
+
+@media screen and (max-width:767px){
+    .section-header-with-button{
+        flex-wrap: wrap;
+    }
 }
