@@ -14,9 +14,10 @@ exports.authenticateToken=(req, res, next) => {
   }
   
   jwt.verify(token, JWT_SECRET, (err, user) => {
+    
     if (err) {
       console.error("JWT Verification Error:", err.message);
-      return res.status(403).json({ message: "Invalid or expired token" });
+      return res.status(403).json({ message: "Invalid or expired token" ,tokenVerified:false});
     }
 
     req.user = user; // Attach decoded token data to request object
