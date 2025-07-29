@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle, Users, Link as LinkIcon, Unlink, Building } from 'lucide-react';
 import '../styles/projectModule.css'; // Import the new vanilla CSS file
+import { useNavigate } from 'react-router-dom';
 
 // --- Utility Functions ---
 const validateProjectForm = (formData) => {
@@ -44,6 +45,7 @@ const validateClientForm = (formData) => {
 
 // --- ProjectManagement Component ---
 const ProjectManagement = () => {
+  const navigate = useNavigate()
     const [projects, setProjects] = useState([]);
     const [clients, setClients] = useState([]); // To fetch clients for the form dropdown and display
     const [employees, setEmployees] = useState([]); // To fetch employees for assignment
@@ -103,11 +105,16 @@ const ProjectManagement = () => {
                 }
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw await response.json();
             }
             const data = await response.json();
             setProjects(data);
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch projects:', err);
             setError('Failed to load projects. Please try again.');
             showToastMessage('Failed to load projects.', 'error');
@@ -129,7 +136,7 @@ const ProjectManagement = () => {
             });
             if (!response.ok) {
                 const errorData = await response.json(); // Try to parse error message
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData
             }
             const result = await response.json(); // Get the full response object
 
@@ -139,6 +146,12 @@ const ProjectManagement = () => {
                 throw new Error(result.message || 'Unexpected data format from client API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+            
             console.error('Failed to fetch clients:', err);
             showToastMessage('Failed to load clients.', 'error');
             setError('Failed to load clients. Please try again.'); // Set error for client section
@@ -158,11 +171,16 @@ const ProjectManagement = () => {
                 }
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw await response.json();
             }
             const data = await response.json();
             setEmployees(data);
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch employees:', err);
             showToastMessage('Failed to load employees for assignment.', 'error');
         }
@@ -180,11 +198,16 @@ const ProjectManagement = () => {
                 }
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw await response.json()
             }
             const data = await response.json();
             setAssignedEmployees(data);
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error(`Failed to fetch assigned employees for project ${projectId}:`, err);
             showToastMessage('Failed to load assigned employees.', 'error');
             setAssignedEmployees([]); // Clear previous assignments on error
@@ -362,13 +385,18 @@ const ProjectManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage(`Project ${modalMode === 'create' ? 'added' : 'updated'} successfully!`, 'success');
             closeModal();
             fetchProjects(); // Re-fetch data to update the list
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error(`Failed to ${modalMode} project:`, err);
             setError(`Failed to ${modalMode} project: ${err.message}`);
             showToastMessage(`Failed to ${modalMode} project.`, 'error');
@@ -392,13 +420,19 @@ const ProjectManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Project deleted successfully!', 'success');
             closeModal();
             fetchProjects(); // Re-fetch data to update the list
         } catch (err) {
+
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to delete project:', err);
             setError(`Failed to delete project: ${err.message}`);
             showToastMessage('Failed to delete project.', 'error');
@@ -432,7 +466,7 @@ const ProjectManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Employee assigned to project successfully!', 'success');
@@ -445,6 +479,11 @@ const ProjectManagement = () => {
             });
             setValidationErrors({});
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to assign employee:', err);
             setError(`Failed to assign employee: ${err.message}`);
             showToastMessage(`Failed to assign employee: ${err.message}`, 'error');
@@ -466,7 +505,7 @@ const ProjectManagement = () => {
    console.log("response " , response);
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Employee deassigned successfully!', 'success');
@@ -474,6 +513,11 @@ const ProjectManagement = () => {
                 fetchAssignedEmployees(selectedProject.id);
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to deassign employee:', err);
             setError(`Failed to deassign employee: ${err.message}`);
             showToastMessage(`Failed to deassign employee: ${err.message}`, 'error');
@@ -503,13 +547,18 @@ const ProjectManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Client added successfully!', 'success');
             closeModal();
             fetchClients(); // Re-fetch clients to update the list
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to add client:', err);
             setError(`Failed to add client: ${err.message}`);
             showToastMessage(`Failed to add client: ${err.message}`, 'error');
@@ -541,13 +590,18 @@ const ProjectManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Client updated successfully!', 'success');
             closeModal();
             fetchClients(); // Re-fetch clients to update the list
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to edit client:', err);
             setError(`Failed to edit client: ${err.message}`);
             showToastMessage(`Failed to edit client: ${err.message}`, 'error');
@@ -570,13 +624,18 @@ const ProjectManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Client deleted successfully!', 'success');
             closeModal();
             fetchClients(); // Re-fetch clients to update the list
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to delete client:', err);
             setError(`Failed to delete client: ${err.message}`);
             showToastMessage('Failed to delete client.', 'error');

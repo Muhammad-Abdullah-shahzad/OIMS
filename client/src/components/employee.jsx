@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, use } from 'react';
 // Assuming you have lucide-react installed for icons
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle } from 'lucide-react';
 import '../styles/employeeModule.css'; // Import the vanilla CSS file
+import { useNavigate } from 'react-router-dom';
 
 // --- Utility Functions (could be in a separate utils file) ---
 const validateEmployeeForm = (formData) => {
@@ -24,6 +25,7 @@ const validateEmployeeForm = (formData) => {
 
 // --- EmployeeManagement Component ---
 const EmployeeManagement = () => {
+    const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -62,11 +64,16 @@ const EmployeeManagement = () => {
                 }
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw await response.json();
             }
             const data = await response.json();
             setEmployees(data);
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch employees:', err);
             setError('Failed to load employees. Please try again.');
             showToastMessage('Failed to load employees.', 'error');
@@ -200,13 +207,18 @@ const EmployeeManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage(`Employee ${modalMode === 'create' ? 'added' : 'updated'} successfully!`, 'success');
             closeModal();
             fetchEmployees(); // Re-fetch data to update the list
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error(`Failed to ${modalMode} employee:`, err);
             setError(`Failed to ${modalMode} employee: ${err.message}`);
             showToastMessage(`Failed to ${modalMode} employee.`, 'error');
@@ -234,7 +246,7 @@ const EmployeeManagement = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Employee deleted successfully!', 'success');

@@ -13,6 +13,7 @@ import {
     Menu // For mobile hamburger menu
 } from 'lucide-react';
 import '../styles/financeDashboard.css'; // New CSS file for this dashboard
+import { useNavigate } from 'react-router-dom';
 
 // Define a color palette for charts
 const COLORS = ['#4F46E5', '#7C3AED', '#EC4899', '#F97316', '#10B981', '#3B82F6', '#EF4444', '#6B7280', '#D97706'];
@@ -30,6 +31,7 @@ const getMonthName = (monthNumber) => {
 };
 
 const FinanceDashboard = () => {
+    const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -59,7 +61,7 @@ const FinanceDashboard = () => {
 
             if (!response.ok) {
                 // If response is not OK (e.g., 4xx, 5xx status), throw an error with the message from the backend
-                throw new Error(result.message || `HTTP error! status: ${response.status}`);
+                throw result
             }
 
             // If response is OK (2xx status), check if 'data' property exists and set it
@@ -70,6 +72,12 @@ const FinanceDashboard = () => {
                 throw new Error(result.message || 'Unexpected data format from finance dashboard API: "data" property missing.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Failed to fetch finance dashboard data:', err);
             setError(`Failed to load finance dashboard data: ${err.message}`);
             showToastMessage('Failed to load dashboard data.', 'error');

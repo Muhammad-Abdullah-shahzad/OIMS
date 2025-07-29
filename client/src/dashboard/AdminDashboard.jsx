@@ -8,6 +8,7 @@ import {
     Banknote, Receipt, ClipboardList, Award, Menu, X, Info, Loader, AlertCircle , CheckCircle
 } from 'lucide-react';
 import '../styles/adminDashboard.css'; // New CSS file for this dashboard
+import { useNavigate } from 'react-router-dom';
 
 // Define a color palette for charts - consistent with other dashboards
 const COLORS = ['#4F46E5', '#7C3AED', '#EC4899', '#F97316', '#10B981', '#3B82F6', '#EF4444', '#6B7280', '#D97706', '#8B5CF6', '#FACC15', '#A78BFA'];
@@ -25,6 +26,7 @@ const getMonthName = (monthNumber) => {
 };
 
 const SuperAdminDashboard = () => {
+   const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -54,7 +56,7 @@ const SuperAdminDashboard = () => {
 
             if (!response.ok) {
                 // If response is not OK (e.g., 4xx, 5xx status), throw an error with the message from the backend
-                throw new Error(result.message || `HTTP error! status: ${response.status}`);
+                throw result;
             }
 
             // If response is OK (2xx status), check if 'data' property exists and set it
@@ -65,6 +67,11 @@ const SuperAdminDashboard = () => {
                 throw new Error(result.message || 'Unexpected data format from admin dashboard API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch admin dashboard data:', err);
             setError(`Failed to load admin dashboard data: ${err.message}`);
             showToastMessage('Failed to load dashboard data.', 'error');
@@ -414,7 +421,7 @@ const SuperAdminDashboard = () => {
                     </>
                 );
             case 'monthly-profit':
-                return (
+                 return (
                     <>
                         <div className="header-section">
                             <h1 className="main-title">Monthly Profit/Loss</h1>
@@ -483,10 +490,10 @@ const SuperAdminDashboard = () => {
                             onClick={() => { setSelectedSection('monthly-income'); setIsMobileSidebarOpen(false); }}
                         >
                             <TrendingUp size={20} className="sidebar-nav-icon" />
-                            Monthly Income
+                             Monthly Income
                         </button>
                     </li>
-                    <li>
+                     <li>
                         <button
                             className={`sidebar-button ${selectedSection === 'monthly-expenses' ? 'active' : ''}`}
                             onClick={() => { setSelectedSection('monthly-expenses'); setIsMobileSidebarOpen(false); }}

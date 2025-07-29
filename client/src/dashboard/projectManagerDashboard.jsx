@@ -8,6 +8,7 @@ import {
     CalendarCheck, ClipboardList, TrendingUp // Lucide icons for new sections
 } from 'lucide-react';
 import '../styles/projectdashboard.css'; // New CSS file for this dashboard
+import { useNavigate } from 'react-router-dom';
 
 // Define a color palette for charts
 const COLORS = ['#6366F1', '#20B2AA', '#FF7F50', '#8A2BE2', '#6A5ACD', '#6B8E23', '#DC143C', '#F59E0B', '#10B981'];
@@ -20,6 +21,7 @@ const formatCurrency = (value) => {
 };
 
 const ProjectDashboard = () => {
+  const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -53,7 +55,7 @@ const ProjectDashboard = () => {
             if (!response.ok) { // This checks for HTTP errors (4xx, 5xx)
                 const errorData = await response.json();
                 console.error('Backend Error Data:', errorData);
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             const result = await response.json(); // Parse the JSON response
@@ -68,6 +70,11 @@ const ProjectDashboard = () => {
             }
 
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Caught error during fetchDashboardData:', err);
             setError('Failed to load project dashboard data. Please try again.');
             showToastMessage('Failed to load dashboard data.', 'error');

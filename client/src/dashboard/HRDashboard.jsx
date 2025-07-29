@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import {
     PieChart, Pie, Cell, Tooltip, Legend,
     BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer
@@ -20,6 +20,7 @@ const formatCurrency = (value) => {
 };
 
 const EmployeeDashboard = () => {
+    const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState(null);
     const [allEmployees, setAllEmployees] = useState([]); // State for all employees
     const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ const EmployeeDashboard = () => {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             if (result.success) {
@@ -55,6 +56,11 @@ const EmployeeDashboard = () => {
                 throw new Error(result.message || 'Failed to fetch dashboard data.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch dashboard data:', err);
             setError('Failed to load dashboard data. Please try again.');
             showToastMessage('Failed to load dashboard data.', 'error');
@@ -76,12 +82,17 @@ const EmployeeDashboard = () => {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             console.log('API call result for all employees:', result); // Add this for debugging
             setAllEmployees(result);
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch all employees:', err);
             setError('Failed to load employee list. Please try again.');
             showToastMessage('Failed to load employee list.', 'error');

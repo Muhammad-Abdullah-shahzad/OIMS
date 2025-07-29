@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle, DollarSign, FileText, Download } from 'lucide-react'; // Added Download icon
 
 import '../styles/financeManagementModule.css'; // Import the vanilla CSS file
+import { useNavigate } from 'react-router-dom';
 
 // --- Utility Functions ---
 
@@ -65,6 +66,7 @@ const validateSalaryReportForm = (formData) => {
 
 // --- FinanceManager Component ---
 export default function FinanceManager() {
+    const navigate = useNavigate();
     const [payments, setPayments] = useState([]);
     const [projects, setProjects] = useState([]); // To fetch projects for dropdown
     const [clients, setClients] = useState([]);   // To fetch clients for dropdown
@@ -137,7 +139,7 @@ export default function FinanceManager() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             if (Array.isArray(result)) {
@@ -146,6 +148,12 @@ export default function FinanceManager() {
                 throw new Error(result.message || 'Unexpected data format from payment API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Failed to fetch payments:', err);
             showToastMessage('Failed to load payments.', 'error');
             setError('Failed to load payments. Please try again.');
@@ -162,11 +170,18 @@ export default function FinanceManager() {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw await response.json();
             }
             const data = await response.json();
             setProjects(data);
         } catch (err) {
+
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Failed to fetch projects:', err);
             showToastMessage('Failed to load projects for linking.', 'error');
         }
@@ -181,7 +196,7 @@ export default function FinanceManager() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             if (result.success && Array.isArray(result.data)) {
@@ -190,6 +205,11 @@ export default function FinanceManager() {
                 throw new Error(result.message || 'Unexpected data format from client API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch clients:', err);
             showToastMessage('Failed to load clients for linking.', 'error');
         }
@@ -206,7 +226,7 @@ export default function FinanceManager() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             if (result.success && Array.isArray(result.expenses)) {
@@ -215,6 +235,11 @@ export default function FinanceManager() {
                 throw new Error(result.message || 'Unexpected data format from expense API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch expenses:', err);
             showToastMessage('Failed to load expenses.', 'error');
             setError('Failed to load expenses. Please try again.');
@@ -232,7 +257,7 @@ export default function FinanceManager() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             if (result.success && Array.isArray(result.data)) {
@@ -245,6 +270,11 @@ export default function FinanceManager() {
                 throw new Error(result.message || 'Unexpected data format from user API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch users:', err);
             showToastMessage('Failed to load users for approval.', 'error');
         }
@@ -261,7 +291,7 @@ export default function FinanceManager() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
             const result = await response.json();
             if (result.success && Array.isArray(result.data)) {
@@ -270,6 +300,12 @@ export default function FinanceManager() {
                 throw new Error(result.message || 'Unexpected data format from salary API.');
             }
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Failed to fetch salary payments:', err);
             showToastMessage('Failed to load salary payments.', 'error');
             setError('Failed to load salary payments. Please try again.');
@@ -286,11 +322,16 @@ export default function FinanceManager() {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw await response.json();
             }
             const data = await response.json();
             setEmployees(data); // Assuming /employee/all returns an array of employee objects
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to fetch employees for dropdown:', err);
             showToastMessage('Failed to load employee list for forms.', 'error');
         }
@@ -507,13 +548,19 @@ export default function FinanceManager() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage(`Payment ${modalMode === 'create_payment' ? 'added' : 'updated'} successfully!`, 'success');
             closeModal();
             fetchPayments();
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error(`Failed to ${modalMode} payment:`, err);
             setError(`Failed to ${modalMode} payment: ${err.message}`);
             showToastMessage(`Failed to ${modalMode} payment.`, 'error');
@@ -536,13 +583,18 @@ export default function FinanceManager() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Payment deleted successfully!', 'success');
             closeModal();
             fetchPayments();
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
             console.error('Failed to delete payment:', err);
             setError(`Failed to delete payment: ${err.message}`);
             showToastMessage('Failed to delete payment.', 'error');
@@ -600,13 +652,19 @@ export default function FinanceManager() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage(`Expense ${modalMode === 'create_expense' ? 'added' : 'updated'} successfully!`, 'success');
             closeModal();
             fetchExpenses();
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error(`Failed to ${modalMode} expense:`, err);
             setError(`Failed to ${modalMode} expense: ${err.message}`);
             showToastMessage(`Failed to ${modalMode} expense.`, 'error');
@@ -629,13 +687,19 @@ export default function FinanceManager() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Expense deleted successfully!', 'success');
             closeModal();
             fetchExpenses();
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+            
             console.error('Failed to delete expense:', err);
             setError(`Failed to delete expense: ${err.message}`);
             showToastMessage('Failed to delete expense.', 'error');
@@ -689,13 +753,20 @@ export default function FinanceManager() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage(`Salary payment ${modalMode === 'create_salary' ? 'added' : 'updated'} successfully!`, 'success');
             closeModal();
             fetchSalaryPayments(); // Re-fetch data to update the list
         } catch (err) {
+
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error(`Failed to ${modalMode} salary payment:`, err);
             setError(`Failed to ${modalMode} salary payment: ${err.message}`);
             showToastMessage(`Failed to ${modalMode} salary payment.`, 'error');
@@ -718,13 +789,19 @@ export default function FinanceManager() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw errorData;
             }
 
             showToastMessage('Salary payment deleted successfully!', 'success');
             closeModal();
             fetchSalaryPayments(); // Re-fetch data to update the list
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Failed to delete salary payment:', err);
             setError(`Failed to delete salary payment: ${err.message}`);
             showToastMessage('Failed to delete salary payment.', 'error');
@@ -761,9 +838,9 @@ export default function FinanceManager() {
             });
 
             if (!response.ok) {
-                const errorText = await response.text(); // Get raw text for better debugging
-                console.error('PDF Report Error Response:', errorText);
-                throw new Error(`Failed to generate PDF report: ${response.statusText || 'Unknown error'}. Details: ${errorText.substring(0, 100)}...`);
+                const errorData = await response.json(); // Get raw text for better debugging
+                console.error('PDF Report Error Response:', errorData);
+                throw errorData;
             }
 
             const blob = await response.blob();
@@ -773,6 +850,12 @@ export default function FinanceManager() {
             showToastMessage('Expense report generated successfully!', 'success');
             closeModal();
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Error generating PDF report:', err);
             setError(`Failed to generate PDF report: ${err.message}`);
             showToastMessage(`Failed to generate PDF report: ${err.message}`, 'error');
@@ -806,9 +889,9 @@ export default function FinanceManager() {
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Salary PDF Report Error Response:', errorText);
-                throw new Error(`Failed to generate Salary PDF report: ${response.statusText || 'Unknown error'}. Details: ${errorText.substring(0, 100)}...`);
+                const errorData = await response.json();
+                console.error('Salary PDF Report Error Response:', errorData);
+                throw errorData
             }
 
             const blob = await response.blob();
@@ -818,6 +901,12 @@ export default function FinanceManager() {
             showToastMessage('Salary report generated successfully!', 'success');
             closeModal();
         } catch (err) {
+            if(err.hasOwnProperty('tokenVerified')){
+                if(err.tokenVerified===false){
+                    navigate("/login");
+                }
+            }
+
             console.error('Error generating Salary PDF report:', err);
             setError(`Failed to generate Salary PDF report: ${err.message}`);
             showToastMessage(`${err.message}`, 'error');
