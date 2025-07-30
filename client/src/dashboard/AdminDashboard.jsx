@@ -5,9 +5,9 @@ import {
 } from 'recharts';
 import {
     LayoutDashboard, Users, Briefcase, Folder, DollarSign, TrendingUp, TrendingDown,
-    Banknote, Receipt, ClipboardList, Award, Menu, X, Info, Loader, AlertCircle , CheckCircle
+    Banknote, Receipt, ClipboardList, Award, Menu, X, Info, Loader, AlertCircle, CheckCircle
 } from 'lucide-react';
-import '../styles/adminDashboard.css'; // New CSS file for this dashboard
+import styles from '../styles/adminDashboard.module.css'; // Import as CSS Module
 import { useNavigate } from 'react-router-dom';
 
 // Define a color palette for charts - consistent with other dashboards
@@ -53,7 +53,7 @@ const SuperAdminDashboard = () => {
             });
 
             const result = await response.json(); 
-
+            console.log(result);
             if (!response.ok) {
                 // If response is not OK (e.g., 4xx, 5xx status), throw an error with the message from the backend
                 throw result;
@@ -131,19 +131,19 @@ const SuperAdminDashboard = () => {
     const renderContent = () => {
         if (loading) {
             return (
-                <div className="dashboard-loading-container">
-                    <Loader size={48} className="dashboard-spinner" />
-                    <p className="dashboard-loading-text">Loading admin dashboard data...</p>
+                <div className={styles.dashboardLoadingContainer}>
+                    <Loader size={48} className={styles.dashboardSpinner} />
+                    <p className={styles.dashboardLoadingText}>Loading admin dashboard data...</p>
                 </div>
             );
         }
 
         if (error) {
             return (
-                <div className="dashboard-error-container">
-                    <AlertCircle size={48} className="dashboard-error-icon" />
-                    <p className="dashboard-error-message">Error: {error}</p>
-                    <button onClick={fetchDashboardData} className="dashboard-retry-button">
+                <div className={styles.dashboardErrorContainer}>
+                    <AlertCircle size={48} className={styles.dashboardErrorIcon} />
+                    <p className={styles.dashboardErrorMessage}>Error: {error}</p>
+                    <button onClick={fetchDashboardData} className={styles.dashboardRetryButton}>
                         Retry
                     </button>
                 </div>
@@ -152,9 +152,9 @@ const SuperAdminDashboard = () => {
 
         if (!dashboardData) {
             return (
-                <div className="dashboard-no-data">
-                    <Info size={48} className="dashboard-info-icon" />
-                    <p className="dashboard-no-data-text">No admin dashboard data available.</p>
+                <div className={styles.dashboardNoData}>
+                    <Info size={48} className={styles.dashboardInfoIcon} />
+                    <p className={styles.dashboardNoDataText}>No admin dashboard data available.</p>
                 </div>
             );
         }
@@ -163,51 +163,51 @@ const SuperAdminDashboard = () => {
             case 'overview':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Super Admin Overview</h1>
-                            <p className="subtitle-text">Key metrics and overall performance at a glance.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Super Admin Overview</h1>
+                            <p className={styles.subtitleText}>Key metrics and overall performance at a glance.</p>
                         </div>
-                        <div className="dashboard-cards-grid">
-                            <div className="dashboard-card primary-card">
-                                <p className="card-title">Total Clients</p>
-                                <div className="card-content">
-                                    <Users size={32} className="card-icon" />
-                                    <h3 className="card-value">{dashboardData.stats?.total_clients || 0}</h3>
+                        <div className={styles.dashboardCardsGrid}>
+                            <div className={`${styles.dashboardCard} ${styles.primaryCard}`}>
+                                <p className={styles.cardTitle}>Total Clients</p>
+                                <div className={styles.cardContent}>
+                                    <Users size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{dashboardData.stats?.total_clients || 0}</h3>
                                 </div>
                             </div>
-                            <div className="dashboard-card secondary-card">
-                                <p className="card-title">Total Employees</p>
-                                <div className="card-content">
-                                    <Briefcase size={32} className="card-icon" />
-                                    <h3 className="card-value">{dashboardData.stats?.total_employees || 0}</h3>
+                            <div className={`${styles.dashboardCard} ${styles.secondaryCard}`}>
+                                <p className={styles.cardTitle}>Total Employees</p>
+                                <div className={styles.cardContent}>
+                                    <Briefcase size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{dashboardData.stats?.total_employees || 0}</h3>
                                 </div>
                             </div>
-                            <div className="dashboard-card info-card">
-                                <p className="card-title">Total Projects</p>
-                                <div className="card-content">
-                                    <Folder size={32} className="card-icon" />
-                                    <h3 className="card-value">{dashboardData.stats?.total_projects || 0}</h3>
+                            <div className={`${styles.dashboardCard} ${styles.infoCard}`}>
+                                <p className={styles.cardTitle}>Total Projects</p>
+                                <div className={styles.cardContent}>
+                                    <Folder size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{dashboardData.stats?.total_projects || 0}</h3>
                                 </div>
                             </div>
-                            <div className="dashboard-card success-card">
-                                <p className="card-title">Total Income</p>
-                                <div className="card-content">
-                                    <TrendingUp size={32} className="card-icon" />
-                                    <h3 className="card-value">{formatCurrency(dashboardData.stats?.total_income || 0)}</h3>
+                            <div className={`${styles.dashboardCard} ${styles.successCard}`}>
+                                <p className={styles.cardTitle}>Total Income</p>
+                                <div className={styles.cardContent}>
+                                    <TrendingUp size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_income || 0)}</h3>
                                 </div>
                             </div>
-                            <div className="dashboard-card danger-card">
-                                <p className="card-title">Total Expenses</p>
-                                <div className="card-content">
-                                    <TrendingDown size={32} className="card-icon" />
-                                    <h3 className="card-value">{formatCurrency(dashboardData.stats?.total_expense_amount || 0)}</h3>
+                            <div className={`${styles.dashboardCard} ${styles.dangerCard}`}>
+                                <p className={styles.cardTitle}>Total Expenses</p>
+                                <div className={styles.cardContent}>
+                                    <TrendingDown size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_expense_amount || 0)}</h3>
                                 </div>
                             </div>
-                            <div className="dashboard-card primary-card">
-                                <p className="card-title">Total Salary Paid</p>
-                                <div className="card-content">
-                                    <Banknote size={32} className="card-icon" />
-                                    <h3 className="card-value">{formatCurrency(dashboardData.stats?.total_salary_paid || 0)}</h3>
+                            <div className={`${styles.dashboardCard} ${styles.primaryCard}`}>
+                                <p className={styles.cardTitle}>Total Salary Paid</p>
+                                <div className={styles.cardContent}>
+                                    <Banknote size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_salary_paid || 0)}</h3>
                                 </div>
                             </div>
                         </div>
@@ -216,15 +216,15 @@ const SuperAdminDashboard = () => {
             case 'monthly-income':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Monthly Income Trends</h1>
-                            <p className="subtitle-text">Visualize your company's income over time.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Monthly Income Trends</h1>
+                            <p className={styles.subtitleText}>Visualize your company's income over time.</p>
                         </div>
                         {monthlyIncomeChartData.length > 0 ? (
-                            <div className="chart-card full-width-chart">
-                                <h2 className="chart-title">Monthly Income</h2>
+                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                                <h2 className={styles.chartTitle}>Monthly Income</h2>
                                 <ResponsiveContainer width="100%" height={350}>
-                                    <LineChart data={monthlyIncomeChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                    <LineChart data={monthlyIncomeChartData} margin={{ top: 20, right: 10, left: 37, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                                         <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
                                         <YAxis tickFormatter={formatCurrency} />
@@ -235,9 +235,9 @@ const SuperAdminDashboard = () => {
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No monthly income data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No monthly income data available.</p>
                             </div>
                         )}
                     </>
@@ -245,13 +245,13 @@ const SuperAdminDashboard = () => {
             case 'monthly-expenses':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Monthly Expenses Trends</h1>
-                            <p className="subtitle-text">Track your company's expenditures month by month.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Monthly Expenses Trends</h1>
+                            <p className={styles.subtitleText}>Track your company's expenditures month by month.</p>
                         </div>
                         {monthlyExpensesChartData.length > 0 ? (
-                            <div className="chart-card full-width-chart">
-                                <h2 className="chart-title">Monthly Expenses</h2>
+                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                                <h2 className={styles.chartTitle}>Monthly Expenses</h2>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <AreaChart data={monthlyExpensesChartData} margin={{ top: 10, right: 0, left: 40, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" />
@@ -269,9 +269,9 @@ const SuperAdminDashboard = () => {
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No monthly expenses data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No monthly expenses data available.</p>
                             </div>
                         )}
                     </>
@@ -279,13 +279,13 @@ const SuperAdminDashboard = () => {
             case 'salary-disbursement':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Salary Disbursement Overview</h1>
-                            <p className="subtitle-text">Monthly breakdown of salary payments.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Salary Disbursement Overview</h1>
+                            <p className={styles.subtitleText}>Monthly breakdown of salary payments.</p>
                         </div>
                         {salaryDisbursementChartData.length > 0 ? (
-                            <div className="chart-card full-width-chart">
-                                <h2 className="chart-title">Monthly Salary Disbursement</h2>
+                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                                <h2 className={styles.chartTitle}>Monthly Salary Disbursement</h2>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <BarChart data={salaryDisbursementChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
@@ -298,9 +298,9 @@ const SuperAdminDashboard = () => {
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No salary disbursement data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No salary disbursement data available.</p>
                             </div>
                         )}
                     </>
@@ -308,13 +308,13 @@ const SuperAdminDashboard = () => {
             case 'project-status':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Project Status Summary</h1>
-                            <p className="subtitle-text">Distribution of projects by their current status.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Project Status Summary</h1>
+                            <p className={styles.subtitleText}>Distribution of projects by their current status.</p>
                         </div>
                         {projectStatusSummaryChartData.length > 0 ? (
-                            <div className="chart-card">
-                                <h2 className="chart-title">Projects by Status</h2>
+                            <div className={styles.chartCard}>
+                                <h2 className={styles.chartTitle}>Projects by Status</h2>
                                 <ResponsiveContainer width="100%" height={300}>
                                     <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                                         <Pie
@@ -338,9 +338,9 @@ const SuperAdminDashboard = () => {
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No project status data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No project status data available.</p>
                             </div>
                         )}
                     </>
@@ -348,13 +348,13 @@ const SuperAdminDashboard = () => {
             case 'expense-categories':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Expenses by Category</h1>
-                            <p className="subtitle-text">Breakdown of expenditures across different categories.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Expenses by Category</h1>
+                            <p className={styles.subtitleText}>Breakdown of expenditures across different categories.</p>
                         </div>
                         {expenseCategorySummaryChartData.length > 0 ? (
-                            <div className="chart-card">
-                                <h2 className="chart-title">Expense Categories</h2>
+                            <div className={styles.chartCard}>
+                                <h2 className={styles.chartTitle}>Expense Categories</h2>
                                 <ResponsiveContainer width="100%" height={300}>
                                     <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                                         <Pie
@@ -378,9 +378,9 @@ const SuperAdminDashboard = () => {
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No expense category data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No expense category data available.</p>
                             </div>
                         )}
                     </>
@@ -388,34 +388,34 @@ const SuperAdminDashboard = () => {
             case 'top-clients':
                 return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Top Clients</h1>
-                            <p className="subtitle-text">Clients by total payments received.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Top Clients</h1>
+                            <p className={styles.subtitleText}>Clients by total payments received.</p>
                         </div>
                         {dashboardData?.topClients && dashboardData.topClients.length > 0 ? (
-                            <div className="table-responsive">
-                                <h2 className="section-title">Top Clients by Payment</h2>
-                                <table className="data-table">
+                            <div className={styles.tableResponsive}>
+                                <h2 className={styles.sectionTitle}>Top Clients by Payment</h2>
+                                <table className={styles.dataTable}>
                                     <thead>
                                         <tr>
-                                            <th className="table-header">Client Name</th>
-                                            <th className="table-header">Total Paid Amount</th>
+                                            <th className={styles.tableHeader}>Client Name</th>
+                                            <th className={styles.tableHeader}>Total Paid Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {dashboardData.topClients.map((client, index) => (
-                                            <tr key={index} className="table-row">
-                                                <td className="table-data">{client.client_name}</td>
-                                                <td className="table-data">{formatCurrency(client.total_paid)}</td>
+                                            <tr key={index} className={styles.tableRow}>
+                                                <td className={styles.tableData}>{client.client_name}</td>
+                                                <td className={styles.tableData}>{formatCurrency(client.total_paid)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No top clients data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No top clients data available.</p>
                             </div>
                         )}
                     </>
@@ -423,15 +423,15 @@ const SuperAdminDashboard = () => {
             case 'monthly-profit':
                  return (
                     <>
-                        <div className="header-section">
-                            <h1 className="main-title">Monthly Profit/Loss</h1>
-                            <p className="subtitle-text">Analyze your company's profitability over time.</p>
+                        <div className={styles.headerSection}>
+                            <h1 className={styles.mainTitle}>Monthly Profit/Loss</h1>
+                            <p className={styles.subtitleText}>Analyze your company's profitability over time.</p>
                         </div>
                         {monthlyProfitChartData.length > 0 ? (
-                            <div className="chart-card full-width-chart">
-                                <h2 className="chart-title">Monthly Profit/Loss Trend</h2>
+                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                                <h2 className={styles.chartTitle}>Monthly Profit/Loss Trend</h2>
                                 <ResponsiveContainer width="100%" height={350}>
-                                    <LineChart data={monthlyProfitChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                    <LineChart data={monthlyProfitChartData} margin={{ top: 20, right: 10, left: 37, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                                         <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
                                         <YAxis tickFormatter={formatCurrency} />
@@ -444,9 +444,9 @@ const SuperAdminDashboard = () => {
                                 </ResponsiveContainer>
                             </div>
                         ) : (
-                            <div className="dashboard-no-data">
-                                <Info size={48} className="dashboard-info-icon" />
-                                <p className="dashboard-no-data-text">No monthly profit data available.</p>
+                            <div className={styles.dashboardNoData}>
+                                <Info size={48} className={styles.dashboardInfoIcon} />
+                                <p className={styles.dashboardNoDataText}>No monthly profit data available.</p>
                             </div>
                         )}
                     </>
@@ -457,173 +457,173 @@ const SuperAdminDashboard = () => {
     };
 
     return (
-        <div className="dashboard-layout">
+        <div className={styles.dashboardLayout}>
             {/* Hamburger Menu (visible only on mobile/tablet) */}
-            <div className="hamburger-menu" onClick={() => setIsMobileSidebarOpen(true)}>
+            <div className={styles.hamburgerMenu} onClick={() => setIsMobileSidebarOpen(true)}>
                 <Menu size={28} />
             </div>
 
             {/* Mobile Sidebar Overlay (visible when mobile sidebar is open) */}
             {isMobileSidebarOpen && (
-                <div className="mobile-sidebar-overlay" onClick={() => setIsMobileSidebarOpen(false)}></div>
+                <div className={styles.mobileSidebarOverlay} onClick={() => setIsMobileSidebarOpen(false)}></div>
             )}
 
             {/* Mobile Sliding Sidebar */}
-            <aside className={`mobile-sidebar ${isMobileSidebarOpen ? 'open' : ''}`}>
-                <div className="mobile-sidebar-header">
-                    <h2 className="sidebar-header-title">Admin Panel</h2>
-                    <X size={28} className="close-icon" onClick={() => setIsMobileSidebarOpen(false)} />
+            <aside className={`${styles.mobileSidebar} ${isMobileSidebarOpen ? styles.open : ''}`}>
+                <div className={styles.mobileSidebarHeader}>
+                    <h2 className={styles.sidebarHeaderTitle}>Admin Panel</h2>
+                    <X size={28} className={styles.closeIcon} onClick={() => setIsMobileSidebarOpen(false)} />
                 </div>
-                <ul className="sidebar-nav">
+                <ul className={styles.sidebarNav}>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'overview' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'overview' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('overview'); setIsMobileSidebarOpen(false); }}
                         >
-                            <LayoutDashboard size={20} className="sidebar-nav-icon" />
+                            <LayoutDashboard size={20} className={styles.sidebarNavIcon} />
                             Overview
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'monthly-income' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'monthly-income' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('monthly-income'); setIsMobileSidebarOpen(false); }}
                         >
-                            <TrendingUp size={20} className="sidebar-nav-icon" />
+                            <TrendingUp size={20} className={styles.sidebarNavIcon} />
                              Monthly Income
                         </button>
                     </li>
                      <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'monthly-expenses' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'monthly-expenses' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('monthly-expenses'); setIsMobileSidebarOpen(false); }}
                         >
-                            <TrendingDown size={20} className="sidebar-nav-icon" />
+                            <TrendingDown size={20} className={styles.sidebarNavIcon} />
                             Monthly Expenses
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'salary-disbursement' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'salary-disbursement' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('salary-disbursement'); setIsMobileSidebarOpen(false); }}
                         >
-                            <Banknote size={20} className="sidebar-nav-icon" />
+                            <Banknote size={20} className={styles.sidebarNavIcon} />
                             Salary Disbursement
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'project-status' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'project-status' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('project-status'); setIsMobileSidebarOpen(false); }}
                         >
-                            <ClipboardList size={20} className="sidebar-nav-icon" />
+                            <ClipboardList size={20} className={styles.sidebarNavIcon} />
                             Project Status
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'expense-categories' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'expense-categories' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('expense-categories'); setIsMobileSidebarOpen(false); }}
                         >
-                            <Receipt size={20} className="sidebar-nav-icon" />
+                            <Receipt size={20} className={styles.sidebarNavIcon} />
                             Expense Categories
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'top-clients' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'top-clients' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('top-clients'); setIsMobileSidebarOpen(false); }}
                         >
-                            <Award size={20} className="sidebar-nav-icon" />
+                            <Award size={20} className={styles.sidebarNavIcon} />
                             Top Clients
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`sidebar-button ${selectedSection === 'monthly-profit' ? 'active' : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'monthly-profit' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('monthly-profit'); setIsMobileSidebarOpen(false); }}
                         >
-                            <DollarSign size={20} className="sidebar-nav-icon" />
+                            <DollarSign size={20} className={styles.sidebarNavIcon} />
                             Monthly Profit
                         </button>
                     </li>
                 </ul>
             </aside>
 
-            <div className="dashboard-wrapper">
+            <div className={styles.dashboardWrapper}>
                 {/* Desktop Sidebar */}
-                <aside className="sidebar-desktop">
-                    <h2 className="sidebar-header-title">Admin Dashboard</h2>
-                    <ul className="sidebar-nav">
+                <aside className={styles.sidebarDesktop}>
+                    <h2 className={styles.sidebarHeaderTitle}>Admin Dashboard</h2>
+                    <ul className={styles.sidebarNav}>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'overview' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'overview' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('overview')}
                             >
-                                <LayoutDashboard size={20} className="sidebar-nav-icon" />
+                                <LayoutDashboard size={20} className={styles.sidebarNavIcon} />
                                 Overview
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'monthly-income' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'monthly-income' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('monthly-income')}
                             >
-                                <TrendingUp size={20} className="sidebar-nav-icon" />
+                                <TrendingUp size={20} className={styles.sidebarNavIcon} />
                                 Monthly Income
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'monthly-expenses' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'monthly-expenses' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('monthly-expenses')}
                             >
-                                <TrendingDown size={20} className="sidebar-nav-icon" />
+                                <TrendingDown size={20} className={styles.sidebarNavIcon} />
                                 Monthly Expenses
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'salary-disbursement' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'salary-disbursement' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('salary-disbursement')}
                             >
-                                <Banknote size={20} className="sidebar-nav-icon" />
+                                <Banknote size={20} className={styles.sidebarNavIcon} />
                                 Salary Disbursement
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'project-status' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'project-status' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('project-status')}
                             >
-                                <ClipboardList size={20} className="sidebar-nav-icon" />
+                                <ClipboardList size={20} className={styles.sidebarNavIcon} />
                                 Project Status
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'expense-categories' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'expense-categories' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('expense-categories')}
                             >
-                                <Receipt size={20} className="sidebar-nav-icon" />
+                                <Receipt size={20} className={styles.sidebarNavIcon} />
                                 Expense Categories
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'top-clients' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'top-clients' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('top-clients')}
                             >
-                                <Award size={20} className="sidebar-nav-icon" />
+                                <Award size={20} className={styles.sidebarNavIcon} />
                                 Top Clients
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`sidebar-button ${selectedSection === 'monthly-profit' ? 'active' : ''}`}
+                                className={`${styles.sidebarButton} ${selectedSection === 'monthly-profit' ? styles.active : ''}`}
                                 onClick={() => setSelectedSection('monthly-profit')}
                             >
-                                <DollarSign size={20} className="sidebar-nav-icon" />
+                                <DollarSign size={20} className={styles.sidebarNavIcon} />
                                 Monthly Profit
                             </button>
                         </li>
@@ -631,17 +631,17 @@ const SuperAdminDashboard = () => {
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="main-content-area">
+                <main className={styles.mainContentArea}>
                     {renderContent()}
                 </main>
             </div>
 
             {/* Toast Notification */}
             {toast.show && (
-                <div className={`dashboard-toast-notification ${toast.type === 'success' ? 'toast-success' : 'toast-error'} ${toast.show ? 'toast-show' : ''}`}>
+                <div className={`${styles.dashboardToastNotification} ${toast.type === 'success' ? styles.toastSuccess : styles.toastError} ${toast.show ? styles.toastShow : ''}`}>
                     {toast.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
                     <span>{toast.message}</span>
-                    <button onClick={() => setToast({ ...toast, show: false })} className="dashboard-toast-close-button">
+                    <button onClick={() => setToast({ ...toast, show: false })} className={styles.dashboardToastCloseButton}>
                         <X size={18} />
                     </button>
                 </div>

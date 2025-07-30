@@ -8,6 +8,7 @@ class Database {
         if(!Database.instance){
            this.pool = mysql.createPool({
             host:process.env.host,
+            port:process.env.DBserverPort,
             user:process.env.user,
             password:process.env.password,
             database:process.env.database,
