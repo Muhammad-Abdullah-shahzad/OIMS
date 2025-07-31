@@ -139,9 +139,8 @@ exports.getMonthlyHiredEmployees = async () => {
       DATE_FORMAT(hire_date, '%Y-%m') AS month,
       COUNT(*) AS hired_count
     FROM employees
-    WHERE hire_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
-    GROUP BY month
-    ORDER BY month DESC
+    GROUP BY DATE_FORMAT(hire_date, '%Y-%m')
+    ORDER BY DATE_FORMAT(hire_date, '%Y-%m') DESC
   `);
   return rows;
 };
