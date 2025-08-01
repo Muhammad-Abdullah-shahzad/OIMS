@@ -1,0 +1,144 @@
+/* Container for the entire page to center the form */
+.pageWrapper {
+  background-color: #F0F2F5;
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Container for login/signup */
+.authContainer {
+  width: 100%;
+  max-width: 420px;
+  background-color: #ffffff;
+  padding: 48px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Headings */
+.heading {
+  margin-bottom: 8px; /* Reduced margin to bring the subtitle closer */
+  color: #1A202C;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* New style for the subtitle */
+.subtitle {
+  margin-top: 0;
+  margin-bottom: 32px; /* Consistent spacing with the previous heading margin */
+  font-size: 18px; /* Slightly larger for better readability */
+  color: #718096;
+  font-weight: 500;
+}
+
+/* Form styling */
+.authForm input {
+  width: 100%;
+  padding: 15px;
+  margin: 12px 0;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #4A5568;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.authForm input:focus {
+  outline: none;
+  border-color: #4299E1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.inputError {
+  border-color: #E53E3E !important;
+}
+
+.errorMessage {
+  color: #E53E3E;
+  font-size: 14px;
+  text-align: left;
+  margin-top: 0.25rem;
+}
+
+/* Button styling */
+.authForm button {
+  width: 100%;
+  padding: 15px;
+  background-color: #4C51BF;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-sizing: border-box;
+}
+
+.authForm button:hover {
+  background-color: #434190;
+}
+
+.authForm button:active {
+  transform: scale(0.99);
+}
+
+.authForm button:disabled {
+  background-color: #CBD5E1;
+  cursor: not-allowed;
+}
+
+/* Text below form (error/success/link) */
+.authForm p {
+  margin-top: 24px;
+  font-size: 14px;
+  color: #718096;
+}
+
+.authForm .errorMsg,
+.authForm .successMsg {
+  font-size: 14px;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.authForm .errorMsg {
+  color: #E53E3E;
+  background-color: #FED7D7;
+  border: 1px solid #FC8181;
+}
+
+.authForm .successMsg {
+  color: #38A169;
+  background-color: #C6F6D5;
+  border: 1px solid #68D391;
+}
+
+.authForm a {
+  color: #4C51BF;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.authForm a:hover {
+  text-decoration: underline;
+  color: #434190;
+}

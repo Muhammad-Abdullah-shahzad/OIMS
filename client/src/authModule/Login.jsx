@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import '../styles/AuthForm.css';
+import styles from '../styles/AuthForm.module.css'; // Updated import
 import { useNavigate } from 'react-router-dom';
-import loginUser  from './userLogin'; // adjust path if needed
+import loginUser from './userLogin'; // adjust path if needed
 
 const Login = () => {
   const navigate = useNavigate(); // To redirect after login
-  const Base_Url =`http://localhost:5000/auth`
+  const Base_Url = `http://localhost:5000/auth`
   // State variables
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,11 +24,11 @@ const Login = () => {
     }
 
     setLoading(true);
-    const result = await loginUser({ email, password , Base_Url});
+    const result = await loginUser({ email, password, Base_Url });
 
     if (result.success) {
       setSuccessMessage('Login successful!');
-    
+      
       if(result.data.role==="super_admin"){
         navigate("/s-hr")
       }
@@ -51,32 +51,35 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login to OIMS</h2>
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-        {error && <p className="error-msg">{error}</p>}
-        {successMessage && <p className="success-msg">{successMessage}</p>}
-        <p>
-          Don't have an account? <a href="/signup">Sign Up</a>
-        </p>
-      </form>
+    <div className={styles.pageWrapper}>
+      <div className={styles.authContainer}>
+        <h2 className={styles.heading}>Login</h2>
+        <p className={styles.subtitle}>to OIMS</p>
+        <form className={styles.authForm} onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+          {error && <p className={styles.errorMsg}>{error}</p>}
+          {successMessage && <p className={styles.successMsg}>{successMessage}</p>}
+          <p>
+            Don't have an account? <a href="/signup">Sign Up</a>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
