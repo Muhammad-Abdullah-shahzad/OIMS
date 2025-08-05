@@ -5,7 +5,7 @@ import loginUser from './userLogin'; // adjust path if needed
 
 const Login = () => {
   const navigate = useNavigate(); // To redirect after login
-  const Base_Url = `http://localhost:5000/auth`
+  const Base_Url = `https://oimsapi.oradigitals.com/auth`
   // State variables
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

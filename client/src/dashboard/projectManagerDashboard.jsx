@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import {
     LayoutDashboard, FolderKanban, Clock, DollarSign, Users, CheckCircle, AlertCircle, Loader, Info, X,
-    CalendarCheck, ClipboardList, TrendingUp // Lucide icons for new sections
+    CalendarCheck, ClipboardList, TrendingUp , Menu// Lucide icons for new sections
 } from 'lucide-react';
 import '../styles/projectdashboard.css'; // New CSS file for this dashboard
 import { useNavigate } from 'react-router-dom';
@@ -22,13 +22,15 @@ const formatCurrency = (value) => {
 
 const ProjectDashboard = () => {
   const navigate = useNavigate();
+  const [isMobileSidebarOpen,setIsMobileSidebarOpen] = useState(false);
+
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
     const [selectedSection, setSelectedSection] = useState('overview'); // Default section
 
-    const API_BASE_URL = 'http://localhost:5000'; // Base URL for your API
+    const API_BASE_URL = 'https://oimsapi.oradigitals.com'; // Base URL for your API
 
     // Helper function to show toast messages
     const showToastMessage = useCallback((message, type) => {
@@ -52,7 +54,7 @@ const ProjectDashboard = () => {
             });
 
             console.log('API Response Status:', response.status);
-            if (!response.ok) { // This checks for HTTP errors (4xx, 5xx)
+            if (!response.ok) { // This checks for httpss errors (4xx, 5xx)
                 const errorData = await response.json();
                 console.error('Backend Error Data:', errorData);
                 throw errorData;
@@ -367,9 +369,13 @@ const ProjectDashboard = () => {
 
     return (
         <div className="dashboard-layout">
-            <aside className="dashboard-sidebar">
+             <div className={"hamburgerMenu"} onClick={() => setIsMobileSidebarOpen(true)}>
+                <Menu size={28} />
+            </div>
+            <aside className={`dashboard-sidebar ${isMobileSidebarOpen && 'showSideBar'}` }>
                 <div className="sidebar-header">
                     <h3>Project Dashboard</h3>
+                    <X size={28} className={""} onClick={() => setIsMobileSidebarOpen(false)} />
                 </div>
                 <nav className="sidebar-nav">
                     <ul>

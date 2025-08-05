@@ -49,7 +49,7 @@ const EmployeeManagement = () => {
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
     
     // Base URL for your Express.js API
-    const API_BASE_URL = 'http://localhost:5000/employee'; // Adjust if your API is on a different base path
+    const API_BASE_URL = 'https://oimsapi.oradigitals.com/employee'; // Adjust if your API is on a different base path
 
     // Fetch Employees
     const fetchEmployees = useCallback(async () => {

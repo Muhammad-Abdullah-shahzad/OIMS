@@ -7,6 +7,7 @@ import handleChange from "./handleChange";
 import handleSubmit from "./makeSignUp";
 
 
+
 const Signup = () => {
 
   // State for form inputs
@@ -35,7 +36,7 @@ const Signup = () => {
 
 
 
-  const AUTH_API_URL = "http://localhost:5000/auth/signup";
+  const AUTH_API_URL = "https://oimsapi.oradigitals.com/auth/signup";
 
 
 

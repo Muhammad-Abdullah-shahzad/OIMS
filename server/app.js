@@ -138,6 +138,6 @@ app.use("/finance",financeRoute)
 
 app.use("/admin",adminRoute)
 
-app.listen(port,()=>{
+app.listen(process.env.PORT || 5000,()=>{
     console.log("server listening on port ", port);
 })

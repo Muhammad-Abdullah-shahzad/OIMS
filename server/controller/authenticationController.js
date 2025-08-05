@@ -10,9 +10,9 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
 //  Signup Controller
 exports.signupController = async (req, res) => {
-  const { email, password, firstName,lastName , role} = req.body;
+  const { email, password, firstName,lastName } = req.body;
 
-  if (!email || !password || !firstName || !lastName || !role) {
+  if (!email || !password || !firstName || !lastName ) {
     return res.status(400).json({ message: "All fields are required" });
   }
 

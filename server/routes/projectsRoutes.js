@@ -22,7 +22,7 @@ router.post("/assign",authenticateToken,authenticateRoles("project_manager","sup
 
 router.put("/assign/update/:projectId/employee/:employeeId",authenticateToken,authenticateRoles("project_manager","super_admin"),projectController.updateProjectAssignmentController)
 
-router.delete("/assign/remove/:employeeId/:projectId", projectController.deleteAssignmentController)
+router.delete("/assign/remove/:employeeId/:projectId",authenticateToken,authenticateRoles("project_manager","super_admin"), projectController.deleteAssignmentController)
 
 
 module.exports = router;

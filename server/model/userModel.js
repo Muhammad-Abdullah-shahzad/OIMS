@@ -6,11 +6,11 @@ exports.findUserByEmail = async (email) => {
   return result[0];
 };
 
-exports.createUser = async (email, hashedPassword, firstName, lastName ,role) => {
+exports.createUser = async (email, hashedPassword, firstName, lastName ) => {
   const pool = await database.pool;
   await pool.query(
     "INSERT INTO users (email, password_hash, firstName , lastName,role) VALUES (?, ?, ?,?,?)",
-    [email, hashedPassword, firstName, lastName ,role]
+    [email, hashedPassword, firstName, lastName ,"not_assigned"]
   );
 };
 

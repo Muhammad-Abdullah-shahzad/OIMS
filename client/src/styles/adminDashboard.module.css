@@ -490,6 +490,7 @@
     .dashboardLayout {
         flex-direction: column; /* Stack sidebar and main content */
     }
+    
 
     .dashboardWrapper {
         flex-direction: column; /* Stack sidebar and main content vertically */

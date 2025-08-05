@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1e7e6498.css",
+    "main.js": "/static/js/main.dabefe24.js",
+    "static/js/453.5075133d.chunk.js": "/static/js/453.5075133d.chunk.js",
+    "static/media/bg-music.mp3": "/static/media/bg-music.ba051e2b407b3d8d62e2.mp3",
+    "static/media/company-logo.jpg": "/static/media/company-logo.103f38ea8cd8870713da.jpg",
+    "index.html": "/index.html",
+    "main.1e7e6498.css.map": "/static/css/main.1e7e6498.css.map",
+    "main.dabefe24.js.map": "/static/js/main.dabefe24.js.map",
+    "453.5075133d.chunk.js.map": "/static/js/453.5075133d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1e7e6498.css",
+    "static/js/main.dabefe24.js"
+  ]
+}
