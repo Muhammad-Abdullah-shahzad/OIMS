@@ -21,7 +21,7 @@ import SuperAdminDashboardPage from "./pages/SuperAdminDashboardPage";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<WelcomePage />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       {/* Super Admin Routes */}

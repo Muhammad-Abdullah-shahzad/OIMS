@@ -10,6 +10,9 @@
     flex-direction: column; /* Default to column for overall mobile stacking */
 }
 
+
+
+
 /* Dashboard Wrapper for Sidebar and Main Content */
 .dashboardWrapper {
     display: flex;
@@ -17,6 +20,12 @@
     width: 100%;
     max-width: 100%;
     /* No gap here, controlled by individual components' margins/paddings */
+}
+
+.superAdminOverviewGrid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill,minmax(390px,1fr));
+    gap: 10px;
 }
 
 /* Sidebar (Desktop View) */
@@ -101,6 +110,7 @@
     flex-grow: 1;
     padding: 2rem; /* Padding for the main content */
     background-color: #f8f9fa; /* Match container background */
+    overflow-x: hidden;
 }
 
 .headerSection {

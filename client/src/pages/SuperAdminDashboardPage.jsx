@@ -6,27 +6,11 @@ export default function SuperAdminDashboardPage(){
         <>
         <NavBar
         navLinks={[
-          {
-            name: "Home",
-            path: "/",
-          },
-          {
-            name: "Human Resource",
-            path: "/s-hr",
-          },
-          {
-            name: "Finance",
-            path: "/s-fm",
-          },
-          {
-            name: "Projects",
-            path: "/s-pm",
-          },
-          {
-            name: "Dashboard",
-            path: "/s-dashboard",
-          },
+         
         ]}
+
+        showProfile={true}
+        hamburgerShow={false}
       />
         <SuperAdminDashboard/>
         </>

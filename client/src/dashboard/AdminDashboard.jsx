@@ -3,6 +3,10 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell, LineChart, Line, AreaChart, Area
 } from 'recharts';
+
+import FinanceManager from "../financeMangement/financeManager.jsx";
+import ProjectManager from "../projectMangement/projectManegment.jsx";
+import EmployeeManager from "../components/employee.jsx"
 import {
     LayoutDashboard, Users, Briefcase, Folder, DollarSign, TrendingUp, TrendingDown,
     Banknote, Receipt, ClipboardList, Award, Menu, X, Info, Loader, AlertCircle, CheckCircle
@@ -162,7 +166,7 @@ const SuperAdminDashboard = () => {
         switch (selectedSection) {
             case 'overview':
                 return (
-                    <>
+                  <>
                         <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Super Admin Overview</h1>
                             <p className={styles.subtitleText}>Key metrics and overall performance at a glance.</p>
@@ -211,17 +215,13 @@ const SuperAdminDashboard = () => {
                                 </div>
                             </div>
                         </div>
-                    </>
-                );
-            case 'monthly-income':
-                return (
-                    <>
-                        <div className={styles.headerSection}>
+                        <div className={styles.superAdminOverviewGrid}>
+                        {/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Monthly Income Trends</h1>
                             <p className={styles.subtitleText}>Visualize your company's income over time.</p>
-                        </div>
+                        </div> */}
                         {monthlyIncomeChartData.length > 0 ? (
-                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                            <div className={`${styles.chartCard}`}>
                                 <h2 className={styles.chartTitle}>Monthly Income</h2>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <LineChart data={monthlyIncomeChartData} margin={{ top: 20, right: 10, left: 37, bottom: 5 }}>
@@ -240,17 +240,12 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No monthly income data available.</p>
                             </div>
                         )}
-                    </>
-                );
-            case 'monthly-expenses':
-                return (
-                    <>
-                        <div className={styles.headerSection}>
+                          {/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Monthly Expenses Trends</h1>
                             <p className={styles.subtitleText}>Track your company's expenditures month by month.</p>
-                        </div>
+                        </div> */}
                         {monthlyExpensesChartData.length > 0 ? (
-                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                            <div className={`${styles.chartCard}`}>
                                 <h2 className={styles.chartTitle}>Monthly Expenses</h2>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <AreaChart data={monthlyExpensesChartData} margin={{ top: 10, right: 0, left: 40, bottom: 0 }}>
@@ -274,17 +269,12 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No monthly expenses data available.</p>
                             </div>
                         )}
-                    </>
-                );
-            case 'salary-disbursement':
-                return (
-                    <>
-                        <div className={styles.headerSection}>
+                         {/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Salary Disbursement Overview</h1>
                             <p className={styles.subtitleText}>Monthly breakdown of salary payments.</p>
-                        </div>
+                        </div> */}
                         {salaryDisbursementChartData.length > 0 ? (
-                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                            <div className={`${styles.chartCard} `}>
                                 <h2 className={styles.chartTitle}>Monthly Salary Disbursement</h2>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <BarChart data={salaryDisbursementChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -303,15 +293,11 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No salary disbursement data available.</p>
                             </div>
                         )}
-                    </>
-                );
-            case 'project-status':
-                return (
-                    <>
-                        <div className={styles.headerSection}>
+
+{/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Project Status Summary</h1>
                             <p className={styles.subtitleText}>Distribution of projects by their current status.</p>
-                        </div>
+                        </div> */}
                         {projectStatusSummaryChartData.length > 0 ? (
                             <div className={styles.chartCard}>
                                 <h2 className={styles.chartTitle}>Projects by Status</h2>
@@ -343,15 +329,10 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No project status data available.</p>
                             </div>
                         )}
-                    </>
-                );
-            case 'expense-categories':
-                return (
-                    <>
-                        <div className={styles.headerSection}>
+                        {/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Expenses by Category</h1>
                             <p className={styles.subtitleText}>Breakdown of expenditures across different categories.</p>
-                        </div>
+                        </div> */}
                         {expenseCategorySummaryChartData.length > 0 ? (
                             <div className={styles.chartCard}>
                                 <h2 className={styles.chartTitle}>Expense Categories</h2>
@@ -383,15 +364,10 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No expense category data available.</p>
                             </div>
                         )}
-                    </>
-                );
-            case 'top-clients':
-                return (
-                    <>
-                        <div className={styles.headerSection}>
+                          {/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Top Clients</h1>
                             <p className={styles.subtitleText}>Clients by total payments received.</p>
-                        </div>
+                        </div> */}
                         {dashboardData?.topClients && dashboardData.topClients.length > 0 ? (
                             <div className={styles.tableResponsive}>
                                 <h2 className={styles.sectionTitle}>Top Clients by Payment</h2>
@@ -418,19 +394,14 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No top clients data available.</p>
                             </div>
                         )}
-                    </>
-                );
-            case 'monthly-profit':
-                 return (
-                    <>
-                        <div className={styles.headerSection}>
+                         {/* <div className={styles.headerSection}>
                             <h1 className={styles.mainTitle}>Monthly Profit/Loss</h1>
                             <p className={styles.subtitleText}>Analyze your company's profitability over time.</p>
-                        </div>
+                        </div> */}
                         {monthlyProfitChartData.length > 0 ? (
-                            <div className={`${styles.chartCard} ${styles.fullWidthChart}`}>
+                            <div className={`${styles.chartCard} `}>
                                 <h2 className={styles.chartTitle}>Monthly Profit/Loss Trend</h2>
-                                <ResponsiveContainer width="100%" height={350}>
+                                <ResponsiveContainer height={350}>
                                     <LineChart data={monthlyProfitChartData} margin={{ top: 20, right: 10, left: 37, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                                         <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
@@ -449,8 +420,28 @@ const SuperAdminDashboard = () => {
                                 <p className={styles.dashboardNoDataText}>No monthly profit data available.</p>
                             </div>
                         )}
+                        </div>
                     </>
                 );
+            case 'finance-management':
+                return (
+                    <>
+                        <FinanceManager/>
+                    </>
+                );
+            case 'employee-management':
+                return (
+                    <>
+                      <EmployeeManager/>
+                    </>
+                );
+            case 'project-management':
+                return (
+                    <>
+                       <ProjectManager/>
+                    </>
+                );
+       
             default:
                 return null;
         }
@@ -484,69 +475,37 @@ const SuperAdminDashboard = () => {
                             Overview
                         </button>
                     </li>
+                  
+                 
                     <li>
                         <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'monthly-income' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('monthly-income'); setIsMobileSidebarOpen(false); }}
-                        >
-                            <TrendingUp size={20} className={styles.sidebarNavIcon} />
-                             Monthly Income
-                        </button>
-                    </li>
-                     <li>
-                        <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'monthly-expenses' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('monthly-expenses'); setIsMobileSidebarOpen(false); }}
-                        >
-                            <TrendingDown size={20} className={styles.sidebarNavIcon} />
-                            Monthly Expenses
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'salary-disbursement' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('salary-disbursement'); setIsMobileSidebarOpen(false); }}
+                            className={`${styles.sidebarButton} ${selectedSection === 'finance-management' ? styles.active : ''}`}
+                            onClick={() => { setSelectedSection('finance-management'); setIsMobileSidebarOpen(false); }}
                         >
                             <Banknote size={20} className={styles.sidebarNavIcon} />
-                            Salary Disbursement
+                            Finance Management
                         </button>
                     </li>
                     <li>
                         <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'project-status' ? styles.active : ''}`}
+                            className={`${styles.sidebarButton} ${selectedSection === 'project-management' ? styles.active : ''}`}
                             onClick={() => { setSelectedSection('project-status'); setIsMobileSidebarOpen(false); }}
                         >
                             <ClipboardList size={20} className={styles.sidebarNavIcon} />
-                            Project Status
+                            Project Management
                         </button>
                     </li>
+                    
                     <li>
                         <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'expense-categories' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('expense-categories'); setIsMobileSidebarOpen(false); }}
-                        >
-                            <Receipt size={20} className={styles.sidebarNavIcon} />
-                            Expense Categories
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'top-clients' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('top-clients'); setIsMobileSidebarOpen(false); }}
+                            className={`${styles.sidebarButton} ${selectedSection === 'employee-management' ? styles.active : ''}`}
+                            onClick={() => { setSelectedSection('employee-management'); setIsMobileSidebarOpen(false); }}
                         >
                             <Award size={20} className={styles.sidebarNavIcon} />
-                            Top Clients
+                            Employee Management
                         </button>
                     </li>
-                    <li>
-                        <button
-                            className={`${styles.sidebarButton} ${selectedSection === 'monthly-profit' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('monthly-profit'); setIsMobileSidebarOpen(false); }}
-                        >
-                            <DollarSign size={20} className={styles.sidebarNavIcon} />
-                            Monthly Profit
-                        </button>
-                    </li>
+                    
                 </ul>
             </aside>
 
@@ -564,69 +523,36 @@ const SuperAdminDashboard = () => {
                                 Overview
                             </button>
                         </li>
+                        
                         <li>
                             <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'monthly-income' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('monthly-income')}
-                            >
-                                <TrendingUp size={20} className={styles.sidebarNavIcon} />
-                                Monthly Income
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'monthly-expenses' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('monthly-expenses')}
-                            >
-                                <TrendingDown size={20} className={styles.sidebarNavIcon} />
-                                Monthly Expenses
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'salary-disbursement' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('salary-disbursement')}
+                                className={`${styles.sidebarButton} ${selectedSection === 'finance-management' ? styles.active : ''}`}
+                                onClick={() => setSelectedSection('finance-management')}
                             >
                                 <Banknote size={20} className={styles.sidebarNavIcon} />
-                                Salary Disbursement
+                                Finance Management
                             </button>
                         </li>
                         <li>
                             <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'project-status' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('project-status')}
+                                className={`${styles.sidebarButton} ${selectedSection === 'project-management' ? styles.active : ''}`}
+                                onClick={() => setSelectedSection('project-management')}
                             >
                                 <ClipboardList size={20} className={styles.sidebarNavIcon} />
-                                Project Status
+                                Project Management
                             </button>
                         </li>
+                        
                         <li>
                             <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'expense-categories' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('expense-categories')}
-                            >
-                                <Receipt size={20} className={styles.sidebarNavIcon} />
-                                Expense Categories
-                            </button>
-                        </li>
-                        <li>
-                            <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'top-clients' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('top-clients')}
+                                className={`${styles.sidebarButton} ${selectedSection === 'employee-management' ? styles.active : ''}`}
+                                onClick={() => setSelectedSection('employee-management')}
                             >
                                 <Award size={20} className={styles.sidebarNavIcon} />
-                                Top Clients
+                                Employee Management
                             </button>
                         </li>
-                        <li>
-                            <button
-                                className={`${styles.sidebarButton} ${selectedSection === 'monthly-profit' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('monthly-profit')}
-                            >
-                                <DollarSign size={20} className={styles.sidebarNavIcon} />
-                                Monthly Profit
-                            </button>
-                        </li>
+                  
                     </ul>
                 </aside>
 
