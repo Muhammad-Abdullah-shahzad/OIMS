@@ -10,11 +10,48 @@ body {
     padding: 0;
     background-color: #FFF; /* Lighter background */
     color: #374151; /* Dark gray text */
+
 }
 
 .expense-buttons-group , .salary-buttons-group {
     display: flex;
     gap: 10px;
+}
+
+/* Filter Buttons Group */
+.payments-filter-group {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem; /* space-x-2 equivalent */
+    margin-bottom: 2rem; /* mb-8 equivalent */
+    flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+}
+
+/* Individual Filter Button */
+.filter-button {
+    background-color: #f3f4f6; /* bg-gray-100 equivalent */
+    color: #4b5563; /* text-gray-700 equivalent */
+    padding: 0.5rem 1rem; /* py-2 px-4 equivalent */
+    border-radius: 9999px; /* rounded-full equivalent */
+    font-size: 0.875rem; /* text-sm equivalent */
+    font-weight: 500; /* font-medium equivalent */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: none;
+    outline: none;
+}
+
+.filter-button:hover {
+    background-color: #e5e7eb; /* bg-gray-200 equivalent */
+}
+
+/* Active Filter Button */
+
+.filter-button.active {
+    background-color: #3b82f6; /* bg-blue-500 equivalent */
+    color: #ffffff; /* text-white equivalent */
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4), 0 2px 4px -1px rgba(59, 130, 246, 0.2); /* Custom blue shadow */
+    transform: translateY(-2px);
 }
 
 .export-pdf-button {

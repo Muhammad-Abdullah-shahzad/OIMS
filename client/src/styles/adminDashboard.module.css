@@ -8,6 +8,7 @@
     min-height: 100vh;
     display: flex; /* Use flexbox for overall layout */
     flex-direction: column; /* Default to column for overall mobile stacking */
+
 }
 
 
@@ -17,9 +18,10 @@
 .dashboardWrapper {
     display: flex;
     flex-grow: 1; /* Allow it to take available space */
-    width: 100%;
+    width: 100vw;
     max-width: 100%;
     /* No gap here, controlled by individual components' margins/paddings */
+
 }
 
 .superAdminOverviewGrid{
@@ -110,7 +112,7 @@
     flex-grow: 1;
     padding: 2rem; /* Padding for the main content */
     background-color: #f8f9fa; /* Match container background */
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .headerSection {
@@ -139,7 +141,6 @@
     position: fixed;
     top: 1.5rem;
     left: 1.5rem;
-    z-index: 1005; /* Above main content */
     color: #1e293b;
     cursor: pointer;
     padding: 0.5rem;
@@ -500,7 +501,9 @@
     .dashboardLayout {
         flex-direction: column; /* Stack sidebar and main content */
     }
-    
+    .dashboardCardsGrid{
+        padding: 1rem;
+    }
 
     .dashboardWrapper {
         flex-direction: column; /* Stack sidebar and main content vertically */
@@ -512,7 +515,7 @@
 
     .mainContentArea {
         width: 100%;
-        padding: 1rem; /* Adjust padding for mobile */
+        padding: 0rem; /* Adjust padding for mobile */
     }
 
     .headerSection {
@@ -522,6 +525,7 @@
     .mainTitle {
         font-size: 2em; /* Smaller title */
         text-align: center;
+        margin-top: 1.7rem;
     }
 
     .subtitleText {
@@ -571,6 +575,7 @@
     .chartCard.fullWidthChart {
         grid-column: 1 / -1; /* Still span full width if needed */
     }
+   
 }
 
 
