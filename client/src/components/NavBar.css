@@ -1,152 +1,379 @@
-
 /* src/components/NavBar.css */
 
 .navbar {
+  background-color: #fff;
+  color: black;
+  padding: 10px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom:1px solid #EEE;
+  display: flex;
+  justify-content: space-between;
+  width: 100vw;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn {
+  padding:0.5rem 1.4rem;
+  margin-left: 1rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+}
+
+/* Login Button – Subtle border style */
+.btn-login {
+  background-color: #2c65e0;
+  color: #FFF;
+  border:1px solid #2c65e0;
+}
+
+.btn-login:hover {
+  background-color: #2c7ccc;
+  color: #fff;
+  border:1px solid #2c7ccc;
+}
+
+/* Sign Up Button – Primary solid style */
+.btn-signup {
+  background-color: #2c3e50;
+  color: #fff;
+  border: 1px solid #2c3e50;
+}
+
+.btn-signup:hover {
+  background-color: #1a252f;
+  border-color: #1a252f;
+}
+
+.navbar-logo {
+  font-weight: bold;
+}
+img{
+  width: 60px;
+  height: 60px;
+}
+.profile-login-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-right: 20px;
+}
+/* Nav links - desktop */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 25px;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-links li a {
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-links li a:hover {
+  color: #faf8f6;
+}
+
+/* Hamburger icon */
+.hamburger {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: black;
+}
+
+.profile-pic {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%; /* Makes the image round */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  border: 2px solid #EEE; /* Optional: adds a border */
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in;
+}
+.profile-pic:hover{
+  border: 2px solid #9b9494;
+  transition: all 0.3s ease-in;
+}
+/*
+  New styles for the profile card
+*/
+.profile-container {
+  position: relative;
+}
+
+.profile-card {
+  position: absolute;
+  top: 100%; /* Position below the navbar */
+  right: 13px;
+  width: 300px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 10px;
+  z-index: 1009;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-image-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.profile-card-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e0e0e0;
+}
+
+.add-image-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  background-color: #2c65e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.add-image-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.profile-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-card-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.profile-card-id,
+.profile-card-role {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.profile-card-footer {
+  padding-top: 5px;
+}
+
+.profile-card-email {
+  font-size: 0.9rem;
+  color: #444;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+.btn{
+  padding: 6px 10px;
+}
+
+  .navbar-links {
+    position: absolute;
+    top: 60px;
+    right: 20px;
     background-color: #fff;
-    color: black;
-    padding: 10px 6px;
+    flex-direction: column;
+    width: 200px;
+    padding: 15px;
+    border-radius: 10px;
+    display: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    animation: slideDown 0.3s ease;
+  }
+
+  .navbar-links.open {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    right: 0;
-   border-bottom:1px solid #EEE;
-   display: flex;
-   justify-content: space-between;
-width: 100vw;   
-  }
-  
-  .btn {
-    padding:0.5rem 1.4rem;
-    margin-left: 1rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-    border: 1px solid transparent;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  }
-  
-  /* Login Button – Subtle border style */
-  .btn-login {
-    background-color: #2c65e0;
-    color: #FFF;
-    border:1px solid #2c65e0;
-    }
-  
-  .btn-login:hover {
-    background-color: #2c7ccc;
-    color: #fff;
-    border:1px solid #2c7ccc;
-  }
-  
-  /* Sign Up Button – Primary solid style */
-  .btn-signup {
-    background-color: #2c3e50;
-    color: #fff;
-    border: 1px solid #2c3e50;
-  }
-  
-  .btn-signup:hover {
-    background-color: #1a252f;
-    border-color: #1a252f;
   }
 
-  .navbar-logo {
-    /* font-size: 1.5rem; */
-    font-weight: bold;
-  }
-  img{
-    width: 60px;
-    height: 60px;
+  .navbar-links li {
+    margin-bottom: 10px;
   }
   .profile-login-wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    margin-right: 0px;
+
   }
-  /* Nav links - desktop */
-  .navbar-links {
-    display: flex;
-    list-style: none;
-    gap: 25px;
-    justify-content: center;
-    align-items: center;
+
+  @keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
-  
-  .navbar-links li a {
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
-    transition: color 0.3s ease;
+}
+
+/*
+  New styles for the modal overlay and upload card
+*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.upload-card {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.upload-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.upload-card-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  transition: color 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.upload-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.upload-card input[type="file"] {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.upload-btn {
+  background-color: #2c65e0;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.upload-btn:hover {
+  background-color: #2c7ccc;
+}
+
+.upload-btn:disabled {
+  background-color: #a0c3ff;
+  cursor: not-allowed;
+}
+
+.upload-message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #c0392b;
+  text-align: center;
+}
+
+.upload-success {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
   }
-  
-  .navbar-links li a:hover {
-    color: #faf8f6;
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  /* Hamburger icon */
-  .hamburger {
-    display: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: black;
-  }
-  
-  .profile-pic {
-    width: 65px;
-    height: 65px;
-    border-radius: 50%; /* Makes the image round */
-    object-fit: cover; /* Ensures the image covers the area without distortion */
-    border: 2px solid #EEE; /* Optional: adds a border */
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-transition: all 0.3s ease-in;
-  }
-  .profile-pic:hover{
-    border: 2px solid #000;
-    transition: all 0.3s ease-in;
-  }
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .hamburger {
-      display: block;
-    }
-  .btn{
-    padding: 6px 10px;
-  }
-  
-    .navbar-links {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: #fff;
-      flex-direction: column;
-      width: 200px;
-      padding: 15px;
-      border-radius: 10px;
-      display: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-      animation: slideDown 0.3s ease;
-    }
-  
-    .navbar-links.open {
-      display: flex;
-    }
-  
-    .navbar-links li {
-      margin-bottom: 10px;
-    }
-  
-    @keyframes slideDown {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-  }
+}
+

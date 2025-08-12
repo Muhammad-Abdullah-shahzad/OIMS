@@ -7,5 +7,5 @@ const {authenticateRoles} = require("../middleware/authenticateRole")
 
 
 router.get("/all",authenticateToken,authenticateRoles("super_admin"),userController.getAllUsers);
-
+router.get("/getid/:role", authenticateToken,authenticateRoles("super_admin"),userController.getUserIdByRole);
 module.exports = router;

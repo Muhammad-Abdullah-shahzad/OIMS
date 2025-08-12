@@ -28,6 +28,8 @@ const financeRoute = require("./routes/financeRoute")
 
 const adminRoute = require("./routes/adminRoute")
 
+const  profileRoutes = require("./routes/profileRoutes")
+
 app.use(cors());
 
 app.use(express.json())
@@ -137,6 +139,9 @@ app.use("/salary",salaryRoutes)
 app.use("/finance",financeRoute)
 
 app.use("/admin",adminRoute)
+
+app.use("/profile",profileRoutes)
+
 
 app.listen(process.env.PORT || 5000,()=>{
     console.log("server listening on port ", port);

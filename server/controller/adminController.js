@@ -19,11 +19,12 @@ exports.getDashboardData = async (req, res) => {
         dashboardModel.getExpenseCategorySummary(),
         dashboardModel.getTopPayingClients(),
         dashboardModel.getMonthlyProfit()
+      
       ]);
   
       res.status(200).json({
         success: true,
-        stats,
+        stats,                       //cards data
         monthlyIncome,              // line chart
         monthlyExpenses,            // area chart
         salaryDisbursement,         // bar chart

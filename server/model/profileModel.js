@@ -1,0 +1,54 @@
+const db = require('../Database/database').pool ;
+
+// Get profile by userId
+
+exports.getProfileByUserId = async (userId) => {
+
+    const [rows] = await db.execute(
+        `SELECT 
+            u.id AS userId,
+            u.firstName,
+            u.lastName,
+            u.email,
+            p.profile_id AS profileId,
+            p.profile_image_url
+        FROM users u
+        LEFT JOIN profiles p ON u.id = p.user_id
+        WHERE u.id = ?`,
+        [userId]
+    );
+
+    return rows[0];
+
+};
+
+// Update profile by profileId
+
+exports.updateProfile = async (profileId,userId, {profile_image_url}) => { 
+    // Update profiles table
+    // if profile id is not present then  create a profile else update 
+    // existing profile
+    
+   if(!parseInt(profileId)){
+        await db.execute(
+            `
+            INSERT INTO profiles (user_id,profile_image_url)       
+            values(?,?)
+            `,
+            [userId,profile_image_url]
+        )
+    }
+     else{  
+      
+        await db.execute(
+        `UPDATE profiles 
+         SET profile_image_url = ?
+         WHERE profile_id = ?`,
+        [profile_image_url, profileId]
+    );
+
+}
+
+  return { message: 'Profile updated successfully' };
+
+};

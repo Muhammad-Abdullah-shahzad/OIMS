@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 
 import FinanceManager from "../financeMangement/financeManager.jsx";
-import ProjectManager from "../projectMangement/projectManegment.jsx";
+import ProjectManagement from "../projectMangement/projectManegment.jsx";
 import EmployeeManager from "../components/employee.jsx"
 import {
     LayoutDashboard, Users, Briefcase, Folder, DollarSign, TrendingUp, TrendingDown,
@@ -30,12 +30,19 @@ const getMonthName = (monthNumber) => {
 };
 
 const SuperAdminDashboard = () => {
-   const navigate = useNavigate();
+
+    const navigate = useNavigate();
+
     const [dashboardData, setDashboardData] = useState(null);
+
     const [loading, setLoading] = useState(true);
+
     const [error, setError] = useState(null);
+
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
+
     const [selectedSection, setSelectedSection] = useState('overview'); // Default to overview
+
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // State for mobile sidebar
 
     const API_BASE_URL = 'https://oimsapi.oradigitals.com/admin'; // Your API base URL
@@ -173,21 +180,21 @@ const SuperAdminDashboard = () => {
                         </div>
                         <div className={styles.dashboardCardsGrid}>
                             <div className={`${styles.dashboardCard} ${styles.primaryCard}`}>
-                                <p className={styles.cardTitle}>Total Clients</p>
+                                <p className={styles.cardTitle}>{'Total Clients (active)'}</p>
                                 <div className={styles.cardContent}>
                                     <Users size={32} className={styles.cardIcon} />
                                     <h3 className={styles.cardValue}>{dashboardData.stats?.total_clients || 0}</h3>
                                 </div>
                             </div>
                             <div className={`${styles.dashboardCard} ${styles.secondaryCard}`}>
-                                <p className={styles.cardTitle}>Total Employees</p>
+                                <p className={styles.cardTitle}>{`Total Employees (active)`}</p>
                                 <div className={styles.cardContent}>
                                     <Briefcase size={32} className={styles.cardIcon} />
                                     <h3 className={styles.cardValue}>{dashboardData.stats?.total_employees || 0}</h3>
                                 </div>
                             </div>
                             <div className={`${styles.dashboardCard} ${styles.infoCard}`}>
-                                <p className={styles.cardTitle}>Total Projects</p>
+                                <p className={styles.cardTitle}>{`Total Projects (ongoing)`}</p>
                                 <div className={styles.cardContent}>
                                     <Folder size={32} className={styles.cardIcon} />
                                     <h3 className={styles.cardValue}>{dashboardData.stats?.total_projects || 0}</h3>
@@ -214,6 +221,31 @@ const SuperAdminDashboard = () => {
                                     <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_salary_paid || 0)}</h3>
                                 </div>
                             </div>
+                             
+                            <div className={`${styles.dashboardCard} ${styles.primaryCard}`}>
+                                <p className={styles.cardTitle}>{`Total Salary (curr month)`}</p>
+                                <div className={styles.cardContent}>
+                                    <Banknote size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_salary_curr_month || 0)}</h3>
+                                </div>
+                            </div>
+                        
+                            <div className={`${styles.dashboardCard} ${styles.primaryCard}`}>
+                                <p className={styles.cardTitle}>{`Total Payments (curr month)`}</p>
+                                <div className={styles.cardContent}>
+                                <TrendingUp size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_payments_curr_month || 0)}</h3>
+                                </div>
+                            </div>
+
+                            <div className={`${styles.dashboardCard} ${styles.dangerCard}`}>
+                                <p className={styles.cardTitle}>{`Total Expenses (curr month)`}</p>
+                                <div className={styles.cardContent}>
+                                    <TrendingDown size={32} className={styles.cardIcon} />
+                                    <h3 className={styles.cardValue}>{formatCurrency(dashboardData.stats?.total_expense_curr_month || 0)}</h3>
+                                </div>
+                            </div>
+                        
                         </div>
                         <div className={styles.superAdminOverviewGrid}>
                         {/* <div className={styles.headerSection}>
@@ -438,7 +470,7 @@ const SuperAdminDashboard = () => {
             case 'project-management':
                 return (
                     <>
-                       <ProjectManager/>
+                       <ProjectManagement/>
                     </>
                 );
        
@@ -489,7 +521,7 @@ const SuperAdminDashboard = () => {
                     <li>
                         <button
                             className={`${styles.sidebarButton} ${selectedSection === 'project-management' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('project-status'); setIsMobileSidebarOpen(false); }}
+                            onClick={() => { setSelectedSection('project-management'); setIsMobileSidebarOpen(false); }}
                         >
                             <ClipboardList size={20} className={styles.sidebarNavIcon} />
                             Project Management

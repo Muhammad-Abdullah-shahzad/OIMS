@@ -5,12 +5,10 @@ export default function SuperAdminDashboardPage(){
     return (
         <>
         <NavBar
-        navLinks={[
-         
-        ]}
-
+        navLinks={[]}
         showProfile={true}
         hamburgerShow={false}
+        role={"super_admin"}
       />
         <SuperAdminDashboard/>
         </>

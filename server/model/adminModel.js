@@ -1,14 +1,28 @@
-const db = require("../Database/database"); // your MySQL pool setup
+  const db = require("../Database/database"); // your MySQL pool setup
 
-exports.getOverallStats = async () => {
+  exports.getOverallStats = async () => {
+
   const pool = await db.pool;
 
-  const [[clients]] = await pool.query(`SELECT COUNT(*) as total_clients FROM clients WHERE is_active = 1`);
+  const [[clients]] = await pool.query(`SELECT COUNT(*) as total_clients FROM clients WHERE is_active = 1`);  
   const [[employees]] = await pool.query(`SELECT COUNT(*) as total_employees FROM employees WHERE is_active = 1`);
   const [[projects]] = await pool.query(`SELECT COUNT(*) as total_projects FROM projects`);
   const [[expenses]] = await pool.query(`SELECT IFNULL(SUM(amount), 0) as total_expense_amount FROM expenses`);
   const [[salaries]] = await pool.query(`SELECT IFNULL(SUM(amount), 0) as total_salary_paid FROM salary_payments`);
   const [[income]] = await pool.query(`SELECT IFNULL(SUM(paidAmount), 0) as total_income FROM payments WHERE payment_status = 'paid'`);
+  const [[Expense_Row]] = await pool.query(`SELECT IFNULL(SUM(amount), 0) AS total
+  FROM expenses
+  WHERE MONTH(expense_date) = MONTH(CURRENT_DATE())
+    AND YEAR(expense_date) = YEAR(CURRENT_DATE());`);
+  const [[Payment_Row]] = await pool.query
+    (`SELECT IFNULL(SUM(paidAmount), 0) AS total_payments
+     FROM payments
+     WHERE MONTH(payment_date) = MONTH(CURRENT_DATE())
+     AND YEAR(payment_date) = YEAR(CURRENT_DATE());
+  `);
+  const [[Salary_Row]] = await pool.query(`
+  select ifnull(sum(amount),0) as Total from salary_payments where salary_month = month(curdate()) and salary_year = year(curdate()) 
+  `)
 
   return {
     total_clients: clients.total_clients,
@@ -16,8 +30,12 @@ exports.getOverallStats = async () => {
     total_projects: projects.total_projects,
     total_expense_amount: expenses.total_expense_amount,
     total_salary_paid: salaries.total_salary_paid,
-    total_income: income.total_income
+    total_income: income.total_income,
+    total_expense_curr_month:Expense_Row.total,
+    total_payments_curr_month:Payment_Row.total_payments,
+    total_salary_curr_month:Salary_Row.Total
   };
+
 };
 
 exports.getMonthlyIncome = async () => {
@@ -166,9 +184,12 @@ exports.getExpenseCategorySummary = async () => {
 };
 
 exports.getTopPayingClients = async () => {
+
   const pool = await db.pool;
+
   const [rows] = await pool.query(`
-    SELECT 
+
+  SELECT 
       c.name AS client_name,
       c.company,
       SUM(p.paidAmount) AS total_paid
@@ -178,6 +199,9 @@ exports.getTopPayingClients = async () => {
     GROUP BY c.id
     ORDER BY total_paid DESC
     LIMIT 5
-  `);
+
+    `);
+
   return rows;
+
 };

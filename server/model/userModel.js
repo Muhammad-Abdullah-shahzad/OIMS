@@ -23,3 +23,18 @@ exports.getAllUsers = async () => {
     );
     return rows;
   };
+
+exports.getUserIdByRoleModel = async (role) => {
+  const pool = await database.pool;
+  const [rows] =  await pool.query(
+      `
+    select id from users where role = ?
+      `
+      , [role]
+    );
+
+    console.log(rows);
+    return rows[0].id;
+}  
+
+

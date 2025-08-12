@@ -110,7 +110,7 @@
     flex-grow: 1;
     padding: 2rem; /* Padding for the main content */
     background-color: #f8f9fa; /* Match container background */
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .headerSection {
