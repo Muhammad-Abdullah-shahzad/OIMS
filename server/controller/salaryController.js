@@ -121,12 +121,46 @@ exports.generateReportController = async (req, res) => {
     const {month,year} = req.body;
 
     const employeeSalaryData = await salaryModel.getSalary(employeeId,month,year);
+    const dummyPayslipData = {
+      companyName: "Oradigitals Consultants",
+      slipTitle: "Pay Slip, June - 2025",
+      employeeDetails: [
+          { label: "EMPLOYEE ID", value: "20000011" },
+          { label: "NAME", value: "Jane Smith" },
+          { label: "DESIGNATION", value: "Software Engineer" },
+          { label: "LOCATION", value: "Remote" },
+          { label: "DEPARTMENT", value: "Engineering" },
+      ],
+      jobDetails: [
+          { label: "DAYS WORKED", value: "22.00" },
+          { label: "DOJ", value: "01-Jan-2024" },
+          { label: "PAY THROUGH", value: "Direct Deposit" },
+          { label: "BANK NAME", value: "Silicon Valley Bank" },
+      ],
+      earnings: [
+          { description: "Basic Salary", current: "150,000.00", ytd: "1,800,000.00" },
+          { description: "Housing Allowance", current: "30,000.00", ytd: "360,000.00" },
+          { description: "Transport Allowance", current: "15,000.00", ytd: "180,000.00" },
+          { description: "Bonus", current: "10,000.00", ytd: "10,000.00" },
+      ],
+      deductions: [
+          { description: "Income Tax", current: "25,000.00", ytd: "300,000.00" },
+          { description: "Provident Fund", current: "8,000.00", ytd: "96,000.00" },
+      ],
+      grossEarnings: "205,000.00",
+      totalDeductions: "33,000.00",
+      netPay: "172,000.00",
+      netPayWords: "Pakistan Rupee One Lakh Seventy-Two Thousand Only",
+      notes: "This is a dummy salary slip for testing purposes. All figures are fictional and should not be used for any official documentation.\n\nThis is a computer generated document and does not require a signature."
+   };
+   
+   
 
     if (!employeeSalaryData || employeeSalaryData.length === 0) {
       return res.status(404).json({ message: "No salary data found" });
     }
 
-    const pdfBuffer = await convertSalaryJsonToPdf(employeeSalaryData);
+    const pdfBuffer = await convertSalaryJsonToPdf(dummyPayslipData);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(

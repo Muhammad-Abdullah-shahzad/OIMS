@@ -1,155 +1,303 @@
-const PDFDocument = require('pdfkit');
-const moment = require('moment'); // For professional date formatting
+// payslipGenerator.js
+const puppeteer = require("puppeteer");
 
-async function convertSalaryJsonToPdf(employeeSalaryData) {
-    return new Promise((resolve, reject) => {
-        const doc = new PDFDocument({
-            size: 'A4',
-            margin: 50 // Standard margins
-        });
+/**
+ * Generates an HTML string for the payslip using the provided data.
+ * @param {object} data The payslip data object.
+ * @returns {string} The complete HTML document as a string.
+ */
+function generateSlipHTML(data) {
+    const createHtmlString = () => {
+        let html = '';
+        const maxRows = Math.max(data.earnings.length, data.deductions.length);
+        
+        for (let i = 0; i < maxRows; i++) {
+            const earning = data.earnings[i] || {};
+            const deduction = data.deductions[i] || {};
 
-        let buffers = [];
-        doc.on('data', buffers.push.bind(buffers));
-        doc.on('end', () => {
-            let pdfBuffer = Buffer.concat(buffers);
-            resolve(pdfBuffer);
-        });
-        doc.on('error', reject);
+            html += `
+                <tr class="table-row">
+                    <td class="table-cell table-cell-border">${earning.description || ''}</td>
+                    <td class="table-cell text-right table-cell-border">${earning.current || ''}</td>
+                    <td class="table-cell text-right table-cell-border">${earning.ytd || ''}</td>
+                    <td class="table-cell table-cell-border">${deduction.description || ''}</td>
+                    <td class="table-cell text-right table-cell-border">${deduction.current || ''}</td>
+                    <td class="table-cell text-right table-cell-border">${deduction.ytd || ''}</td>
+                </tr>
+            `;
+        }
+        return html;
+    };
 
-        // Assuming employeeSalaryData is an array and we take the first entry
-        const employee = employeeSalaryData[0];
+    return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Salary Slip</title>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                
+                body {
+                    font-family: 'Inter', sans-serif;
+                    margin: 0;
+                    padding: 2rem;
+                    color: #1a202c;
+                }
 
-        // --- Document Header ---
-        doc.fontSize(24)
-           .font('Helvetica-Bold')
-           .fillColor('#333')
-           .text('Salary Slip', { align: 'center' })
-           .moveDown(0.5);
+                .payslip-container {
+                    max-width: 21cm;
+                    min-height: 29.7cm;
+                    margin: auto;
+                    background-color: #ffffff;
+                    padding: 2rem;
+                  //   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                  //   border-radius: 0.75rem;
+                }
+                
+                /* Header Section */
+                .header-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 1rem;
+                }
 
-        doc.fontSize(12)
-           .font('Helvetica')
-           .fillColor('#555')
-           .text('OraDigitals Pvt. Ltd.', { align: 'center' })
-           .text('123 Digital Street, Tech City, Innovistan', { align: 'center' }) // Example company address
-           .text('Phone: +123 456 7890 | Email: info@oradigitals.com', { align: 'center' })
-           .moveDown(1);
+                .header-logo {
+                    color: #000;
+                    font-size: 1rem;
+                    font-weight: 700;
+                }
+                
+                .header-title {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: #000;
+                    text-align: right;
+                }
 
-        doc.strokeColor('#ccc')
-           .lineWidth(1)
-           .moveTo(50, doc.y)
-           .lineTo(doc.page.width - 50, doc.y)
-           .stroke()
-           .moveDown(1);
+                /* Details Section */
+                .details-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0,1fr));
+                    column-gap: 3rem;
+                    margin-bottom: 1rem;
+                    font-size: 0.875rem;
+                }
 
-        // --- Employee Details Section ---
-        doc.fontSize(14)
-           .font('Helvetica-Bold')
-           .fillColor('#333')
-           .text('Employee Details:', { underline: true })
-           .moveDown(0.5);
+                .details-list {
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom:0px;
+                }
 
-        doc.fontSize(12)
-           .font('Helvetica');
+                .detail-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom:-10px;
+                }
+                
+                .detail-label {
+                    font-weight:400;
+                    color: green;
+                }
 
-        const detailsX = 50;
-        const detailsY = doc.y;
-        const col2X = doc.page.width / 2;
+                .detail-value {
+                    color: #1f2937;
+                    font-weight: 200;
+                    text-align: right;
+                }
 
-        doc.text(`Employee Name:`, detailsX, detailsY);
-        doc.text(`${employee.employee_name}`, col2X, detailsY);
-        doc.moveDown(0.5);
+                /* Table Styling */
+                .payslip-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 1.5rem;
+                    font-size: 0.875rem;
+                }
 
-        doc.text(`Employee ID:`, detailsX, doc.y);
-        doc.text(`${employee.system_employee_id}`, col2X, doc.y); // Using system_employee_id
-        doc.moveDown(0.5);
+                .table-row {
+                    height: 2rem;
+                }
 
-        doc.text(`Designation:`, detailsX, doc.y);
-        doc.text(`${employee.designation || 'N/A'}`, col2X, doc.y);
-        doc.moveDown(0.5);
+                .table-header {
+                    background-color: #e8f4e6;
+                    color: #000;
+                    font-weight: 500;
+                    padding: 0.5rem;
+                    text-align: center;
+                }
 
-        doc.text(`Salary Month:`, detailsX, doc.y);
-        const salaryMonthName = moment().month(employee.salary_month - 1).format('MMMM'); // month is 0-indexed in moment
-        doc.text(`${salaryMonthName} ${employee.salary_year}`, col2X, doc.y);
-        doc.moveDown(0.5);
+                .table-cell {
+                    padding: 0.5rem;
+                    text-align: left;
+                }
 
-        doc.text(`Payment Date:`, detailsX, doc.y);
-        doc.text(`${moment(employee.payment_date).format('DD-MM-YYYY')}`, col2X, doc.y);
-        doc.moveDown(0.5);
+                .text-right {
+                    text-align: right;
+                }
 
-        doc.text(`Payment Method:`, detailsX, doc.y);
-        doc.text(`${employee.payment_method.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`, col2X, doc.y);
-        doc.moveDown(0.5);
+                .table-cell-border {
+                    border: 1px solid #a7d3a2;
+                }
 
-        if (employee.reference_number) {
-            doc.text(`Reference No.:`, detailsX, doc.y);
-            doc.text(`${employee.reference_number}`, col2X, doc.y);
-            doc.moveDown(1);
-        } else {
-            doc.moveDown(0.5);
+                .table-total-row {
+                    background-color: #f5f9f5;
+                    font-weight: 600;
+                }
+                
+                .net-pay-bar {
+                  
+                    color: #000;
+                    font-weight: 400;
+                    padding: 0px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    margin-bottom: 0.5rem;
+                    font-size:16px;
+                }
+                
+                .net-pay-value {
+                    font-weight: 400;
+                    font-size: 16px;
+                }
+
+                .net-pay-words {
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    margin-bottom: 1.5rem;
+                }
+
+                /* Footer */
+                .footer-box {
+                    padding: 1rem;
+                    background-color: #f3f4f6;
+                    border: 1px solid #d1d5db;
+                    border-radius: 0.5rem;
+                    font-size: 0.875rem;
+                    color: #4b5563;
+                }
+                
+                .footer-box p {
+                    margin-bottom: 0.5rem;
+                }
+            </style>
+        </head>
+        <body>
+            <div id="payslip-wrapper" class="payslip-container">
+                <!-- Header Section -->
+                <div class="header-container">
+                    <div class="flex items-center">
+                        <span class="header-logo">Oradigitals Consultants</span>
+                    </div>
+                    <div>
+                        <h1 class="header-title">${data.slipTitle}</h1>
+                    </div>
+                </div>
+
+                <!-- Employee and Job Details Section -->
+                <div class="details-grid">
+                    <div class="details-list">
+                        ${data.employeeDetails.map(item => `
+                            <p class="detail-row">
+                                <span class="detail-label">${item.label}</span>
+                                <span class="detail-value">${item.value}</span>
+                            </p>
+                        `).join('')}
+                    </div>
+                    <div class="details-list">
+                        ${data.jobDetails.map(item => `
+                            <p class="detail-row">
+                                <span class="detail-label">${item.label}</span>
+                                <span class="detail-value">${item.value}</span>
+                            </p>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Earnings and Deductions Table -->
+                <table class="payslip-table">
+                    <thead>
+                        <tr>
+                            <th colspan="3" class="table-header table-cell-border">EARNINGS</th>
+                            <th colspan="3" class="table-header table-cell-border">DEDUCTIONS</th>
+                        </tr>
+                        <tr>
+                            <th class="table-header table-cell-border table-cell">DESCRIPTION</th>
+                            <th class="table-header table-cell-border table-cell text-right">CURRENT</th>
+                            <th class="table-header table-cell-border table-cell text-right">Y.T.D</th>
+                            <th class="table-header table-cell-border table-cell">DESCRIPTION</th>
+                            <th class="table-header table-cell-border table-cell text-right">CURRENT</th>
+                            <th class="table-header table-cell-border table-cell text-right">Y.T.D</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${createHtmlString()}
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-total-row">
+                            <td class="table-cell table-cell-border">Total Earnings</td>
+                            <td class="table-cell table-cell-border text-right">${data.grossEarnings}</td>
+                            <td class="table-cell table-cell-border text-right">2,491,002.00</td>
+                            <td class="table-cell table-cell-border">Total Deductions</td>
+                            <td class="table-cell table-cell-border text-right">${data.totalDeductions}</td>
+                            <td class="table-cell table-cell-border text-right">287,335.37</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Net Pay Section -->
+                <div class="net-pay-bar">
+                    <p>Net Pay</p>
+                    <p class="net-pay-value">${data.netPay}</p>
+                </div>
+
+                <!-- Net Pay in Words -->
+                <p class="net-pay-words">${data.netPayWords}</p>
+
+                <!-- Footer Section -->
+                <div class="footer-box">
+                    ${data.notes.split('\n\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+}
+
+/**
+ * Generates a PDF from the given payslip data and returns a buffer.
+ * @param {object} payslipData The data to populate the payslip.
+ * @returns {Promise<Buffer>} A Promise that resolves with the PDF buffer.
+ */
+async function convertSalaryJsonToPdf(payslipData) {
+    let browser;
+    try {
+        browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        
+        // Check if payslipData is valid
+        if (!payslipData || typeof payslipData !== 'object') {
+            throw new Error("Invalid or empty employee salary data provided.");
         }
 
+        const htmlContent = generateSlipHTML(payslipData);
 
-        doc.strokeColor('#eee')
-           .lineWidth(1)
-           .moveTo(50, doc.y)
-           .lineTo(doc.page.width - 50, doc.y)
-           .stroke()
-           .moveDown(1);
+        await page.setContent(htmlContent, { waitUntil: "networkidle0", timeout: 60000 });
+        const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
 
-        // --- Salary Details (Simplified) ---
-        doc.fontSize(14)
-           .font('Helvetica-Bold')
-           .fillColor('#333')
-           .text('Salary Details:', { underline: true })
-           .moveDown(0.5);
-
-        doc.fontSize(12)
-           .font('Helvetica');
-
-        const salaryX = 50;
-        const salaryValueX = doc.page.width - 150;
-
-        const salaryAmount = parseFloat(employee.amount); // Ensure amount is treated as a number
-
-        doc.text('Gross Salary:', salaryX, doc.y);
-        doc.text(`$${salaryAmount.toFixed(2)}`, salaryValueX, doc.y, { align: 'right' });
-        doc.moveDown(0.5);
-
-        // If there are specific deductions or bonuses embedded in the notes,
-        // you might want to parse them here, but for simplicity, we'll just show the total.
-        if (employee.notes) {
-            doc.text('Notes:', salaryX, doc.y);
-            doc.text(`${employee.notes}`, salaryValueX, doc.y, { align: 'right' });
-            doc.moveDown(0.5);
+        return pdfBuffer;
+    } catch (error) {
+        console.error("❌ An error occurred while generating the payslip:", error);
+        throw error; 
+    } finally {
+        if (browser) {
+            await browser.close();
         }
-        doc.moveDown(0.5);
-
-        doc.strokeColor('#eee')
-           .lineWidth(1)
-           .moveTo(50, doc.y)
-           .lineTo(doc.page.width - 50, doc.y)
-           .stroke()
-           .moveDown(1);
-
-        // --- Net Pay Section (which is the amount in this case) ---
-        doc.fontSize(16)
-           .font('Helvetica-Bold')
-           .fillColor('#006600') // Green for net pay
-           .text('Net Pay (Take Home):', 50, doc.y);
-        doc.text(`$${salaryAmount.toFixed(2)}`, doc.page.width - 150, doc.y, { align: 'right' });
-        doc.moveDown(2);
-
-        // --- Footer / Signature ---
-        doc.fontSize(10)
-           .font('Helvetica-Oblique')
-           .fillColor('#888')
-           .text('This is a computer-generated salary slip and does not require a signature.', { align: 'center' })
-           .moveDown(0.5);
-
-        doc.text(`Generated on: ${moment().format('DD-MM-YYYY HH:mm:ss')}`, { align: 'center' });
-
-        doc.end();
-    });
+    }
 }
 
 module.exports = convertSalaryJsonToPdf;

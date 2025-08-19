@@ -106,6 +106,62 @@ export default function FinanceManager() {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [selectedSalaryPayment, setSelectedSalaryPayment] = useState(null); // New: For salary operations
+  // New: State for date filters for each section
+
+  function filterRecordsByDates(startDateObj, endDateObj, recordDateObj) {
+    if (!startDateObj || !endDateObj) {
+      return true;
+    }
+
+    const startDate = startDateObj.toISOString().split('T')[0];
+    const endDate = endDateObj.toISOString().split('T')[0];
+    const recordDate = recordDateObj.toISOString().split("T")[0];
+
+    if (
+      (recordDate >= startDate && recordDate <= endDate) 
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  const [paymentsDateFilter, setPaymentsDateFilter] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
+  const [expensesDateFilter, setExpensesDateFilter] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
+  const [salariesDateFilter, setSalariesDateFilter] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
+  // New: Handlers for date filter changes
+
+  const handlePaymentsDateFilterChange = (e) => {
+    const { name, value } = e.target;
+    setPaymentsDateFilter((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // console.log(
+  //   "payments date filter state value ",
+  //   paymentsDateFilter.startDate
+  // );
+
+  const handleExpensesDateFilterChange = (e) => {
+    const { name, value } = e.target;
+    setExpensesDateFilter((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSalariesDateFilterChange = (e) => {
+    const { name, value } = e.target;
+    setSalariesDateFilter((prev) => ({ ...prev, [name]: value }));
+  };
 
   const [paymentFormData, setPaymentFormData] = useState({
     project_id: "",
@@ -157,7 +213,7 @@ export default function FinanceManager() {
   const [validationErrors, setValidationErrors] = useState({});
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  const API_BASE_URL = "https://oimsapi.oradigitals.com";
+  const API_BASE_URL = "http://localhost:5000";
 
   // Show Toast Message Helper
   const showToastMessage = useCallback((message, type) => {
@@ -2118,6 +2174,25 @@ export default function FinanceManager() {
           >
             Unpaid
           </button>
+          <div className="date-filter-group">
+            <input
+              type="date"
+              name="startDate"
+              value={paymentsDateFilter.startDate}
+              onChange={handlePaymentsDateFilterChange}
+              className="date-input"
+              placeholder="Enter Start Date"
+            />
+            <span className="date-separator">to</span>
+            <input
+              type="date"
+              name="endDate"
+              value={paymentsDateFilter.endDate}
+              onChange={handlePaymentsDateFilterChange}
+              className="date-input"
+              placeholder="Enter End Date"
+            />
+          </div>
         </div>
 
         <button
@@ -2160,6 +2235,23 @@ export default function FinanceManager() {
                       (paymentRow) =>
                         paymentRow.payment_status === paymentFilter
                     )
+                    .filter((paymentRow) => {
+                      const startDate =
+                        paymentsDateFilter.startDate &&
+                        new Date(paymentsDateFilter.startDate);
+                      const endDate =
+                        paymentsDateFilter.endDate &&
+                        new Date(paymentsDateFilter.endDate);
+                      const paymentRecordDate = new Date(
+                        paymentRow.payment_date
+                      );
+
+                      return filterRecordsByDates(
+                        startDate,
+                        endDate,
+                        paymentRecordDate
+                      );
+                    })
                     .map((payment) => (
                       <tr key={payment.id} className="table-row">
                         <td className="table-data font-medium">{payment.id}</td>
@@ -2225,77 +2317,102 @@ export default function FinanceManager() {
                         </td>
                       </tr>
                     ))
-                : payments.map((payment) => (
-                    <tr key={payment.id} className="table-row">
-                      <td className="table-data font-medium">{payment.id}</td>
-                      <td className="table-data">
-                        {getProjectTitle(payment.project_id)}
-                      </td>
-                      <td className="table-data">
-                        {getClientName(payment.client_id)}
-                      </td>
-                      <td className="table-data">
-                        ${parseFloat(payment.paidAmount).toLocaleString()}
-                      </td>
-                      <td className="table-data">
-                        {payment.payment_date
-                          ? new Date(payment.payment_date).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                      <td className="table-data capitalize">
-                        {payment.payment_method.replace(/_/g, " ")}
-                      </td>
-                      <td className="table-data">
-                        <span
-                          className={`status-badge status-${payment.payment_status}`}
-                        >
-                          {payment.payment_status}
-                        </span>
-                      </td>
-                      <td className="table-data">
-                        {payment.reference_number || "N/A"}
-                      </td>
-                      <td className="table-data table-actions">
-                        <div className="action-buttons-group">
-                          <button
-                            onClick={() => openModal("edit_payment", payment)}
-                            className="action-button edit-button"
-                            title="Edit Payment"
+                : payments
+                    .filter((paymentRow) => {
+                      const startDate =
+                        paymentsDateFilter.startDate &&
+                        new Date(paymentsDateFilter.startDate);
+                      const endDate =
+                        paymentsDateFilter.endDate &&
+                        new Date(paymentsDateFilter.endDate);
+                      const paymentRecordDate = new Date(
+                        paymentRow.payment_date
+                      );
+
+                      return filterRecordsByDates(
+                        startDate,
+                        endDate,
+                        paymentRecordDate
+                      );
+                    })
+                    .map((payment) => (
+                      <tr key={payment.id} className="table-row">
+                        <td className="table-data font-medium">{payment.id}</td>
+                        <td className="table-data">
+                          {getProjectTitle(payment.project_id)}
+                        </td>
+                        <td className="table-data">
+                          {getClientName(payment.client_id)}
+                        </td>
+                        <td className="table-data">
+                          ${parseFloat(payment.paidAmount).toLocaleString()}
+                        </td>
+                        <td className="table-data">
+                          {payment.payment_date
+                            ? new Date(
+                                payment.payment_date
+                              ).toLocaleDateString()
+                            : "N/A"}
+                        </td>
+                        <td className="table-data capitalize">
+                          {payment.payment_method.replace(/_/g, " ")}
+                        </td>
+                        <td className="table-data">
+                          <span
+                            className={`status-badge status-${payment.payment_status}`}
                           >
-                            <Edit size={18} />
-                          </button>
-                          <button
-                            onClick={() => openModal("delete_payment", payment)}
-                            className="action-button delete-button"
-                            title="Delete Payment"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                          {payment.invoice_file && (
-                            <a
-                              href={payment.invoice_file}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="action-button button-secondary"
-                              title="View Invoice"
+                            {payment.payment_status}
+                          </span>
+                        </td>
+                        <td className="table-data">
+                          {payment.reference_number || "N/A"}
+                        </td>
+                        <td className="table-data table-actions">
+                          <div className="action-buttons-group">
+                            <button
+                              onClick={() => openModal("edit_payment", payment)}
+                              className="action-button edit-button"
+                              title="Edit Payment"
                             >
-                              <FileText size={18} />
-                            </a>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                              <Edit size={18} />
+                            </button>
+                            <button
+                              onClick={() =>
+                                openModal("delete_payment", payment)
+                              }
+                              className="action-button delete-button"
+                              title="Delete Payment"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                            {payment.invoice_file && (
+                              <a
+                                href={payment.invoice_file}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="action-button button-secondary"
+                                title="View Invoice"
+                              >
+                                <FileText size={18} />
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
             </tbody>
           </table>
         </div>
       )}
 
       {/* Expense Management Section */}
-      <div className="section-header-with-button" style={{ marginTop: "3rem" }}>
+      <div
+        className="section-header-with-button"
+        id="expense-header"
+        style={{ marginTop: "3rem" }}
+      >
         <h2 className="section-title">Expense Records</h2>
         <div className="expense-buttons-group">
-          {" "}
           {/* New div for grouping buttons */}
           <button
             onClick={() => openModal("create_expense")}
@@ -2309,6 +2426,23 @@ export default function FinanceManager() {
           >
             <Download size={20} className="button-icon" /> Export PDF Report
           </button>
+        </div>
+        <div className="date-filter-group">
+          <input
+            type="date"
+            name="startDate"
+            value={expensesDateFilter.startDate}
+            onChange={handleExpensesDateFilterChange}
+            className="date-input"
+          />
+          <span className="date-separator">to</span>
+          <input
+            type="date"
+            name="endDate"
+            value={expensesDateFilter.endDate}
+            onChange={handleExpensesDateFilterChange}
+            className="date-input"
+          />
         </div>
       </div>
 
@@ -2399,10 +2533,13 @@ export default function FinanceManager() {
       )}
 
       {/* New: Salary Management Section */}
-      <div className="section-header-with-button" style={{ marginTop: "3rem" }}>
+      <div
+        className="section-header-with-button"
+        id="salary-header"
+        style={{ marginTop: "3rem" }}
+      >
         <h2 className="section-title">Salary Records</h2>
         <div className="salary-buttons-group">
-          {" "}
           {/* New div for grouping buttons */}
           <button
             onClick={() => openModal("create_salary")}
@@ -2416,6 +2553,23 @@ export default function FinanceManager() {
           >
             <Download size={20} className="button-icon" /> Export Salary PDF
           </button>
+        </div>
+        <div className="date-filter-group">
+          <input
+            type="date"
+            name="startDate"
+            value={salariesDateFilter.startDate}
+            onChange={handleSalariesDateFilterChange}
+            className="date-input"
+          />
+          <span className="date-separator">to</span>
+          <input
+            type="date"
+            name="endDate"
+            value={salariesDateFilter.endDate}
+            onChange={handleSalariesDateFilterChange}
+            className="date-input"
+          />
         </div>
       </div>
 
@@ -2450,9 +2604,6 @@ export default function FinanceManager() {
               {salaryPayments.map((payment) => (
                 <tr key={payment.id} className="table-row">
                   <td className="table-data font-medium">{payment.id}</td>
-                  {/* Using employee_name and designation directly from API response for now,
-                                        but if these are not consistently provided by /salary/all,
-                                        you'd need to map them from the 'employees' state */}
                   <td className="table-data">
                     {payment.employee_name ||
                       getEmployeeName(payment.employee_id)}

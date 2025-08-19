@@ -12,6 +12,44 @@ body {
     color: #374151; /* Dark gray text */
 
 }
+/* New CSS for Date Filter */
+.date-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* margin-left: auto; */
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.date-label {
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.date-input {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    font-size: 0.875rem;
+    background-color: #f9fafb;
+    color: #4b5563;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.date-separator {
+    font-size: 0.875rem;
+    color: #6b7280;
+    padding: 0 0.25rem;
+}
 
 .expense-buttons-group , .salary-buttons-group {
     display: flex;
@@ -149,11 +187,18 @@ body {
 }
 
 /* Section Header with Button */
+
 .section-header-with-button {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem; /* mb-8 equivalent */
+    /* flex-wrap: wrap; */
+}
+
+#expense-header , #salary-header{
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 /* Table Styles */
@@ -629,10 +674,22 @@ body {
         font-size: 11px;
     }
     
+    .date-input {
+        padding: 0rem;
+    display: block;
+    
+    }
+    .date-filter-group{
+        gap: 0.1rem;
+    }
 }
 
 @media screen and (max-width:767px){
     .section-header-with-button{
         flex-wrap: wrap;
+    }
+    #expense-header , #salary-header{
+   justify-content: center;
+   align-items: center;
     }
 }
