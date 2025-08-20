@@ -17,12 +17,12 @@ function generateSlipHTML(data) {
 
             html += `
                 <tr class="table-row">
-                    <td class="table-cell table-cell-border">${earning.description || ''}</td>
-                    <td class="table-cell text-right table-cell-border">${earning.current || ''}</td>
-                    <td class="table-cell text-right table-cell-border">${earning.ytd || ''}</td>
-                    <td class="table-cell table-cell-border">${deduction.description || ''}</td>
-                    <td class="table-cell text-right table-cell-border">${deduction.current || ''}</td>
-                    <td class="table-cell text-right table-cell-border">${deduction.ytd || ''}</td>
+                    <td class="table-cell border-bottom-none border-left-1px border-right-1px">${earning.description || ''}</td>
+                    <td class="table-cell text-right border-bottom-none border-left-1px border-right-1px">${earning.current || ''}</td>
+                    <td class="table-cell text-right border-bottom-none border-left-1px border-right-1px">${earning.ytd || ''}</td>
+                    <td class="table-cell border-bottom-none border-left-1px border-right-1px">${deduction.description || ''}</td>
+                    <td class="table-cell text-right border-bottom-none border-left-1px border-right-1px">${deduction.current || ''}</td>
+                    <td class="table-cell text-right border-bottom-none border-left-1px border-right-1px">${deduction.ytd || ''}</td>
                 </tr>
             `;
         }
@@ -37,13 +37,19 @@ function generateSlipHTML(data) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Salary Slip</title>
             <style>
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-                
+                :root {
+                    --primary-color: rgb(39, 71, 98);
+                    --primary-light: rgba(39, 71, 98, 0.1);
+                    --primary-lighter: rgba(39, 71, 98, 0.05);
+                    --primary-dark: rgba(39, 71, 98, 0.9);
+                    --border-color: rgba(39, 71, 98, 0.3);
+                }
+
                 body {
-                    font-family: 'Inter', sans-serif;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
                     margin: 0;
                     padding: 2rem;
-                    color: #1a202c;
+                    color: var(--primary-dark);
                 }
 
                 .payslip-container {
@@ -52,8 +58,6 @@ function generateSlipHTML(data) {
                     margin: auto;
                     background-color: #ffffff;
                     padding: 2rem;
-                  //   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                  //   border-radius: 0.75rem;
                 }
                 
                 /* Header Section */
@@ -63,17 +67,28 @@ function generateSlipHTML(data) {
                     align-items: flex-start;
                     margin-bottom: 1rem;
                 }
+                
+                .header-logo-container {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px; /* Adjust as needed for spacing */
+                }
 
-                .header-logo {
-                    color: #000;
+                .header-logo-img {
+                    height: 50px; /* Adjust as needed */
+                    width: auto;
+                }
+
+                .header-logo-text {
                     font-size: 1rem;
                     font-weight: 700;
+                    color: var(--primary-color);
                 }
-                
+
                 .header-title {
                     font-size: 1rem;
                     font-weight: 700;
-                    color: #000;
+                    color: var(--primary-color);
                     text-align: right;
                 }
 
@@ -101,11 +116,11 @@ function generateSlipHTML(data) {
                 
                 .detail-label {
                     font-weight:400;
-                    color: green;
+                    color: var(--primary-color);
                 }
 
                 .detail-value {
-                    color: #1f2937;
+                    color: var(--primary-dark);
                     font-weight: 200;
                     text-align: right;
                 }
@@ -123,8 +138,8 @@ function generateSlipHTML(data) {
                 }
 
                 .table-header {
-                    background-color: #e8f4e6;
-                    color: #000;
+                    background-color: var(--primary-light);
+                    color: var(--primary-color);
                     font-weight: 500;
                     padding: 0.5rem;
                     text-align: center;
@@ -140,17 +155,26 @@ function generateSlipHTML(data) {
                 }
 
                 .table-cell-border {
-                    border: 1px solid #a7d3a2;
+                    border: 1px solid var(--border-color);
+                   
+                }
+                .border-bottom-none{
+                    border-bottom:none;
+                }
+                .border-left-1px {
+                    border-left: 1px solid var(--border-color);
+                }
+                .border-right-1px {
+                    border-right: 1px solid var(--border-color);
                 }
 
                 .table-total-row {
-                    background-color: #f5f9f5;
+                    background-color: var(--primary-lighter);
                     font-weight: 600;
                 }
                 
                 .net-pay-bar {
-                  
-                    color: #000;
+                    color: var(--primary-color);
                     font-weight: 400;
                     padding: 0px;
                     display: flex;
@@ -174,11 +198,11 @@ function generateSlipHTML(data) {
                 /* Footer */
                 .footer-box {
                     padding: 1rem;
-                    background-color: #f3f4f6;
-                    border: 1px solid #d1d5db;
+                    background-color: var(--primary-lighter);
+                    border: 1px solid var(--border-color);
                     border-radius: 0.5rem;
                     font-size: 0.875rem;
-                    color: #4b5563;
+                    color: var(--primary-dark);
                 }
                 
                 .footer-box p {
@@ -188,17 +212,16 @@ function generateSlipHTML(data) {
         </head>
         <body>
             <div id="payslip-wrapper" class="payslip-container">
-                <!-- Header Section -->
                 <div class="header-container">
-                    <div class="flex items-center">
-                        <span class="header-logo">Oradigitals Consultants</span>
+                    <div class="header-logo-container">
+                        <img src="https://res.cloudinary.com/abdullahcloud/image/upload/v1755691301/company-logo_ktqnhh.jpg" alt="Company Logo" class="header-logo-img" />
+                        <p class="header-logo-text">Oradigitals Consultants</p>
                     </div>
                     <div>
                         <h1 class="header-title">${data.slipTitle}</h1>
                     </div>
                 </div>
 
-                <!-- Employee and Job Details Section -->
                 <div class="details-grid">
                     <div class="details-list">
                         ${data.employeeDetails.map(item => `
@@ -218,7 +241,6 @@ function generateSlipHTML(data) {
                     </div>
                 </div>
 
-                <!-- Earnings and Deductions Table -->
                 <table class="payslip-table">
                     <thead>
                         <tr>
@@ -249,16 +271,13 @@ function generateSlipHTML(data) {
                     </tfoot>
                 </table>
 
-                <!-- Net Pay Section -->
                 <div class="net-pay-bar">
                     <p>Net Pay</p>
                     <p class="net-pay-value">${data.netPay}</p>
                 </div>
 
-                <!-- Net Pay in Words -->
                 <p class="net-pay-words">${data.netPayWords}</p>
 
-                <!-- Footer Section -->
                 <div class="footer-box">
                     ${data.notes.split('\n\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
                 </div>

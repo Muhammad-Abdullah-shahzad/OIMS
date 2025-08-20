@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, use } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 // Assuming you have lucide-react installed for icons
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle } from 'lucide-react';
 import '../styles/employeeModule.css'; // Import the vanilla CSS file
@@ -11,7 +11,7 @@ const validateEmployeeForm = (formData) => {
     if (!formData.lastName) errors.lastName = 'Last Name is required.';
     if (!formData.designation) errors.designation = 'Designation is required.';
     // Ensure salary is a number and greater than 0, allowing 0 if appropriate for your business logic
-    if (isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) < 0) { // Changed to < 0 to allow 0 salary if needed
+    if (isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) < 0) {
         errors.salary = 'Valid Salary is required and must be a non-negative number.';
     }
     if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
@@ -44,12 +44,23 @@ const EmployeeManagement = () => {
         salary: '', // Keep as string for input, convert to number before sending
         bank_account: '',
         hire_date: '',
+        location: '',
+        department: '',
+        bank_name: ''
     });
+
+    // New states for allowances and resources
+    const [allowances, setAllowances] = useState({});
+    const [resources, setResources] = useState({});
+    const [currentAllowanceName, setCurrentAllowanceName] = useState('');
+    const [currentAllowanceAmount, setCurrentAllowanceAmount] = useState('');
+    const [currentResourceName, setCurrentResourceName] = useState('');
+
     const [validationErrors, setValidationErrors] = useState({});
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
     
     // Base URL for your Express.js API
-    const API_BASE_URL = 'https://oimsapi.oradigitals.com/employee'; // Adjust if your API is on a different base path
+    const API_BASE_URL = 'http://localhost:5000/employee'; // Adjust if your API is on a different base path
 
     // Fetch Employees
     const fetchEmployees = useCallback(async () => {
@@ -104,8 +115,6 @@ const EmployeeManagement = () => {
     // Handle Form Input Changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // For salary, ensure it's either a valid number string or an empty string
-        // We'll parse it to a float just before sending to the API in handleSubmit
         setFormData(prev => ({ ...prev, [name]: value }));
         
         // Clear validation error for the field as user types
@@ -118,11 +127,55 @@ const EmployeeManagement = () => {
         }
     };
 
+    // Handle adding a new allowance
+    const handleAddAllowance = () => {
+        if (currentAllowanceName && currentAllowanceAmount) {
+            setAllowances(prev => ({
+                ...prev,
+                [currentAllowanceName]: parseFloat(currentAllowanceAmount)
+            }));
+            setCurrentAllowanceName('');
+            setCurrentAllowanceAmount('');
+        }
+    };
+
+    // Handle removing an allowance
+    const handleRemoveAllowance = (name) => {
+        setAllowances(prev => {
+            const newAllowances = { ...prev };
+            delete newAllowances[name];
+            return newAllowances;
+        });
+    };
+
+    // Handle adding a new resource
+    const handleAddResource = () => {
+        if (currentResourceName) {
+            setResources(prev => ({
+                ...prev,
+                [currentResourceName]: true // Use a boolean to indicate presence
+            }));
+            setCurrentResourceName('');
+        }
+    };
+
+    // Handle removing a resource
+    const handleRemoveResource = (name) => {
+        setResources(prev => {
+            const newResources = { ...prev };
+            delete newResources[name];
+            return newResources;
+        });
+    };
+
     // Open Modal for Create/Edit/Delete
     const openModal = (mode, employee = null) => {
         setModalMode(mode);
         setSelectedEmployee(employee);
         setValidationErrors({}); // Clear previous validation errors
+        setAllowances({}); // Reset allowances state
+        setResources({}); // Reset resources state
+
         if (mode === 'create') {
             setFormData({
                 employee_id: '',
@@ -136,6 +189,9 @@ const EmployeeManagement = () => {
                 salary: '', // Keep as empty string for new employee
                 bank_account: '',
                 hire_date: '',
+                location: '',
+                department: '',
+                bank_name: ''
             });
         } else if (mode === 'edit' && employee) {
             // Format hire_date for input[type="date"]
@@ -144,8 +200,21 @@ const EmployeeManagement = () => {
             setFormData({ 
                 ...employee, 
                 hire_date: formattedHireDate, 
-                salary: employee.salary != null ? String(employee.salary) : '' // Convert to string, handle null/undefined
+                salary: employee.salary != null ? String(employee.salary) : ''
             });
+
+            // Set allowances and resources from the employee data
+            try {
+                if (employee.alownces) {
+                    setAllowances(JSON.parse(employee.alownces));
+                }
+                if (employee.resources) {
+                    // Assuming resources is stored as a simple JSON object like { "Laptop": true, "Mobile Phone": true }
+                    setResources(JSON.parse(employee.resources));
+                }
+            } catch (e) {
+                console.error("Failed to parse JSON for allowances or resources", e);
+            }
         }
         setShowModal(true);
     };
@@ -169,6 +238,10 @@ const EmployeeManagement = () => {
         } else {
             dataToSubmit.salary = parseFloat(dataToSubmit.salary);
         }
+
+        // Add allowances and resources to the data to submit
+        dataToSubmit.alownces = JSON.stringify(allowances);
+        dataToSubmit.resources = JSON.stringify(resources);
 
         const errors = validateEmployeeForm(dataToSubmit); // Validate the prepared data
         if (Object.keys(errors).length > 0) {
@@ -398,6 +471,7 @@ const EmployeeManagement = () => {
                             <div className="form-group">
                                 <label htmlFor="hire_date">Hire Date</label>
                                 <input
+                                   required
                                     type="date"
                                     id="hire_date"
                                     name="hire_date"
@@ -407,6 +481,60 @@ const EmployeeManagement = () => {
                                 />
                                 {validationErrors.hire_date && <p className="error-message">{validationErrors.hire_date}</p>}
                             </div>
+
+                             {/* Location */}
+                            <div className="form-group">
+                                <label htmlFor="location">Location</label>
+                                <select
+                                    id="location"
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleChange}
+                                    className="form-input"
+                                >
+                                    <option value="">Select Location</option>
+                                    <option value="onsite">Onsite</option>
+                                    <option value="hybrid">Hybrid</option>
+                                    <option value="remote">Remote</option>
+                                </select>
+                            </div>
+                            {/* Department */}
+                            <div className="form-group">
+                                <label htmlFor="department">Department</label>
+                                <select
+                                    id="department"
+                                    name="department"
+                                    value={formData.department}
+                                    onChange={handleChange}
+                                    className="form-input"
+                                >
+                                    <option value="">Select Department</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Human Resources">Human Resources</option>
+                                    <option value="Finance">Finance</option>
+                                </select>
+                            </div>
+                            {/* Bank Name */}
+                            <div className="form-group">
+                                <label htmlFor="bank_name">Bank Name</label>
+                                <select
+                                    id="bank_name"
+                                    name="bank_name"
+                                    value={formData.bank_name}
+                                    onChange={handleChange}
+                                    className="form-input"
+                                >
+                                    <option value="">Select Bank</option>
+                                    <option value="HBL">HBL</option>
+                                    <option value="Meezan Bank">Meezan Bank</option>
+                                    <option value="Allied Bank">Allied Bank</option>
+                                    <option value="Bank Alfalah">Bank Alfalah</option>
+                                    <option value="MCB Bank">MCB Bank</option>
+                                </select>
+                            </div>
+
                             {/* Address */}
                             <div className="form-group-full">
                                 <label htmlFor="address">Address</label>
@@ -419,6 +547,94 @@ const EmployeeManagement = () => {
                                     className="form-input"
                                 ></textarea>
                             </div>
+
+                            {/* Allowances Section */}
+                            <div className="form-group-full">
+                                <label>Allowances</label>
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        className="form-input flex-grow"
+                                        value={currentAllowanceName}
+                                        onChange={(e) => setCurrentAllowanceName(e.target.value)}
+                                    >
+                                        <option value="">Select Allowance</option>
+                                        <option value="House Allowance">House Allowance</option>
+                                        <option value="Travel Allowance">Travel Allowance</option>
+                                        <option value="Medical Allowance">Medical Allowance</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <input
+                                        type="number"
+                                        placeholder="Amount"
+                                        className="form-input w-28"
+                                        value={currentAllowanceAmount}
+                                        onChange={(e) => setCurrentAllowanceAmount(e.target.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAddAllowance}
+                                        className="button button-primary px-3 py-1 text-sm"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                    {Object.entries(allowances).map(([name, amount]) => (
+                                        <div key={name} className="badge-item bg-blue-100 text-blue-800 flex items-center gap-1">
+                                            <span>{name}: ${amount}</span>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveAllowance(name)}
+                                                className="remove-button text-blue-600 hover:text-blue-900"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            {/* Resources Section */}
+                            <div className="form-group-full">
+                                <label>Resources</label>
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        className="form-input flex-grow"
+                                        value={currentResourceName}
+                                        onChange={(e) => setCurrentResourceName(e.target.value)}
+                                    >
+                                        <option value="">Select Resource</option>
+                                        <option value="Laptop">Laptop</option>
+                                        <option value="Mobile Phone">Mobile Phone</option>
+                                        <option value="Tablet">Tablet</option>
+                                        <option value="Company Vehicle">Company Vehicle</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <button
+                                        type="button"
+                                        onClick={handleAddResource}
+                                        className="button button-primary px-3 py-1 text-sm"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                    {Object.keys(resources).map(name => (
+                                        <div key={name} className="badge-item bg-green-100 text-green-800 flex items-center gap-1">
+                                            <span>{name}</span>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveResource(name)}
+                                                className="remove-button text-green-600 hover:text-green-900"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            
+
                         </div>
                         <div className="form-actions">
                             <button
@@ -531,6 +747,9 @@ const EmployeeManagement = () => {
                                 <th className="table-header rounded-tl">Employee ID</th>
                                 <th className="table-header">Name</th>
                                 <th className="table-header">Designation</th>
+                                <th className="table-header">Department</th>
+                                <th className="table-header">Location</th>
+                                <th className="table-header">Bank Name</th>
                                 <th className="table-header">Email</th>
                                 <th className="table-header">Phone</th>
                                 <th className="table-header">Salary</th>
@@ -544,6 +763,9 @@ const EmployeeManagement = () => {
                                     <td className="table-data font-medium">{employee.employee_id}</td>
                                     <td className="table-data">{employee.firstName} {employee.lastName}</td>
                                     <td className="table-data">{employee.designation}</td>
+                                    <td className="table-data">{employee.department}</td>
+                                    <td className="table-data">{employee.location}</td>
+                                    <td className="table-data">{employee.bank_name}</td>
                                     <td className="table-data">{employee.email}</td>
                                     <td className="table-data">{employee.phoneNumber}</td>
                                     <td className="table-data">${parseFloat(employee.salary).toLocaleString()}</td>

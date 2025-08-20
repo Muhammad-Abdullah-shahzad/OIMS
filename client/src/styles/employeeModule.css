@@ -8,14 +8,14 @@ body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #FFF; /* Light gray background */
+    background-color: #f3f4f6; /* A slightly darker light gray for better contrast */
     color: #374151; /* Dark gray text */
 }
 
 .employee-management-container {
-    max-width: 1700px;
+    max-width: 1200px; /* Adjusted for better form layout */
     margin: 0 auto;
-    padding: 1rem; /* p-4 equivalent */
+    padding: 2rem; /* p-8 equivalent */
 }
 
 .main-title {
@@ -41,7 +41,8 @@ body {
 }
 
 .button:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .button:focus {
@@ -52,6 +53,8 @@ body {
 .button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: translateY(0);
+    box-shadow: none;
 }
 
 .button-primary {
@@ -210,9 +213,9 @@ body {
 
 .modal-content {
     background-color: #ffffff; /* bg-white equivalent */
-    border-radius: 0.5rem; /* rounded-lg equivalent */
+    border-radius: 0.75rem; /* Increased for a softer look */
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05); /* shadow-xl equivalent */
-    max-width: 42rem; /* max-w-2xl equivalent */
+    max-width: 50rem; /* Adjusted for better form layout */
     width: 100%;
     position: relative;
     transform: scale(0.95); /* Initial scale for animation */
@@ -255,29 +258,32 @@ body {
 }
 
 .modal-form {
-    padding: 1.5rem; /* p-6 equivalent */
+    padding: 2rem; /* p-8 equivalent */
 }
 
 .modal-title {
-    font-size: 1.5rem; /* text-2xl equivalent */
+    font-size: 1.75rem; /* text-3xl equivalent */
     font-weight: 700; /* font-bold equivalent */
-    margin-bottom: 1.5rem; /* mb-6 equivalent */
+    margin-bottom: 2rem; /* mb-8 equivalent */
     color: #1f2937; /* text-gray-800 equivalent */
+    text-align: center;
 }
 
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem; /* gap-4 equivalent */
+    grid-template-columns: repeat(2, 1fr); /* Default to 2 columns */
+    gap: 1.5rem; /* Increased gap for better spacing */
+    align-items: center; /* This is the key addition to align form elements */
 }
 
-@media (min-width: 768px) { /* md: breakpoint */
+@media (max-width: 767px) { /* Adjust for mobile */
     .form-grid {
-        grid-template-columns: 1fr 1fr; /* md:grid-cols-2 equivalent */
+        grid-template-columns: 1fr; /* Single column on smaller screens */
     }
-    .form-group-full {
-        grid-column: span 2; /* md:col-span-2 equivalent */
-    }
+}
+
+.form-group-full {
+    grid-column: span 2; /* Spans both columns on all screen sizes */
 }
 
 .form-group {
@@ -289,20 +295,24 @@ body {
     font-size: 0.875rem; /* text-sm equivalent */
     font-weight: 500; /* font-medium equivalent */
     color: #374151; /* text-gray-700 equivalent */
-    margin-bottom: 0.25rem; /* mb-1 equivalent */
+    margin-bottom: 0.5rem; /* mb-2 equivalent */
 }
 
 .form-input {
-    padding: 0.5rem; /* p-2 equivalent */
+    padding: 0.75rem; /* Increased padding for larger input fields */
     border: 1px solid #d1d5db; /* border border-gray-300 equivalent */
-    border-radius: 0.375rem; /* rounded-md equivalent */
+    border-radius: 0.5rem; /* More rounded corners */
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: #f9fafb; /* Light background for the input */
+    box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+    width: 100%; /* Ensures inputs take up full column width */
 }
 
 .form-input:focus {
     outline: none;
     border-color: #3b82f6; /* focus:ring-2 focus:ring-blue-500 equivalent */
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* focus:ring-2 focus:ring-blue-500 equivalent */
+    background-color: #ffffff;
 }
 
 .input-error {
@@ -316,10 +326,42 @@ body {
 }
 
 .form-actions {
-    margin-top: 1.5rem; /* mt-6 equivalent */
+    margin-top: 2rem; /* Increased top margin */
     display: flex;
     justify-content: flex-end;
-    gap: 0.75rem; /* space-x-3 equivalent */
+    gap: 1rem; /* space-x-4 equivalent */
+}
+
+/* Badge Items (for allowances and resources) */
+.badge-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.badge-item:hover {
+    transform: translateY(-1px);
+}
+
+.remove-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-item .remove-button {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.badge-item:hover .remove-button {
+    opacity: 1;
 }
 
 /* Delete Modal Specific Styles */
@@ -367,7 +409,7 @@ body {
 }
 
 .loading-text {
-    margin-left: 1rem; /* ml-4 equivalent */
+    margin-top: 1rem;
     font-size: 1.125rem; /* text-lg equivalent */
     color: #4b5563; /* text-gray-600 equivalent */
 }

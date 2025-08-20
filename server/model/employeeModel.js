@@ -13,12 +13,15 @@ exports.addEmployeeModel = async (
   address,
   salary,
   bank_account,
-  hire_date
+  hire_date,
+  location,
+  department,
+  bank_name
 ) => {
   const pool = database.pool;
   const query = `
-    INSERT INTO employees (employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date)
-    VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ? ,?)
+    INSERT INTO employees (employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date,location,department,bank_name)
+    VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ? ,?,?,?,?)
   `;
   const values = [
     employee_id,
@@ -32,6 +35,9 @@ exports.addEmployeeModel = async (
     salary,
     bank_account,
     hire_date,
+    location,
+    department,
+    bank_name,
   ];
   await pool.query(query, values);
 };
@@ -39,10 +45,7 @@ exports.addEmployeeModel = async (
 // Delete employee by ID
 exports.deleteEmployeeModel = async (id) => {
   const pool = await database.pool;
-  await pool.query("DELETE FROM employees WHERE id = ?  ", [
-    id,
-  
-  ]);
+  await pool.query("DELETE FROM employees WHERE id = ?  ", [id]);
 };
 
 // Update employee
@@ -51,12 +54,16 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
 
   // Validate input
   if (!id) throw new Error("Employee ID is required for update.");
-  if (!updatedFields || typeof updatedFields !== 'object' || Object.keys(updatedFields).length === 0) {
+  if (
+    !updatedFields ||
+    typeof updatedFields !== "object" ||
+    Object.keys(updatedFields).length === 0
+  ) {
     throw new Error("No fields provided for update.");
   }
 
   // Sanitize salary field if present and convert it *in-place*
-  if ('salary' in updatedFields) {
+  if ("salary" in updatedFields) {
     const parsedSalary = parseFloat(updatedFields.salary);
     if (isNaN(parsedSalary)) {
       // If the frontend sends an empty string or non-numeric,
@@ -67,16 +74,16 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
     updatedFields.salary = parsedSalary; // Update the object property to be a number
   }
 
-  // --- CRITICAL FIX: Extract keys and values *AFTER* processing updatedFields ---
+// --- CRITICAL FIX: Extract keys and values *AFTER* processing updatedFields ---
   const keys = Object.keys(updatedFields);
   const values = Object.values(updatedFields);
-  // --- END CRITICAL FIX ---
+// --- END CRITICAL FIX ---
 
-  // Build dynamic SET clause like: "firstName = ?, email = ?"
-  const setClause = keys.map(key => `${key} = ?`).join(', ');
+// Build dynamic SET clause like: "firstName = ?, email = ?"
+const setClause = keys.map((key) => `${key} = ?`).join(", ");
 
-  const query = `UPDATE employees SET ${setClause} WHERE id = ?`;
-  values.push(id); // Add ID as last param
+const query = `UPDATE employees SET ${setClause} WHERE id = ?`;
+values.push(id); // Add ID as last param
 
   try {
     await pool.query(query, values);
@@ -84,22 +91,26 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
     console.error("Database error during employee update:", dbError);
     throw new Error(`Failed to update employee: ${dbError.message}`);
   }
+
 };
 
 // Get all employees
 exports.getAllEmployeesModel = async () => {
+
   const pool = await database.pool;
   const [rows] = await pool.query(
-    "SELECT id,firstName,lastName,employee_id,designation,cnic,address,salary,phoneNumber,hire_date,bank_account,email FROM employees"
+    "SELECT id,firstName,lastName,employee_id,designation,cnic,address,salary,phoneNumber,hire_date,bank_account,email,location,bank_name,department FROM employees"
   );
   return rows;
-};
 
+};
 
 // 1. Total Active Employees
 exports.getEmployeeCount = async () => {
   const db = database.pool;
-  const [rows] = await db.query("SELECT COUNT(*) AS totalEmployees FROM employees WHERE is_active = TRUE");
+  const [rows] = await db.query(
+    "SELECT COUNT(*) AS totalEmployees FROM employees WHERE is_active = TRUE"
+  );
   return rows[0].totalEmployees;
 };
 
@@ -126,8 +137,8 @@ exports.getActiveInactiveCount = async () => {
     GROUP BY is_active
   `);
   return {
-    active: rows.find(r => r.is_active === 1)?.count || 0,
-    inactive: rows.find(r => r.is_active === 0)?.count || 0
+    active: rows.find((r) => r.is_active === 1)?.count || 0,
+    inactive: rows.find((r) => r.is_active === 0)?.count || 0,
   };
 };
 

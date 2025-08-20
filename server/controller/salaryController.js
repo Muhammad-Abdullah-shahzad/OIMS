@@ -121,6 +121,7 @@ exports.generateReportController = async (req, res) => {
     const {month,year} = req.body;
 
     const employeeSalaryData = await salaryModel.getSalary(employeeId,month,year);
+   console.log("employee json data for salary slip from db ", employeeSalaryData);
     const dummyPayslipData = {
       companyName: "Oradigitals Consultants",
       slipTitle: "Pay Slip, June - 2025",

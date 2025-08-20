@@ -2,13 +2,13 @@
 const employeeModel = require("../model/employeeModel");
 
 exports.addNewEmployeeController = async (req, res) => {
-  const { firstName, lastName, email, phoneNumber, designation , cnic , address , salary , bank_account, hire_date, employee_id} = req.body;
-  if (!firstName || !lastName || !email || !phoneNumber || !designation || !cnic || !address || !salary || !bank_account  || !hire_date || !employee_id) {
+  const { firstName, lastName, email, phoneNumber, designation , cnic , address , salary , bank_account, hire_date, employee_id , location , department , bank_name} = req.body;
+  if (!firstName || !lastName || !email || !phoneNumber || !designation || !cnic || !address || !salary || !bank_account  || !hire_date || !employee_id  || !location , !department , !bank_name) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
-    await employeeModel.addEmployeeModel(employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date);
+    await employeeModel.addEmployeeModel(employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date , location, department , bank_name);
     res.status(201).json({ message: "Employee added successfully" });
   } catch (err) {
     console.error("Add Employee Error:", err.message);
