@@ -120,23 +120,23 @@ exports.generateReportController = async (req, res) => {
     const { employeeId } = req.params;
     const {month,year} = req.body;
 
-    const employeeSalaryData = await salaryModel.getSalary(employeeId,month,year);
+    const [employeeSalaryData] = await salaryModel.getSalary(employeeId,month,year);
    console.log("employee json data for salary slip from db ", employeeSalaryData);
     const dummyPayslipData = {
       companyName: "Oradigitals Consultants",
-      slipTitle: "Pay Slip, June - 2025",
+      slipTitle: `Pay Slip, ${new Date(employeeSalaryData.payment_date).toLocaleDateString()}` ,
       employeeDetails: [
-          { label: "EMPLOYEE ID", value: "20000011" },
-          { label: "NAME", value: "Jane Smith" },
-          { label: "DESIGNATION", value: "Software Engineer" },
-          { label: "LOCATION", value: "Remote" },
-          { label: "DEPARTMENT", value: "Engineering" },
+          { label: "EMPLOYEE ID", value:'ORA-0' + employeeSalaryData.employee_id },
+          { label: "NAME", value: employeeSalaryData.employee_name },
+          { label: "DESIGNATION", value: employeeSalaryData.designation },
+          { label: "LOCATION", value: employeeSalaryData.location },
+          { label: "DEPARTMENT", value: employeeSalaryData.department },
       ],
       jobDetails: [
-          { label: "DAYS WORKED", value: "22.00" },
-          { label: "DOJ", value: "01-Jan-2024" },
-          { label: "PAY THROUGH", value: "Direct Deposit" },
-          { label: "BANK NAME", value: "Silicon Valley Bank" },
+          { label: "DAYS WORKED", value: "30.00" },
+          { label: "DOJ", value: new Date(employeeSalaryData.hire_date).toLocaleDateString() },
+          { label: "PAY THROUGH", value: employeeSalaryData.payment_method.split("_").join(" ") },
+          { label: "BANK NAME", value: employeeSalaryData.bank_name},
       ],
       earnings: [
           { description: "Basic Salary", current: "150,000.00", ytd: "1,800,000.00" },
@@ -166,7 +166,7 @@ exports.generateReportController = async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=${employeeSalaryData[0].employee_name}-salary-slip-Oradigitals.pdf`
+      `attachment; filename=${employeeSalaryData.employee_name}-salary-slip-Oradigitals.pdf`
     );
 
     res.status(200).send(pdfBuffer);

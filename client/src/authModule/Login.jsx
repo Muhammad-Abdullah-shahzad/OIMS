@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import styles from '../styles/AuthForm.module.css'; // Updated import
+import styles from '../styles/AuthForm.module.css';
 import { useNavigate } from 'react-router-dom';
-import loginUser from './userLogin'; // adjust path if needed
-
+import loginUser from './userLogin';
+import {Link} from "react-router-dom"
 const Login = () => {
-  const navigate = useNavigate(); // To redirect after login
-  const Base_Url = `https://oimsapi.oradigitals.com/auth`
-  // State variables
+  const navigate = useNavigate();
+  const Base_Url = `https://oimsapi.oradigitals.com/auth`;
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ const Login = () => {
       setSuccessMessage('Login successful!');
       
       if(result.data.role==="super_admin"){
-        navigate("/s-dashboard")
+        navigate("/s-dashboard");
       }
       else if(result.data.role==="project_manager"){
         navigate("/pm-dashboard");
@@ -41,8 +41,6 @@ const Login = () => {
       else{
         navigate("/fm-dashboard");
       }
-      // Optionally store token: localStorage.setItem('token', result.data.token)
-     
     } else {
       setError(result.message);
     }
@@ -53,8 +51,8 @@ const Login = () => {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.authContainer}>
-        <h2 className={styles.heading}>Login</h2>
-        <p className={styles.subtitle}>to OIMS</p>
+        <h2 className={styles.heading}>Oradigitals-ERP</h2>
+        <p className={styles.subtitle}>login to access your oims account</p>
         <form className={styles.authForm} onSubmit={handleSubmit}>
           <input
             type="email"
@@ -76,7 +74,7 @@ const Login = () => {
           {error && <p className={styles.errorMsg}>{error}</p>}
           {successMessage && <p className={styles.successMsg}>{successMessage}</p>}
           <p>
-            Don't have an account? <a href="/signup">Sign Up</a>
+            Don't have an account? <Link to="/signup">Sign Up</Link>
           </p>
         </form>
       </div>

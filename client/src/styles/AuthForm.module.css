@@ -1,8 +1,18 @@
-/* Container for the entire page to center the form */
+/* Variables for colors */
+:root {
+  --primary-color: #4C51BF;
+  --primary-hover: #434190;
+  --white: #ffffff;
+  --text-dark: #1A202C;
+  --text-medium: #718096;
+  --error-red: #E53E3E;
+  --success-green: #38A169;
+}
+
+/* Base font and layout */
 .pageWrapper {
-  background-color: #F0F2F5;
   font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333333;
+  color: var(--text-dark);
   margin: 0;
   padding: 0;
   display: flex;
@@ -10,77 +20,107 @@
   align-items: center;
   min-height: 100vh;
   box-sizing: border-box;
+  width: 100%;
+
+  /* Glassmorphism Background with image */
+  background: #393e46;
+  background-image: url('https://img.freepik.com/free-vector/futuristic-technological-wallpaper_79603-1093.jpg?semt=ais_hybrid&w=740&q=80');
+  background-size: cover;
+  background-position: center;
 }
 
-/* Container for login/signup */
 .authContainer {
   width: 100%;
   max-width: 420px;
-  background-color: #ffffff;
-  padding: 48px;
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  padding: 48px;
   text-align: center;
   box-sizing: border-box;
+  -webkit-backdrop-filter: blur(20px);
 }
 
-/* Headings */
+/* Headings and subtitles */
 .heading {
-  margin-bottom: 8px; /* Reduced margin to bring the subtitle closer */
-  color: #1A202C;
+  margin-bottom: 32px;
+  color: var(--white);
   font-size: 32px;
   font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* New style for the subtitle */
 .subtitle {
-  margin-top: 0;
-  margin-bottom: 32px; /* Consistent spacing with the previous heading margin */
-  font-size: 18px; /* Slightly larger for better readability */
-  color: #718096;
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: -20px;
+  margin-bottom: 30px;
+}
+
+/* Tab navigation (if needed) - Keeping it simple for now */
+.tabContainer {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tabButton {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 8px;
+}
+
+.tabButton.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Form styling */
+.authForm .formGroup {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
 .authForm input {
   width: 100%;
   padding: 15px;
   margin: 12px 0;
-  border: 1px solid #E2E8F0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
   border-radius: 8px;
   font-size: 16px;
-  color: #4A5568;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.authForm input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .authForm input:focus {
   outline: none;
-  border-color: #4299E1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
-.formGroup {
-  margin-bottom: 1rem;
-}
-
-.inputError {
-  border-color: #E53E3E !important;
-}
-
-.errorMessage {
-  color: #E53E3E;
-  font-size: 14px;
-  text-align: left;
-  margin-top: 0.25rem;
-}
-
-/* Button styling */
 .authForm button {
   width: 100%;
   padding: 15px;
-  background-color: #4C51BF;
-  color: #ffffff;
+  background-color: var(--primary-color);
+  color: var(--white);
   border: none;
   border-radius: 8px;
   font-size: 18px;
@@ -89,10 +129,11 @@
   margin-top: 20px;
   transition: background-color 0.3s ease, transform 0.1s ease;
   box-sizing: border-box;
+  backdrop-filter: blur(10px);
 }
 
 .authForm button:hover {
-  background-color: #434190;
+  background-color: var(--primary-hover);
 }
 
 .authForm button:active {
@@ -100,45 +141,59 @@
 }
 
 .authForm button:disabled {
-  background-color: #CBD5E1;
+  background-color: rgba(203, 213, 225, 0.5);
   cursor: not-allowed;
 }
 
-/* Text below form (error/success/link) */
 .authForm p {
-  margin-top: 24px;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 14px;
-  color: #718096;
 }
 
-.authForm .errorMsg,
-.authForm .successMsg {
+.authForm p a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.authForm p a:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+/* Error and success messages */
+.authForm .inputError {
+  border-color: var(--error-red) !important;
+}
+
+.authForm .errorMessage {
+  color: var(--error-red);
+  font-size: 14px;
+  text-align: left;
+  margin-top: 0.25rem;
+  background: rgba(255, 100, 100, 0.2);
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 100, 100, 0.4);
+}
+
+.errorMsg {
+  color: var(--error-red);
   font-size: 14px;
   margin-top: 15px;
   padding: 10px;
   border-radius: 6px;
+  background: rgba(255, 100, 100, 0.2);
+  border: 1px solid rgba(255, 100, 100, 0.4);
 }
 
-.authForm .errorMsg {
-  color: #E53E3E;
-  background-color: #FED7D7;
-  border: 1px solid #FC8181;
-}
-
-.authForm .successMsg {
-  color: #38A169;
-  background-color: #C6F6D5;
-  border: 1px solid #68D391;
-}
-
-.authForm a {
-  color: #4C51BF;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease, text-decoration 0.2s ease;
-}
-
-.authForm a:hover {
-  text-decoration: underline;
-  color: #434190;
+.successMsg {
+  color: var(--success-green);
+  font-size: 14px;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(100, 255, 100, 0.2);
+  border: 1px solid rgba(100, 255, 100, 0.4);
 }

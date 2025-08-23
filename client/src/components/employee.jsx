@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 // Assuming you have lucide-react installed for icons
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle } from 'lucide-react';
-import '../styles/employeeModule.css'; // Import the vanilla CSS file
 import { useNavigate } from 'react-router-dom';
-
+import "../styles/employeeModule.css"
 // --- Utility Functions (could be in a separate utils file) ---
 const validateEmployeeForm = (formData) => {
     const errors = {};
@@ -27,10 +26,11 @@ const validateEmployeeForm = (formData) => {
 const EmployeeManagement = () => {
     const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
+    const [designations, setDesignations] = useState([]); // New state for designations
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [modalMode, setModalMode] = useState(''); // 'create', 'edit', 'delete'
+    const [modalMode, setModalMode] = useState(''); // 'create', 'edit', 'delete', 'designation'
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [formData, setFormData] = useState({
         employee_id: '',
@@ -58,6 +58,11 @@ const EmployeeManagement = () => {
 
     const [validationErrors, setValidationErrors] = useState({});
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
+    
+    // New state for adding/deleting designations
+    const [newDesignationTitle, setNewDesignationTitle] = useState('');
+    const [newDesignationDescription, setNewDesignationDescription] = useState('');
+    const [designationErrors, setDesignationErrors] = useState({});
     
     // Base URL for your Express.js API
     const API_BASE_URL = 'http://localhost:5000/employee'; // Adjust if your API is on a different base path
@@ -91,11 +96,36 @@ const EmployeeManagement = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [navigate]);
+
+    // Fetch Designations
+    const fetchDesignations = useCallback(async () => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`${API_BASE_URL}/designation`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw errorData;
+            }
+            const data = await response.json();
+            setDesignations(data);
+        } catch (err) {
+            if (err.tokenVerified === false) {
+                navigate("/login");
+            }
+            console.error('Failed to fetch designations:', err);
+            showToastMessage('Failed to load designations.', 'error');
+        }
+    }, [navigate]);
 
     useEffect(() => {
         fetchEmployees();
-    }, [fetchEmployees]);
+        fetchDesignations();
+    }, [fetchEmployees, fetchDesignations]);
 
     // Toast message timeout
     useEffect(() => {
@@ -167,14 +197,80 @@ const EmployeeManagement = () => {
             return newResources;
         });
     };
+    
+    // Handle Add Designation
+    const handleAddDesignation = async () => {
+        setDesignationErrors({});
+        if (!newDesignationTitle) {
+            setDesignationErrors({ title: 'Designation title is required.' });
+            return;
+        }
 
-    // Open Modal for Create/Edit/Delete
+        setLoading(true);
+        try {
+            const token = localStorage.token;
+            const response = await fetch(`${API_BASE_URL}/add/designation`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ title: newDesignationTitle, description: newDesignationDescription }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw errorData;
+            }
+
+            showToastMessage('Designation added successfully!', 'success');
+            setNewDesignationTitle('');
+            setNewDesignationDescription('');
+            fetchDesignations();
+        } catch (err) {
+            console.error('Failed to add designation:', err);
+            showToastMessage(`Failed to add designation: ${err.message || 'Unknown error'}`, 'error');
+            setDesignationErrors({ title: err.message || 'Failed to add designation.' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Handle Delete Designation
+    const handleDeleteDesignation = async (designationId) => {
+        if (!window.confirm("Are you sure you want to delete this designation? This cannot be undone.")) {
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const token = localStorage.token;
+            const response = await fetch(`${API_BASE_URL}/delete/designation/${designationId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw errorData;
+            }
+
+            showToastMessage('Designation deleted successfully!', 'success');
+            fetchDesignations();
+        } catch (err) {
+            console.error('Failed to delete designation:', err);
+            showToastMessage(`Failed to delete designation: ${err.message || 'Unknown error'}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    // Open Modal for Create/Edit/Delete/Designation
     const openModal = (mode, employee = null) => {
         setModalMode(mode);
         setSelectedEmployee(employee);
         setValidationErrors({}); // Clear previous validation errors
         setAllowances({}); // Reset allowances state
         setResources({}); // Reset resources state
+        setDesignationErrors({}); // Clear designation errors
 
         if (mode === 'create') {
             setFormData({
@@ -194,6 +290,7 @@ const EmployeeManagement = () => {
                 bank_name: ''
             });
         } else if (mode === 'edit' && employee) {
+            // console.log("employee data you want to edit " , employee);
             // Format hire_date for input[type="date"]
             const formattedHireDate = employee.hire_date ? new Date(employee.hire_date).toISOString().split('T')[0] : '';
             // Ensure salary is a string for the input field, even if it's a number from the API
@@ -206,11 +303,16 @@ const EmployeeManagement = () => {
             // Set allowances and resources from the employee data
             try {
                 if (employee.alownces) {
-                    setAllowances(JSON.parse(employee.alownces));
+                    // console.log("date type of alownces " ,typeof employee.alownces);
+                    // setAllowances(JSON.parse(employee.alownces));
+                    setAllowances(employee.alownces);
                 }
                 if (employee.resources) {
                     // Assuming resources is stored as a simple JSON object like { "Laptop": true, "Mobile Phone": true }
-                    setResources(JSON.parse(employee.resources));
+                    // console.log("date type of resources " ,typeof employee.resources);
+                   
+                    // setResources(JSON.parse(employee.resources));
+                    setResources(employee.resources);
                 }
             } catch (e) {
                 console.error("Failed to parse JSON for allowances or resources", e);
@@ -369,7 +471,7 @@ const EmployeeManagement = () => {
                                     value={formData.firstName}
                                     onChange={handleChange}
                                     className={`form-input ${validationErrors.firstName ? 'input-error' : ''}`}
-                                    required
+                                    required 
                                 />
                                 {validationErrors.firstName && <p className="error-message">{validationErrors.firstName}</p>}
                             </div>
@@ -390,15 +492,21 @@ const EmployeeManagement = () => {
                             {/* Designation */}
                             <div className="form-group">
                                 <label htmlFor="designation">Designation</label>
-                                <input
-                                    type="text"
+                                <select
                                     id="designation"
                                     name="designation"
                                     value={formData.designation}
                                     onChange={handleChange}
                                     className={`form-input ${validationErrors.designation ? 'input-error' : ''}`}
                                     required
-                                />
+                                >
+                                    <option value="">Select Designation</option>
+                                    {designations.map((designation) => (
+                                        <option key={designation.id} value={designation.title}>
+                                            {designation.title}
+                                        </option>
+                                    ))}
+                                </select>
                                 {validationErrors.designation && <p className="error-message">{validationErrors.designation}</p>}
                             </div>
                             {/* Email */}
@@ -682,6 +790,68 @@ const EmployeeManagement = () => {
                         </div>
                     </div>
                 );
+            case 'designations':
+                return (
+                    <div className="designation-management-modal">
+                        <h2 className="modal-title">Manage Designations</h2>
+                        <div className="designation-form-section">
+                            <div className="form-group">
+                                <label htmlFor="newDesignationTitle">New Designation Title</label>
+                                <input
+                                    type="text"
+                                    id="newDesignationTitle"
+                                    value={newDesignationTitle}
+                                    onChange={(e) => setNewDesignationTitle(e.target.value)}
+                                    className={`form-input ${designationErrors.title ? 'input-error' : ''}`}
+                                    placeholder="e.g., Senior Software Engineer"
+                                />
+                                {designationErrors.title && <p className="error-message">{designationErrors.title}</p>}
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="newDesignationDescription">Description (Optional)</label>
+                                <textarea
+                                    id="newDesignationDescription"
+                                    value={newDesignationDescription}
+                                    onChange={(e) => setNewDesignationDescription(e.target.value)}
+                                    className="form-input"
+                                    rows="2"
+                                    placeholder="Brief description of the role."
+                                ></textarea>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleAddDesignation}
+                                className="button button-primary mt-2"
+                                disabled={loading}
+                            >
+                                {loading ? 'Adding...' : 'Add Designation'}
+                            </button>
+                        </div>
+                        <div className="designation-list-section mt-4">
+                            <h3 className="list-title">Existing Designations</h3>
+                            {designations.length === 0 ? (
+                                <p className="no-designations-found">No designations found.</p>
+                            ) : (
+                                <ul className="designation-list">
+                                    {designations.map((designation) => (
+                                        <li key={designation.id} className="designation-list-item">
+                                            <span>{designation.title}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteDesignation(designation.id)}
+                                                className="action-button delete-button"
+                                                title="Delete Designation"
+                                                disabled={loading}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -733,6 +903,12 @@ const EmployeeManagement = () => {
                 >
                     <Plus size={20} className="button-icon" /> Add New Employee
                 </button>
+                 <button
+                    onClick={() => openModal('designations')}
+                    className="button designation-button"
+                >
+                    <Edit size={20} className="button-icon " /> Manage Designations
+                </button>
             </div>
 
             {employees.length === 0 && !loading && !error ? (
@@ -749,6 +925,8 @@ const EmployeeManagement = () => {
                                 <th className="table-header">Designation</th>
                                 <th className="table-header">Department</th>
                                 <th className="table-header">Location</th>
+                                <th className="table-header">Allownces</th>
+                                <th className="table-header">Resources</th>
                                 <th className="table-header">Bank Name</th>
                                 <th className="table-header">Email</th>
                                 <th className="table-header">Phone</th>
@@ -760,11 +938,21 @@ const EmployeeManagement = () => {
                         <tbody>
                             {employees.map((employee) => (
                                 <tr key={employee.id} className="table-row">
-                                    <td className="table-data font-medium">{employee.employee_id}</td>
+                                    <td className="table-data font-medium">{'ORA-0' + employee.id}</td>
                                     <td className="table-data">{employee.firstName} {employee.lastName}</td>
                                     <td className="table-data">{employee.designation}</td>
                                     <td className="table-data">{employee.department}</td>
                                     <td className="table-data">{employee.location}</td>
+                                      <td className="table-data">
+                                      {/* { console.log("type of allownces " ,typeof employee.alownces)} */}
+                                        {/* {(Object.keys(JSON.parse(employee.alownces)).length > 0) ? Object.keys(JSON.parse(employee.alownces)).join(","):'No Allownces'} */}
+                                        {(Object.keys(employee.alownces).length > 0) ? Object.keys(employee.alownces).join(","):'No Allownces'}
+                                        </td>
+                                      <td className="table-data">
+                                      {/* { console.log("type of allownces " ,typeof employee.alownces)} */}
+                                        {/* {(Object.keys(JSON.parse(employee.resources)).length > 0) ? Object.keys(JSON.parse(employee.resources)).join(","):'No Resources Allocated'} */}
+                                        {(Object.keys(employee.resources).length > 0) ? Object.keys(employee.resources).join(","):'No Resources Allocated'}
+                                        </td>
                                     <td className="table-data">{employee.bank_name}</td>
                                     <td className="table-data">{employee.email}</td>
                                     <td className="table-data">{employee.phoneNumber}</td>

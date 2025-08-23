@@ -21,7 +21,13 @@ exports.getSalary = async (employeeId,month,year) => {
         s.*, 
         CONCAT(e.firstName, ' ', e.lastName) AS employee_name,
         e.designation,
-        e.employee_id AS system_employee_id
+        e.employee_id AS system_employee_id,
+        e.location,
+        e.department,
+        e.bank_name,
+        e.alownces,
+        e.resources,
+        e.hire_date
       FROM salary_payments s
       JOIN employees e ON s.employee_id = e.id
       WHERE s.employee_id = ? AND MONTH(s.payment_date) = ? AND YEAR(s.payment_date) = ? 

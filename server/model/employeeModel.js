@@ -16,12 +16,14 @@ exports.addEmployeeModel = async (
   hire_date,
   location,
   department,
-  bank_name
+  bank_name,
+  alownces,
+  resources = {}
 ) => {
   const pool = database.pool;
   const query = `
-    INSERT INTO employees (employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date,location,department,bank_name)
-    VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ? ,?,?,?,?)
+    INSERT INTO employees (employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date,location,department,bank_name,resources,alownces)
+    VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ? ,?,?,?,?,?,?)
   `;
   const values = [
     employee_id,
@@ -38,6 +40,8 @@ exports.addEmployeeModel = async (
     location,
     department,
     bank_name,
+    resources,
+    alownces,
   ];
   await pool.query(query, values);
 };
@@ -74,16 +78,16 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
     updatedFields.salary = parsedSalary; // Update the object property to be a number
   }
 
-// --- CRITICAL FIX: Extract keys and values *AFTER* processing updatedFields ---
+  // --- CRITICAL FIX: Extract keys and values *AFTER* processing updatedFields ---
   const keys = Object.keys(updatedFields);
   const values = Object.values(updatedFields);
-// --- END CRITICAL FIX ---
+  // --- END CRITICAL FIX ---
 
-// Build dynamic SET clause like: "firstName = ?, email = ?"
-const setClause = keys.map((key) => `${key} = ?`).join(", ");
+  // Build dynamic SET clause like: "firstName = ?, email = ?"
+  const setClause = keys.map((key) => `${key} = ?`).join(", ");
 
-const query = `UPDATE employees SET ${setClause} WHERE id = ?`;
-values.push(id); // Add ID as last param
+  const query = `UPDATE employees SET ${setClause} WHERE id = ?`;
+  values.push(id); // Add ID as last param
 
   try {
     await pool.query(query, values);
@@ -91,18 +95,15 @@ values.push(id); // Add ID as last param
     console.error("Database error during employee update:", dbError);
     throw new Error(`Failed to update employee: ${dbError.message}`);
   }
-
 };
 
 // Get all employees
 exports.getAllEmployeesModel = async () => {
-
   const pool = await database.pool;
   const [rows] = await pool.query(
-    "SELECT id,firstName,lastName,employee_id,designation,cnic,address,salary,phoneNumber,hire_date,bank_account,email,location,bank_name,department FROM employees"
+    "SELECT id,firstName,lastName,employee_id,designation,cnic,address,salary,phoneNumber,hire_date,bank_account,email,location,bank_name,department,resources,alownces FROM employees"
   );
   return rows;
-
 };
 
 // 1. Total Active Employees
@@ -186,4 +187,33 @@ exports.getRecentHires = async () => {
     LIMIT 5
   `);
   return rows;
+};
+
+// Add a new designation
+exports.addDesignationModel = async (title, description) => {
+  const pool = database.pool;
+  const query = `INSERT INTO designations (title, description) VALUES (?, ?)`;
+  const values = [title, description];
+  await pool.query(query, values);
+};
+
+// Get all designations
+exports.getAllDesignationsModel = async () => {
+  const pool = database.pool;
+  const [rows] = await pool.query("SELECT id, title, description, created_at FROM designations");
+  return rows;
+};
+
+// Delete designation by ID
+exports.deleteDesignationModel = async (id) => {
+  const pool = database.pool;
+  const [result] = await pool.query("DELETE FROM designations WHERE id = ?", [id]);
+  return result.affectedRows;
+};
+
+// Check if title exists
+exports.designationExists = async (title) => {
+  const pool = database.pool;
+  const [rows] = await pool.query("SELECT id FROM designations WHERE title = ?", [title]);
+  return rows.length > 0;
 };

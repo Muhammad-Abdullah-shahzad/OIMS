@@ -67,7 +67,7 @@ body {
 }
 
 .button-secondary {
-    background-color: #e5e7eb; /* bg-gray-200 equivalent */
+    background-color: #c4c3c3; /* bg-gray-200 equivalent */
     color: #374151; /* text-gray-800 equivalent */
 }
 
@@ -90,7 +90,7 @@ body {
 
 .add-employee-section {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-bottom: 1.5rem; /* mb-6 equivalent */
 }
 
@@ -484,3 +484,78 @@ body {
     align-items: center;
     justify-content: center;
 }
+.designation-management-modal {
+    padding: 1rem;
+}
+
+.designation-form-section .form-group {
+    margin-bottom: 1rem;
+}
+
+.designation-list-section {
+    margin-top: 2rem;
+}
+
+.list-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.designation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.designation-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.designation-list-item:last-child {
+    border-bottom: none;
+}
+
+.no-designations-found {
+    color: var(--secondary-color);
+    text-align: center;
+    font-style: italic;
+    margin-top: 1rem;
+}
+.designation-button {
+    background-color: #2d6cdf;           /* Professional blue */
+    color: #ffffff;                      /* White text */
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.3px;
+  }
+  
+  .designation-button:hover {
+    background-color: #1f54b7;           /* Slightly darker on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+  
+  .designation-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .designation-button:focus {
+    outline: 2px solid #a3c0f9;         /* Subtle blue focus ring */
+    outline-offset: 2px;
+  }
+  
