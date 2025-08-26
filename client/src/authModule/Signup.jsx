@@ -137,9 +137,9 @@ const Signup = () => {
             {loading ? "Signing Up..." : "Sign Up"}
           </button>
 
-          <p>
+          <span>
             Already have an account? <Link to="/login" >Login</Link>
-          </p>
+          </span>
         </form>
       </div>
     </div>

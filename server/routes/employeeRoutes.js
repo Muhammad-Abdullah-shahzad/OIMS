@@ -19,10 +19,10 @@ router.get("/all",employeeController.getAllEmployeeController);
 
 router.get("/dashboard",authenticateToken,authenticateRoles("hr_manager","super_admin"),employeeController.getDashboardStatsController)
 
-router.get("/designation",employeeController.getAllDesignationsController);
+router.get("/designation",authenticateToken,authenticateRoles("hr_manager","super_admin"),employeeController.getAllDesignationsController);
 
-router.post("/add/designation",employeeController.addNewDesignationController);
+router.post("/add/designation",authenticateToken,authenticateRoles("hr_manager","super_admin"),employeeController.addNewDesignationController);
 
-router.delete("/delete/designation/:designationId",employeeController.deleteDesignationController);
+router.delete("/delete/designation/:designationId",authenticateToken,authenticateRoles("hr_manager","super_admin"),employeeController.deleteDesignationController);
 
 module.exports = router

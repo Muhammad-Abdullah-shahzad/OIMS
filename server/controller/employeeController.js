@@ -1,8 +1,9 @@
 // controller/employeeController.js
 const employeeModel = require("../model/employeeModel");
+const {userActivityLogger} = require("../model/userActivityLogModel");
 
 exports.addNewEmployeeController = async (req, res) => {
-  console.log("employee data comming from front end ", req.body);
+  // console.log("employee data comming from front end ", req.body);
   const {
     firstName,
     lastName,
@@ -59,6 +60,32 @@ exports.addNewEmployeeController = async (req, res) => {
       alownces,
       resources
     );
+
+   await userActivityLogger({
+    userEmail : req.user.email,
+    actionType :"INSERT",     
+    tableName : "employees table",
+    newData : {
+      employee_id,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      designation,
+      cnic,
+      address,
+      salary,
+      bank_account,
+      hire_date,
+      location,
+      department,
+      bank_name,
+      alownces,
+      resources
+    },
+    actionDetails : `${req.user.email} inserted a new employee `
+  });
+
     res.status(201).json({ message: "Employee added successfully" });
   } catch (err) {
     console.error("Add Employee Error:", err.message);
@@ -72,6 +99,15 @@ exports.deleteEmployeeController = async (req, res) => {
   // console.log("id and employee_id recieved from front end ",id,employee_id);
   try {
     await employeeModel.deleteEmployeeModel(id);
+    
+   await userActivityLogger({
+    userEmail : req.user.email,
+    actionType :"DELETE",     
+    tableName : "employees table",
+    newData : {} ,
+    actionDetails : `${req.user.email} deleted an employee`
+  });
+
     res.status(200).json({ message: "Employee deleted successfully" });
   } catch (err) {
     console.error("Delete Employee Error:", err.message);
@@ -84,8 +120,18 @@ exports.updateEmployeeInfoController = async (req, res) => {
   const updatedFields = req.body;
 
   try {
-    await employeeModel.updateEmployeeModel(id, updatedFields);
-    res.status(200).json({ message: "Employee updated successfully" });
+  await employeeModel.updateEmployeeModel(id, updatedFields);
+   
+  
+  await userActivityLogger({
+    userEmail : req.user.email,
+    actionType :"UPDATE",     
+    tableName : "employees table",
+    newData : req.body,
+    actionDetails : `${req.user.email} updated an employee `
+  });
+
+  res.status(200).json({ message: "Employee updated successfully" });
   } catch (err) {
     console.error("Update Employee Error:", err.message);
     res.status(500).json({ message: "Server error" });
@@ -148,6 +194,20 @@ exports.addNewDesignationController = async (req, res) => {
     }
 
     await employeeModel.addDesignationModel(title, description);
+
+   
+    await userActivityLogger({
+      userEmail : req.user.email,
+      actionType :"INSERT",     
+      tableName : "designations table",
+      newData : {
+        title,
+        description
+      },
+      actionDetails : `${req.user.email} inserted a new designation(title,description) in designations table `
+    });
+  
+
     res.status(201).json({ message: "Designation added successfully" });
   } catch (error) {
     console.error("Add Designation Error:", error.message);
@@ -175,6 +235,16 @@ exports.deleteDesignationController = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ message: "Designation not found" });
     }
+    
+    
+   await userActivityLogger({
+    userEmail : req.user.email,
+    actionType :"DELETE",     
+    tableName : "designations table",
+    newData : {},
+    actionDetails : `${req.user.email} deleted designation with id ${designationId}`
+  });
+
 
     res.status(200).json({ message: "Designation deleted successfully" });
   } catch (error) {

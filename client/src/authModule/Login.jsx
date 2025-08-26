@@ -73,9 +73,9 @@ const Login = () => {
           </button>
           {error && <p className={styles.errorMsg}>{error}</p>}
           {successMessage && <p className={styles.successMsg}>{successMessage}</p>}
-          <p>
+          <span>
             Don't have an account? <Link to="/signup">Sign Up</Link>
-          </p>
+          </span>
         </form>
       </div>
     </div>

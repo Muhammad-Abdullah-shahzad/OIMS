@@ -15,7 +15,7 @@ import styles from '../styles/adminDashboard.module.css'; // Import as CSS Modul
 import { useNavigate } from 'react-router-dom';
 
 // Define a color palette for charts - consistent with other dashboards
-const COLORS = ['#4F46E5', '#7C3AED', '#EC4899', '#F97316', '#10B981', '#3B82F6', '#EF4444', '#6B7280', '#D97706', '#8B5CF6', '#FACC15', '#A78BFA'];
+const COLORS = ['#8884d8', '#82ca9d', '#0088FE', '#FFBB28', '#FF8042', '#3B82F6', '#EF4444', '#6B7280', '#D97706', '#8B5CF6', '#FACC15', '#A78BFA'];
 
 // Utility function to format currency
 const formatCurrency = (value) => {
@@ -258,11 +258,11 @@ const SuperAdminDashboard = () => {
                                 <ResponsiveContainer width="100%" height={350}>
                                     <LineChart data={monthlyIncomeChartData} margin={{ top: 20, right: 10, left: 37, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                                        <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
+                                        <XAxis dataKey="name"  textAnchor="end" height={60} interval={0} />
                                         <YAxis tickFormatter={formatCurrency} />
                                         <Tooltip formatter={(value) => formatCurrency(value)} />
                                         <Legend />
-                                        <Line type="monotone" dataKey="Total Income" stroke={COLORS[0]} strokeWidth={3} dot={{ r: 6 }} activeDot={{ r: 8 }} />
+                                        <Line type="monotone" dataKey="Total Income" stroke={COLORS[0]} strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 3 }} />
                                     </LineChart>
                                 </ResponsiveContainer>
                             </div>
@@ -282,7 +282,7 @@ const SuperAdminDashboard = () => {
                                 <ResponsiveContainer width="100%" height={350}>
                                     <AreaChart data={monthlyExpensesChartData} margin={{ top: 10, right: 0, left: 40, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
+                                        <XAxis dataKey="name"  textAnchor="end" height={60} interval={0} />
                                         <YAxis tickFormatter={formatCurrency} />
                                         <Tooltip formatter={(value) => formatCurrency(value)} />
                                         <Area type="monotone" dataKey="Total Expenses" stroke={COLORS[3]} fillOpacity={1} fill="url(#colorExpense)" />
@@ -310,12 +310,12 @@ const SuperAdminDashboard = () => {
                                 <h2 className={styles.chartTitle}>Monthly Salary Disbursement</h2>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <BarChart data={salaryDisbursementChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                                        <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
+                                        <CartesianGrid strokeDasharray="5 5" stroke="#e0e7ff" />
+                                        <XAxis dataKey="name"  textAnchor="end" height={60} interval={0} />
                                         <YAxis tickFormatter={formatCurrency} />
                                         <Tooltip formatter={(value) => formatCurrency(value)} />
                                         <Legend />
-                                        <Bar dataKey="Total Salaries Disbursed" fill={COLORS[4]} barSize={30} radius={[10, 10, 0, 0]} />
+                                        <Bar dataKey="Total Salaries Disbursed" fill={COLORS[4]} barSize={30}  />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -436,12 +436,12 @@ const SuperAdminDashboard = () => {
                                 <ResponsiveContainer height={350}>
                                     <LineChart data={monthlyProfitChartData} margin={{ top: 20, right: 10, left: 37, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                                        <XAxis dataKey="name" angle={-15} textAnchor="end" height={60} interval={0} />
+                                        <XAxis dataKey="name"  textAnchor="end" height={60} interval={0} />
                                         <YAxis tickFormatter={formatCurrency} />
                                         <Tooltip formatter={(value, name) => [`${name}: ${formatCurrency(value)}`]} />
                                         <Legend />
-                                        <Line type="monotone" dataKey="Total Income" stroke={COLORS[5]} strokeWidth={2} dot={false} />
-                                        <Line type="monotone" dataKey="Total Expense" stroke={COLORS[6]} strokeWidth={2} dot={false} />
+                                        <Line type="monotone" dataKey="Total Income" stroke={COLORS[5]} strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 3 }}/>
+                                        <Line type="monotone" dataKey="Total Expense" stroke={COLORS[6]} strokeWidth={3}   dot={{ r: 3 }} activeDot={{ r: 3 }}/>
                                         <Line type="monotone" dataKey="Profit" stroke={COLORS[0]} strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 3 }} />
                                     </LineChart>
                                 </ResponsiveContainer>

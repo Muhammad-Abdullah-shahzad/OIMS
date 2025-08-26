@@ -1,6 +1,5 @@
 // model/employeeModel.js
 const database = require("../Database/database");
-
 // Add a new employee
 exports.addEmployeeModel = async (
   employee_id,
@@ -90,7 +89,7 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
   values.push(id); // Add ID as last param
 
   try {
-    await pool.query(query, values);
+   await pool.query(query, values);
   } catch (dbError) {
     console.error("Database error during employee update:", dbError);
     throw new Error(`Failed to update employee: ${dbError.message}`);
