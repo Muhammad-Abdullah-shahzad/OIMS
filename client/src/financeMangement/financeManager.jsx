@@ -213,7 +213,7 @@ export default function FinanceManager() {
   const [validationErrors, setValidationErrors] = useState({});
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  const API_BASE_URL = "http://localhost:5000";
+  const API_BASE_URL = "https://oimsapi.oradigitals.com";
 
   // Show Toast Message Helper
   const showToastMessage = useCallback((message, type) => {

@@ -7,9 +7,11 @@ import {
 import FinanceManager from "../financeMangement/financeManager.jsx";
 import ProjectManagement from "../projectMangement/projectManegment.jsx";
 import EmployeeManager from "../components/employee.jsx"
+import UserActivityLogs from '../userActivitylogs/ActivityLogs.jsx';
+
 import {
     LayoutDashboard, Users, Briefcase, Folder, DollarSign, TrendingUp, TrendingDown,
-    Banknote, Receipt, ClipboardList, Award, Menu, X, Info, Loader, AlertCircle, CheckCircle
+    Banknote, Receipt, ClipboardList, Award, Menu, X, Info, Loader, AlertCircle, CheckCircle ,LogsIcon
 } from 'lucide-react';
 import styles from '../styles/adminDashboard.module.css'; // Import as CSS Module
 import { useNavigate } from 'react-router-dom';
@@ -473,6 +475,13 @@ const SuperAdminDashboard = () => {
                        <ProjectManagement/>
                     </>
                 );
+             case 'activity-logs':
+                return(
+                    <>
+                    <UserActivityLogs/>
+                    </>
+                )   
+            
        
             default:
                 return null;
@@ -507,8 +516,6 @@ const SuperAdminDashboard = () => {
                             Overview
                         </button>
                     </li>
-                  
-                 
                     <li>
                         <button
                             className={`${styles.sidebarButton} ${selectedSection === 'finance-management' ? styles.active : ''}`}
@@ -536,6 +543,16 @@ const SuperAdminDashboard = () => {
                             <Award size={20} className={styles.sidebarNavIcon} />
                             Employee Management
                         </button>
+                    </li>
+                    
+                    <li>
+                        <button
+                            className={`${styles.sidebarButton} ${selectedSection === 'activity-logs' ? styles.active : ''}`}
+                            onClick={() => { setSelectedSection('activity-logs'); setIsMobileSidebarOpen(false); }}
+                        >
+                            <LogsIcon size={20} className={styles.sidebarNavIcon} />
+                            User Activity Logs                       
+                     </button>
                     </li>
                     
                 </ul>
@@ -582,6 +599,17 @@ const SuperAdminDashboard = () => {
                             >
                                 <Award size={20} className={styles.sidebarNavIcon} />
                                 Employee Management
+                            </button>
+                        </li>
+                  
+                        
+                        <li>
+                            <button
+                                className={`${styles.sidebarButton} ${selectedSection === 'activity-logs' ? styles.active : ''}`}
+                                onClick={() => setSelectedSection('activity-logs')}
+                            >
+                                <LogsIcon size={20} className={styles.sidebarNavIcon} />
+                                Activity Logs
                             </button>
                         </li>
                   

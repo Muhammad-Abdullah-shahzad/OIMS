@@ -90,7 +90,7 @@ const ProjectManagement = () => {
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
     // Base URL for your Express.js API
-    const API_BASE_URL = 'http://localhost:5000'; // Base for all APIs
+    const API_BASE_URL = 'https://oimsapi.oradigitals.com'; // Base for all APIs
 
     // Fetch Projects
     const fetchProjects = useCallback(async () => {
