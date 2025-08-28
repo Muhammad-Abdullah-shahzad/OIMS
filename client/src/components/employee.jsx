@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import "../styles/employeeModule.css"
+import EmployeeProfile from '../EmployeeProfile/EmployeeProfile.jsx';
+
 // --- Utility Functions (could be in a separate utils file) ---
 const validateEmployeeForm = (formData) => {
     const errors = {};
@@ -65,7 +67,7 @@ const EmployeeManagement = () => {
     const [designationErrors, setDesignationErrors] = useState({});
     
     // Base URL for your Express.js API
-    const API_BASE_URL = 'https://oimsapi.oradigitals.com/employee'; // Adjust if your API is on a different base path
+    const API_BASE_URL = 'http://localhost:5000/employee'; // Adjust if your API is on a different base path
 
     // Fetch Employees
     const fetchEmployees = useCallback(async () => {
@@ -304,15 +306,15 @@ const EmployeeManagement = () => {
             try {
                 if (employee.alownces) {
                     // console.log("date type of alownces " ,typeof employee.alownces);
-                    setAllowances(JSON.parse(employee.alownces));
-                    // setAllowances(employee.alownces);
+                    // setAllowances(JSON.parse(employee.alownces));
+                    setAllowances(employee.alownces);
                 }
                 if (employee.resources) {
                     // Assuming resources is stored as a simple JSON object like { "Laptop": true, "Mobile Phone": true }
                     // console.log("date type of resources " ,typeof employee.resources);
                    
-                    setResources(JSON.parse(employee.resources));
-                    // setResources(employee.resources);
+                    // setResources(JSON.parse(employee.resources));
+                    setResources(employee.resources);
                 }
             } catch (e) {
                 console.error("Failed to parse JSON for allowances or resources", e);
@@ -920,6 +922,7 @@ const EmployeeManagement = () => {
                     <table className="employee-table">
                         <thead>
                             <tr>
+                                <th className="table-header rounded-tl">Profile</th>
                                 <th className="table-header rounded-tl">Employee ID</th>
                                 <th className="table-header">Name</th>
                                 <th className="table-header">Designation</th>
@@ -938,6 +941,8 @@ const EmployeeManagement = () => {
                         <tbody>
                             {employees.map((employee) => (
                                 <tr key={employee.id} className="table-row">
+
+                                    <td className="table-data font-medium"><EmployeeProfile profileImageUrl = {employee.profile_image_url} /></td>
                                     <td className="table-data font-medium">{'ORA-0' + employee.id}</td>
                                     <td className="table-data">{employee.firstName} {employee.lastName}</td>
                                     <td className="table-data">{employee.designation}</td>
@@ -945,13 +950,13 @@ const EmployeeManagement = () => {
                                     <td className="table-data">{employee.location}</td>
                                       <td className="table-data">
                                       {/* { console.log("type of allownces " ,typeof employee.alownces)} */}
-                                        {(Object.keys(JSON.parse(employee.alownces)).length > 0) ? Object.keys(JSON.parse(employee.alownces)).join(","):'No Allownces'}
-                                        {/* {(Object.keys(employee.alownces).length > 0) ? Object.keys(employee.alownces).join(","):'No Allownces'} */}
+                                        {/* {(Object.keys(JSON.parse(employee.alownces)).length > 0) ? Object.keys(JSON.parse(employee.alownces)).join(","):'No Allownces'} */}
+                                        {(Object.keys(employee.alownces).length > 0) ? Object.keys(employee.alownces).join(","):'No Allownces'}
                                         </td>
                                       <td className="table-data">
                                       {/* { console.log("type of allownces " ,typeof employee.alownces)} */}
-                                        {(Object.keys(JSON.parse(employee.resources)).length > 0) ? Object.keys(JSON.parse(employee.resources)).join(","):'No Resources Allocated'}
-                                        {/* {(Object.keys(employee.resources).length > 0) ? Object.keys(employee.resources).join(","):'No Resources Allocated'} */}
+                                        {/* {(Object.keys(JSON.parse(employee.resources)).length > 0) ? Object.keys(JSON.parse(employee.resources)).join(","):'No Resources Allocated'} */}
+                                        {(Object.keys(employee.resources).length > 0) ? Object.keys(employee.resources).join(","):'No Resources Allocated'}
                                         </td>
                                     <td className="table-data">{employee.bank_name}</td>
                                     <td className="table-data">{employee.email}</td>

@@ -1,0 +1,38 @@
+// SCSS for the employee profile card component.
+@mixin setDimensions($height, $width) {
+  height: $height;
+  width: $width;
+}
+.employee-profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  font-family: "Inter", sans-serif;
+  max-width: 300px;
+//   margin: 1rem;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.profile-image-container {
+@include setDimensions(50px,50px);
+//   border-radius: 50%; // Makes the container circular
+  overflow: hidden; // Hides the parts of the image that are outside the circle
+  border: 1px solid #EEE; // A stylish border for the profile image
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+//   margin-bottom: 1rem;
+}
+
+.profile-image {
+@include setDimensions(100%,100%);
+  object-fit: cover; // Ensures the image covers the container without distortion
+}
