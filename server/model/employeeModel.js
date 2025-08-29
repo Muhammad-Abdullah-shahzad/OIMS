@@ -89,7 +89,7 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
   values.push(id); // Add ID as last param
 
   try {
-   await pool.query(query, values);
+    await pool.query(query, values);
   } catch (dbError) {
     console.error("Database error during employee update:", dbError);
     throw new Error(`Failed to update employee: ${dbError.message}`);
@@ -100,7 +100,13 @@ exports.updateEmployeeModel = async (id, updatedFields) => {
 exports.getAllEmployeesModel = async () => {
   const pool = await database.pool;
   const [rows] = await pool.query(
-    "SELECT id,firstName,lastName,employee_id,designation,cnic,address,salary,phoneNumber,hire_date,bank_account,email,location,bank_name,department,resources,alownces FROM employees"
+    `SELECT 
+    e.id,firstName,e.lastName,e.employee_id,e.designation,
+    e.cnic,address,e.salary,e.phoneNumber,e.hire_date,e.bank_account,e.email,e.location,
+    e.bank_name,e.department,e.resources,e.alownces , p.profile_image_url
+     FROM employees e LEFT JOIN employeeProfiles p on
+     e.id = p.employee_id
+     `
   );
   return rows;
 };
@@ -199,20 +205,27 @@ exports.addDesignationModel = async (title, description) => {
 // Get all designations
 exports.getAllDesignationsModel = async () => {
   const pool = database.pool;
-  const [rows] = await pool.query("SELECT id, title, description, created_at FROM designations");
+  const [rows] = await pool.query(
+    "SELECT id, title, description, created_at FROM designations"
+  );
   return rows;
 };
 
 // Delete designation by ID
 exports.deleteDesignationModel = async (id) => {
   const pool = database.pool;
-  const [result] = await pool.query("DELETE FROM designations WHERE id = ?", [id]);
+  const [result] = await pool.query("DELETE FROM designations WHERE id = ?", [
+    id,
+  ]);
   return result.affectedRows;
 };
 
 // Check if title exists
 exports.designationExists = async (title) => {
   const pool = database.pool;
-  const [rows] = await pool.query("SELECT id FROM designations WHERE title = ?", [title]);
+  const [rows] = await pool.query(
+    "SELECT id FROM designations WHERE title = ?",
+    [title]
+  );
   return rows.length > 0;
 };

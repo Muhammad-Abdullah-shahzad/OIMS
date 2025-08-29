@@ -1,0 +1,219 @@
+/* employeeDetailsProfileCard.module.scss */
+
+/* Hide scrollbar for different browsers */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+* {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.profileCardOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+}
+
+.profileCardContent {
+    background-color: #1a1a1a;
+    border-radius: 1rem;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    width: 95%;
+    max-width: 400px;
+    padding: 1.5rem;
+    position: relative;
+    animation: scaleIn 0.3s ease-out forwards;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.profileCardCloseBtn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #4b5563;
+    transition: color 0.2s;
+    
+    &:hover {
+        color: #e5e7eb;
+    }
+}
+
+.profileCardLayout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profileHeader {
+    margin-bottom: 1.5rem;
+}
+
+.profileImage {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0.75rem;
+}
+
+.profileName {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #e5e7eb;
+    margin: 0;
+}
+
+.profileDesignation {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin: 0.25rem 0 0;
+}
+
+.profileDetailsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.detailItem {
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    padding: 0.75rem;
+    background: #2a2a2a;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    strong {
+        display: block;
+        font-weight: 600;
+        color: #ffffff;
+        text-align: start;
+    }
+    
+    > div {
+      overflow-wrap: break-word;
+    }
+}
+
+.detailIcon {
+
+    color: #00bcd4;
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+
+}
+
+.detailsSection {
+    border-top: none; /* Removed top border */
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #2A2A2A; /* Added background color to the section */
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color:#a0a0a0;
+}
+
+.detailsSection h3 {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #FFF;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #00bcd4;
+}
+
+.sectionIcon {
+    color: #00bcd4;
+    margin-right: 0.5rem;
+}
+
+.detailsList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        font-size: 0.8rem;
+        color:#a0a0a0;
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+    .profileCardContent {
+        max-width: 700px;
+        padding: 2.5rem;
+    }
+
+    .profileCardLayout {
+        flex-direction: row;
+        gap: 3rem;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .profileHeader {
+        flex-shrink: 0;
+        margin-bottom: 0;
+        text-align: left;
+    }
+
+    .profileImage {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profileName {
+        font-size: 1.75rem;
+    }
+    
+    .profileDetailsGrid {
+        flex-grow: 1;
+        gap: 1.5rem;
+        margin-bottom: 0;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -117,6 +117,7 @@ exports.deleteEmployeeController = async (req, res) => {
 
 exports.updateEmployeeInfoController = async (req, res) => {
   const { id } = req.params;
+  delete req.body.profile_image_url;
   const updatedFields = req.body;
 
   try {

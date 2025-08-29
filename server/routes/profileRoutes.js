@@ -10,4 +10,12 @@ router.get('/:userId',authenticateToken,authenticateRoles("super_admin"), profil
 // Edit profile by profileId
 router.put('/edit/:profileId', authenticateToken,authenticateRoles("super_admin") , profileController.editProfile);
 
+
+//  for employees profile
+
+router.get('/employee/:employeeId', profileController.getEmployeeProfile);
+
+// Edit profile by profileId
+router.put('/employee/edit/:profileId', profileController.editEmployeeProfile);
+
 module.exports = router;
