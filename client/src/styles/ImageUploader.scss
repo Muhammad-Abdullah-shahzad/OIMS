@@ -1,0 +1,199 @@
+/* ImageUploader.scss */
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+}
+
+.image-uploader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    animation: scaleIn 0.3s ease-out forwards;
+      & .cross{
+        display: flex;
+        justify-content:end;
+        width: 100%;
+        cursor: pointer;
+       }
+    .uploader-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .uploader-subtitle {
+        font-size: 0.9rem;
+        color: #666;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .upload-area {
+        position: relative;
+        width: 100%;
+        border: 2px dashed #e0e0e0;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+        cursor: pointer;
+
+        &:hover {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            gap: 0.75rem;
+
+            .cloud-icon {
+                color: #b0b0b0;
+                transition: color 0.3s ease;
+            }
+
+            .file-input-text {
+                color: #555;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+         
+            
+            .file-input-btn {
+                margin-top: 0.5rem;
+                padding: 0.5rem 1rem;
+                background-color: #007bff;
+                color: #fff;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 0.875rem;
+                transition: background-color 0.3s ease;
+                
+                &:hover {
+                    background-color: #0056b3;
+                }
+            }
+        }
+    }
+
+    .upload-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        width: 100%;
+        justify-content: center;
+        
+        .upload-button, .cancel-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            
+            &:active {
+                transform: translateY(1px);
+            }
+        }
+
+        .upload-button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            
+            &:hover {
+                background-color: #218838;
+            }
+            
+            &:disabled {
+                background-color: #c8e6c9;
+                cursor: not-allowed;
+            }
+        }
+      
+        .cancel-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            
+            &:hover {
+                background-color: #c82333;
+            }
+        }
+    }
+
+    .spinner {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    
+    .upload-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        width: 100%;
+        
+        &.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        &.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    }
+}

@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import styles from "../styles/employeeDetailsProfileCard.module.scss";
 
-const EmployeeProfileCard = ({ employee, onClose }) => {
+const EmployeeProfileCard = ({ employee, onClose , onProfileClick }) => {
     if (!employee) {
         return null;
     }
@@ -30,7 +30,8 @@ const EmployeeProfileCard = ({ employee, onClose }) => {
                 
                 <div className={styles.profileCardLayout}>
                     <div className={styles.profileHeader}>
-                        <img
+                        <img 
+                            onClick={onProfileClick}
                             src={employee.profile_image_url || 'https://static.vecteezy.com/system/resources/thumbnails/036/107/216/small/ai-generated-portrait-of-successful-and-happy-businesswoman-office-worker-smiling-and-looking-at-camera-with-crossed-arms-working-inside-modern-office-photo.jpg'}
                             alt={`${employee.firstName} ${employee.lastName}`}
                             className={styles.profileImage}

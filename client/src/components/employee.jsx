@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import "../styles/employeeModule.css"
 import EmployeeProfile from '../EmployeeProfile/EmployeeProfile.jsx';
 import EmployeeProfileCard from '../EmployeeProfile/EmployeeProfileCard.jsx';
-
+import ImageUploaderComponent from '../EmployeeProfile/EmployeeProfileUploader.jsx';
 // --- Utility Functions (could be in a separate utils file) ---
 const validateEmployeeForm = (formData) => {
     const errors = {};
@@ -71,6 +71,7 @@ const EmployeeManagement = () => {
     // New states for profile card
     const [showProfileCard, setShowProfileCard] = useState(false);
     const [profileCardEmployee, setProfileCardEmployee] = useState(null);
+    const [showImageUploader,setImageUploader] = useState(false);
 
     // Base URL for your Express.js API
     const API_BASE_URL = 'https://oimsapi.oradigitals.com/employee'; // Adjust if your API is on a different base path
@@ -961,7 +962,10 @@ const EmployeeManagement = () => {
                                         className="table-data font-medium profile-cell" 
                                         onClick={() => openProfileCard(employee)}
                                     >
-                                        <EmployeeProfile profileImageUrl={employee.profile_image_url} />
+                                        <EmployeeProfile 
+                                        profileImageUrl={employee.profile_image_url} 
+                                      
+                                        />
                                     </td>
                                     <td className="table-data font-medium">{'ORA-0' + employee.id}</td>
                                     <td className="table-data">{employee.firstName} {employee.lastName}</td>
@@ -1028,7 +1032,19 @@ const EmployeeManagement = () => {
                 <EmployeeProfileCard 
                     employee={profileCardEmployee} 
                     onClose={closeProfileCard}
+                    onProfileClick={()=>{
+                        closeProfileCard();
+                        setImageUploader(true);
+                    }}
                 />
+            )}
+           { showImageUploader && (
+                <ImageUploaderComponent 
+                onUploadSuccess = {()=>{}}
+                 onCancel={()=>{
+                    setImageUploader(false)
+                 }}
+                 />
             )}
         </div>
     );
