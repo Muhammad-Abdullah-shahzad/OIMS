@@ -50,6 +50,7 @@ exports.updateProfile = async (
   employee_id,
   { profile_image_url }
 ) => {
+  console.log("all values to profileModel " , profileId , userId , employee_id);
   // Update profiles table
   // if profile id is not present then  create a profile else update
   // existing profile
@@ -70,9 +71,9 @@ exports.updateProfile = async (
         [profile_image_url, profileId]
       );
     }
-  } else {
+  } else if (parseInt(employee_id)) {
     // logic for employee profile
-    if (!parseInt(profileId)) {
+    if (!parseInt(profileId)  && parseInt(employee_id)) {
       await db.execute(
         `
             INSERT INTO employeeProfiles (employee_id,profile_image_url)       

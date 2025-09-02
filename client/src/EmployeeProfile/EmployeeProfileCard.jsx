@@ -107,8 +107,8 @@ const EmployeeProfileCard = ({ employee, onClose , onProfileClick }) => {
                 <div className={styles.detailsSection}>
                     <h3><HandCoins size={20} className={styles.sectionIcon} /> Allowances</h3>
                     <ul className={styles.detailsList}>
-                        {employee.alownces && Object.keys(JSON.parse(employee.alownces)).length > 0 ? (
-                            Object.entries(JSON.parse(employee.alownces)).map(([name, amount]) => (
+                        {employee.alownces && Object.keys((employee.alownces)).length > 0 ? (
+                            Object.entries((employee.alownces)).map(([name, amount]) => (
                                 <li key={name}>{name}: ${amount}</li>
                             ))
                         ) : (
@@ -120,8 +120,8 @@ const EmployeeProfileCard = ({ employee, onClose , onProfileClick }) => {
                 <div className={styles.detailsSection}>
                     <h3><Laptop size={20} className={styles.sectionIcon} /> Resources</h3>
                     <ul className={styles.detailsList}>
-                        {employee.resources && Object.keys(JSON.parse(employee.resources)).length > 0 ? (
-                            Object.keys(JSON.parse(employee.resources)).map((name) => (
+                        {employee.resources && Object.keys((employee.resources)).length > 0 ? (
+                            Object.keys((employee.resources)).map((name) => (
                                 <li key={name}>{name}</li>
                             ))
                         ) : (

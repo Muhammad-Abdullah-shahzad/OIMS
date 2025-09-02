@@ -1,36 +1,23 @@
-const express = require("express");
-// In Express backend:
-const cors = require("cors");
-
 const dotenv = require("dotenv").config();
-
+//  Express backend:
+const express = require("express");
+const cors = require("cors");
 const app = express();
-
 const authenticationRoutes = require("./routes/authenticationRoutes");
-
 const employeeRoutes = require("./routes/employeeRoutes");
-
 const projectRoutes = require("./routes/projectsRoutes");
-
 const clientRoutes = require("./routes/clientRoutes");
-
 const dashboardRoute = require("./routes/dashboardsRoutes");
-
 const paymentRoutes = require("./routes/paymentRoutes");
-
 const expenseRoutes = require("./routes/expenseRoute");
-
 const salaryRoutes = require("./routes/salaryRoutes");
-
 const userRoutes = require("./routes/userRoutes");
-
 const financeRoute = require("./routes/financeRoute");
-
 const adminRoute = require("./routes/adminRoute");
-
 const profileRoutes = require("./routes/profileRoutes");
-
 const logsRoutes = require("./routes/userActivityLogsRoutes");
+const otpRoutes = require("./routes/otpRoutes");
+const passwordRoutes=require("./routes/passwordRoutes")
 
 app.use(cors());
 
@@ -143,7 +130,11 @@ app.use("/admin", adminRoute);
 
 app.use("/profile", profileRoutes);
 
-app.use("/activitylogs" , logsRoutes);
+app.use("/activitylogs", logsRoutes);
+
+app.use("/otp", otpRoutes);
+
+app.use("/password",passwordRoutes);
 
 app.listen(process.env.PORT || 5000, () => {
   console.log("server listening on port ", port);

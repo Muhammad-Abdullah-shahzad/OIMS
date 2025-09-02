@@ -5,6 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware to protect routes
 exports.authenticateToken=(req, res, next) => {
+  
   const authHeader = req.headers['authorization'];
   // Token format: "Bearer <token>"
   const token = authHeader && authHeader.split(' ')[1];

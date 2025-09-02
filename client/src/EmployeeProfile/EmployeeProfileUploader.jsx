@@ -6,12 +6,12 @@ import '../styles/ImageUploader.scss';
 const cloudinaryCloudName = "abdullahcloud";
 const cloudinaryUploadPreset = "MY_UPLOAD_PRESET";
 const BASE_URL = `http://localhost:5000`
-const ImageUploaderComponent = ({ employeeId, onUploadSuccess, onCancel }) => {
+const ImageUploaderComponent = ({ profileData, onUploadSuccess, onCancel }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
-
+console.log("profile data semding to backend ", profileData);
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -49,11 +49,12 @@ const ImageUploaderComponent = ({ employeeId, onUploadSuccess, onCancel }) => {
             }
 
             const data = await response.json();
+           
             const imageUrl = data.secure_url;
-
+            console.log("image url going to backend ", imageUrl );
             // Step 2: Update employee profile with the new image URL
             const token = localStorage.getItem("token");
-            const updateApiUrl = `${BASE_URL}/employee/profile/edit/${employeeId}`;
+            const updateApiUrl = `${BASE_URL}/profile/employee/edit/${profileData.profile_id}`;
             
             const updateResponse = await fetch(updateApiUrl, {
                 method: 'PUT', // Assuming the API uses PUT for updates
@@ -63,7 +64,7 @@ const ImageUploaderComponent = ({ employeeId, onUploadSuccess, onCancel }) => {
                 },
                 body: JSON.stringify({ 
                     profile_image_url: imageUrl, 
-                    employee_id: employeeId 
+                    employee_id: profileData.employeeId 
                 }),
             });
 

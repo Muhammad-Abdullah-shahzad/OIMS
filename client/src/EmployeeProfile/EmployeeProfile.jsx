@@ -23,7 +23,7 @@ export default function EmployeeProfile({ profileImageUrl, name, designation }) 
           alt={`Profile picture of ${name}`}
           onError={handleImageError}
           className="profile-image"
-        />
+         />  
       </div>
   
     // </div>

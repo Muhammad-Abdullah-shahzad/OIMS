@@ -3,7 +3,7 @@ const database = require("../Database/database");
 exports.findUserByEmail = async (email) => {
   const pool = await database.pool;
   const [result] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-  return result[0];
+  return result;
 };
 
 exports.createUser = async (email, hashedPassword, firstName, lastName ) => {
