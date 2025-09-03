@@ -6,10 +6,12 @@ const { sendMail } = require("../utility/mailer");
 // Request OTP
 exports.requestOtp = async (req, res) => {
   try {
-    const { userId, email } = req.user;
+    const { userId, email } = req.body;
+    console.log("userId ",userId , "email ",email);
     if (!userId || !email) {
       return res.status(400).json({ message: "User ID and Email required" });
     }
+  
 
     // Invalidate all old OTPs
     await otpModel.invalidateOtps(userId);
@@ -38,6 +40,7 @@ exports.requestOtp = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
   try {
     const { userId, otp } = req.body;
+    console.log("data send to verify otp userId ", "otp: " , otp);
     if (!userId || !otp) {
       return res.status(400).json({ message: "User ID and OTP required" });
     }

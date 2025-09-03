@@ -8,6 +8,17 @@
   --error-red: #E53E3E;
   --success-green: #38A169;
 }
+.forget-password-heading-login {
+  font-size: 7px;      /* clear readable size */
+  font-weight: 100;    /* bold for emphasis */
+ /* center align */
+  margin-bottom: 16px;  /* space below */
+  color: #636161; 
+  width: 100%;
+  margin-bottom: 5px;  
+  text-decoration: none;       /* dark gray for good contrast */
+}
+
 
 /* Base font and layout */
 .pageWrapper {

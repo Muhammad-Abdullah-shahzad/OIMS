@@ -73,6 +73,9 @@ const Login = () => {
           </button>
           {error && <p className={styles.errorMsg}>{error}</p>}
           {successMessage && <p className={styles.successMsg}>{successMessage}</p>}
+          <div className='forget-password-heading-login'>
+           Forget password? <Link to="/forget-password">click here</Link>
+          </div>
           <span>
             Don't have an account? <Link to="/signup">Sign Up</Link>
           </span>
