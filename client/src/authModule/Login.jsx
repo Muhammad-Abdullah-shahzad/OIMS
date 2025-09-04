@@ -5,7 +5,7 @@ import loginUser from './userLogin';
 import {Link} from "react-router-dom"
 const Login = () => {
   const navigate = useNavigate();
-  const Base_Url = `https://oimsapi.oradigitals.com/auth`;
+  const Base_Url = `http://localhost:5000/auth`;
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,11 +73,11 @@ const Login = () => {
           </button>
           {error && <p className={styles.errorMsg}>{error}</p>}
           {successMessage && <p className={styles.successMsg}>{successMessage}</p>}
-          <div className='forget-password-heading-login'>
-           Forget password? <Link to="/forget-password">click here</Link>
+          <div className={styles.forgetPasswordHeadingLogin}>
+           Forget password? <Link to="/forget-password" style={{ textDecoration:"none"}} >click here</Link>
           </div>
           <span>
-            Don't have an account? <Link to="/signup">Sign Up</Link>
+            Don't have an account? <Link   style={{ textDecoration:"none"}} to="/signup">Sign Up</Link>
           </span>
         </form>
       </div>

@@ -7,6 +7,7 @@ const BASE_URL = "http://localhost:5000";
 
 function ForgetPassword() {
   const [email, setEmail] = useState("");
+  const [isClicked , setISClicked] = useState(false);
    const navigate = useNavigate();
    
   const [userData, setUserData] = useState({
@@ -17,6 +18,7 @@ function ForgetPassword() {
 
   async function handleForgetPassword() {
     try {
+      setISClicked(true);
       // Step 1: Send a POST request to the /password/forget API with the user's email
       const forgetPasswordResponse = await fetch(
         `${BASE_URL}/password/forget`,
@@ -48,9 +50,11 @@ function ForgetPassword() {
           console.log("OTP request successful." );
           navigate("/otp-verify", { state: { userId: user.userId, email: user.email } });
           // You can add logic here to navigate to a new page or show a success message
+          
         } else {
           const res = await otpRequestResponse.json();
           console.error("Failed to request OTP:", res.message);
+          setISClicked(false);
           // Handle OTP request failure (e.g., show an error message)
         }
       } else {
@@ -58,10 +62,12 @@ function ForgetPassword() {
           ...error,
           userNotFound: "No user not found with this Email",
         });
+        setISClicked(false);
         console.error("Failed to find user with that email.");
         // Handle forget password failure (e.g., show an error message)
       }
     } catch (error) {
+      setISClicked(false);
       console.error("An error occurred:", error);
       // Handle network or other errors
     }
@@ -98,9 +104,10 @@ function ForgetPassword() {
           <button
             type="button"
             onClick={handleForgetPassword}
-            className="forget-password-reset-button"
+            className={`forget-password-reset-button ${isClicked && `button-disabled`}`}
+            disabled={isClicked}
           >
-            Reset Password
+           {isClicked ? "verifying mail..." : "Reset Password"}
           </button>
           <Link to="/login" className="forget-password-back-to-login">
             Back to Login

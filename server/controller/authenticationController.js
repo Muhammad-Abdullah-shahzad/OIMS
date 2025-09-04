@@ -1,8 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
-
 const userModel = require("../model/userModel")
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -37,7 +35,8 @@ exports.loginController = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await userModel.findUserByEmail(email);
+    const users = await userModel.findUserByEmail(email);
+    const user = users[0];
     console.log( "user record from database",user);
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });

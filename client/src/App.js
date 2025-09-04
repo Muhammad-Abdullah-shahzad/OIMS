@@ -15,9 +15,13 @@ import SuperAdminFinancePage from "./pages/SuperAdminFinancePage";
 import SuperAdminDashboardPage from "./pages/SuperAdminDashboardPage";
 import ForgetPassword from "./authModule/ForgetPassword";
 import VerifyOtp from "./authModule/VerifyOTP";
+import ResetPassword from "./authModule/ResetPassword";
+
 function App() {
   return (
     <Routes>
+      {/* reset password */}
+      <Route path="/reset-password" element={<ResetPassword/>} />
       {/* forget pasword page */}
       <Route path="/forget-password" element={<ForgetPassword />} />
       {/* verify otp */}

@@ -7,7 +7,7 @@ const BASE_URL = 'http://localhost:5000';
 function VerifyOtp() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userId } = location.state || {};
+  const { userId , email } = location.state || {};
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [error, setError] = useState(null); // New state for errors
   const otpBoxReference = useRef([]);
@@ -69,7 +69,7 @@ function VerifyOtp() {
         <div className="otp-form">
           <h2 className="otp-heading">Enter OTP</h2>
           <p className="otp-sub-heading">
-            A 6-digit OTP has been sent to your email.
+            A 6-digit OTP has been sent to {email}.
           </p>
           <div className="otp-inputs-container">
             {otp.map((digit, index) => (

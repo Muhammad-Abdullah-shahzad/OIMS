@@ -37,4 +37,15 @@ exports.getUserIdByRoleModel = async (role) => {
     return rows[0].id;
 }  
 
+exports.updateUserPassword= async (userId,newPasswordHash)=>{
+  const pool = await database.pool;
+  const [rows] =  await pool.query(
+      `update  users set password_hash = ? where id = ?
+      `
+      ,[newPasswordHash,userId]
+    );
+
+    console.log(rows);
+    return rows;
+}
 
