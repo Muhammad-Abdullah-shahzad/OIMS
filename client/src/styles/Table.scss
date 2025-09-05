@@ -1,0 +1,143 @@
+
+/* Table Styles */
+.employee-table-container {
+    overflow-x:auto;
+    background-color: #ffffff; /* bg-white equivalent */
+    border-radius: 0.5rem; /* rounded-lg equivalent */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg equivalent */
+}
+
+.employee-table {
+    min-width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures consistent column widths */
+}
+
+.employee-table thead {
+    background-color: #f9fafb; /* bg-gray-50 equivalent */
+}
+
+.table-header {
+    padding: 0.75rem 1.5rem; /* px-6 py-3 equivalent */
+    text-align: left;
+    font-size: 0.75rem; /* text-xs equivalent */
+    font-weight: 500; /* font-medium equivalent */
+    color: #6b7280; /* text-gray-500 equivalent */
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* tracking-wider equivalent */
+    border-bottom: 1px solid #e5e7eb; /* divide-y divide-gray-200 equivalent */
+}
+
+.table-header.rounded-tl {
+    border-top-left-radius: 0.5rem; /* rounded-tl-lg equivalent */
+}
+
+.table-header.rounded-tr {
+    border-top-right-radius: 0.5rem; /* rounded-tr-lg equivalent */
+}
+
+.employee-table tbody {
+    background-color: #ffffff; /* bg-white equivalent */
+    border-bottom: 1px solid #e5e7eb; /* divide-y divide-gray-200 equivalent */
+}
+
+.table-row {
+    transition: background-color 0.15s ease-in-out; /* transition-colors duration-150 equivalent */
+}
+
+.table-row:hover {
+    background-color: #f9fafb; /* hover:bg-gray-50 equivalent */
+}
+
+.table-data {
+    padding: 1rem 1.5rem; /* px-6 py-4 equivalent */
+    white-space: nowrap;
+    font-size: 0.875rem; /* text-sm equivalent */
+    color: #4b5563; /* text-gray-700 equivalent */
+    border-bottom: 1px solid #e5e7eb; /* divide-y divide-gray-200 equivalent */
+}
+
+.table-data.font-medium {
+    font-weight: 500;
+    color: #1f2937; /* text-gray-900 equivalent */
+}
+
+.table-actions {
+    text-align: right;
+}
+
+.action-buttons-group {
+    display: flex;
+    gap: 0.5rem; /* space-x-2 equivalent */
+}
+
+.action-button {
+    padding: 0.5rem; /* p-2 equivalent */
+    border-radius: 9999px; /* rounded-full equivalent */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-button {
+    color: #2563eb; /* text-blue-600 equivalent */
+}
+
+.edit-button:hover {
+    color: #1e40af; /* hover:text-blue-900 equivalent */
+    background-color: #eff6ff; /* hover:bg-blue-100 equivalent */
+}
+
+.delete-button {
+    color: #dc2626; /* text-red-600 equivalent */
+}
+
+.delete-button:hover {
+    color: #991b1b; /* hover:text-red-900 equivalent */
+    background-color: #fee2e2; /* hover:bg-red-100 equivalent */
+}
+
+.assign-button {
+    color: #059669; /* text-green-600 */
+    background-color: #d1fae5; /* bg-green-50 */
+}
+
+.assign-button:hover {
+    color: #047857; /* hover:text-green-900 */
+    background-color: #a7f3d0; /* hover:bg-green-100 */
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px; /* rounded-full */
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* font-semibold */
+    text-transform: capitalize;
+}
+
+.status-ongoing {
+    background-color: #e0f2fe; /* bg-blue-100 */
+    color: #2563eb; /* text-blue-700 */
+}
+
+.status-completed {
+    background-color: #d1fae5; /* bg-green-100 */
+    color: #059669; /* text-green-700 */
+}
+
+.status-on_hold {
+    background-color: #fffbeb; /* bg-yellow-100 */
+    color: #b45309; /* text-yellow-700 */
+}
+
+.status-cancelled {
+    background-color: #fee2e2; /* bg-red-100 */
+    color: #dc2626; /* text-red-700 */
+}
+

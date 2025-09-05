@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit, Trash2, X, CheckCircle, AlertCircle, Users, Link as LinkIcon, Unlink, Building } from 'lucide-react';
 import '../styles/projectModule.css'; // Import the new vanilla CSS file
 import { useNavigate } from 'react-router-dom';
+import Table from '../Table/Table.jsx';
 
 // --- Utility Functions ---
 const validateProjectForm = (formData) => {
@@ -1065,75 +1066,7 @@ const ProjectManagement = () => {
                     <p>No projects found. Click "Add New Project" to get started!</p>
                 </div>
             ) : (
-                <div className="table-container">
-                    <table className="data-table">
-                        <thead>
-                            <tr>
-                                <th className="table-header">Project ID</th>
-                                <th className="table-header">Title</th>
-                                <th className="table-header">Client</th>
-                                <th className="table-header">Status</th>
-                                <th className="table-header">Budget</th>
-                                <th className="table-header">Start Date</th>
-                                <th className="table-header">End Date</th>
-                                <th className="table-header">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {projects.map((project) => (
-                                <tr key={project.id} className="table-row">
-                                    <td className="table-data font-medium">{project.id}</td>
-                                    <td className="table-data">{project.title}</td>
-                                    <td className="table-data">{project.client_name} ({project.client_company})</td>
-                                    <td className="table-data">
-                                        <span className={`status-badge status-${project.status.replace('_', '-')}`}>
-                                            {project.status.replace(/_/g, ' ')}
-                                        </span>
-                                    </td>
-                                    <td className="table-data">${parseFloat(project.budget).toLocaleString()}</td>
-                                    <td className="table-data">
-                                        {project.start_date ? new Date(project.start_date).toLocaleDateString() : 'N/A'}
-                                    </td>
-                                    <td className="table-data">
-                                        {project.end_date ? new Date(project.end_date).toLocaleDateString() : 'N/A'}
-                                    </td>
-                                    <td className="table-data table-actions">
-                                        <div className="action-buttons-group">
-                                            <button
-                                                onClick={() => openModal('edit', project)}
-                                                className="action-button edit-button"
-                                                title="Edit Project"
-                                            >
-                                                <Edit size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => openModal('delete', project)}
-                                                className="action-button delete-button"
-                                                title="Delete Project"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => openModal('assign', project)}
-                                                className="action-button assign-button"
-                                                title="Assign Employee"
-                                            >
-                                                <LinkIcon size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => openModal('view_assignments', project)}
-                                                className="action-button button-secondary"
-                                                title="View Assigned Employees"
-                                            >
-                                                <Users size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <Table/>               
             )}
 
             {/* New: Client Management Section */}

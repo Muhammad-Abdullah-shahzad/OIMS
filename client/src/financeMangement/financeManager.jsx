@@ -2471,7 +2471,23 @@ export default function FinanceManager() {
               </tr>
             </thead>
             <tbody>
-              {expenses.map((expense) => (
+              {expenses.filter((expense)=>{
+                const startDate =
+                expensesDateFilter.startDate &&
+                new Date(expensesDateFilter.startDate);
+              const endDate =
+                expensesDateFilter.endDate &&
+                new Date(expensesDateFilter.endDate);
+              const expenseRecordDate = new Date(
+                expense.expense_date
+              );
+
+              return filterRecordsByDates(
+                startDate,
+                endDate,
+                expenseRecordDate
+              );
+              }).map((expense) => (
                 <tr
                   key={`${expense.id}-${expense.expense_date}-${expense.description}`}
                   className="table-row"
@@ -2601,7 +2617,23 @@ export default function FinanceManager() {
               </tr>
             </thead>
             <tbody>
-              {salaryPayments.map((payment) => (
+              {salaryPayments.filter((salary)=>{
+               const startDate =salariesDateFilter.startDate &&
+               new Date(salariesDateFilter.startDate);
+             const endDate =
+               salariesDateFilter.endDate &&
+               new Date(salariesDateFilter.endDate);
+             const salariesRecordDate = new Date(
+               salary.payment_date
+             );
+
+             return filterRecordsByDates(
+               startDate,
+               endDate,
+               salariesRecordDate
+             );
+
+              }).map((payment) => (
                 <tr key={payment.id} className="table-row">
                   <td className="table-data font-medium">{payment.id}</td>
                   <td className="table-data">

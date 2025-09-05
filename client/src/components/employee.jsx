@@ -13,6 +13,7 @@ import EmployeeProfileCard from '../EmployeeProfile/EmployeeProfileCard.jsx';
 
 import ImageUploaderComponent from '../EmployeeProfile/EmployeeProfileUploader.jsx';
 
+import Table from '../Table/Table.jsx';
 // --- Utility Functions (could be in a separate utils file) ---
 
 const validateEmployeeForm = (formData) => {
@@ -942,93 +943,36 @@ const EmployeeManagement = () => {
                     <Edit size={20} className="button-icon " /> Manage Designations
                 </button>
             </div>
-
+     {console.log(employees)}
             {employees.length === 0 && !loading && !error ? (
                 <div className="no-employees-found">
                     <p className="no-employees-text">No employees found. Click "Add New Employee" to get started!</p>
                 </div>
             ) : (
-                <div className="employee-table-container">
-                    <table className="employee-table">
-                        <thead>
-                            <tr>
-                                <th className="table-header rounded-tl">Profile</th>
-                                <th className="table-header rounded-tl">Employee ID</th>
-                                <th className="table-header">Name</th>
-                                <th className="table-header">Designation</th>
-                                <th className="table-header">Department</th>
-                                <th className="table-header">Location</th>
-                                <th className="table-header">Allownces</th>
-                                <th className="table-header">Resources</th>
-                                <th className="table-header">Bank Name</th>
-                                <th className="table-header">Email</th>
-                                <th className="table-header">Phone</th>
-                                <th className="table-header">Salary</th>
-                                <th className="table-header">Hire Date</th>
-                                <th className="table-header rounded-tr">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {employees.map((employee) => (
-                                <tr key={employee.id} className="table-row">
-                                    <td 
-                                        className="table-data font-medium profile-cell" 
-                                       
-                                        onClick={() => 
-                                            {
-                                                setCurrentProfile({...currentProfile,employeeId:employee.id,profile_id:employee.profile_id});
-                                                openProfileCard(employee);
-                                            } 
-                                         }
-                                    >
-                                        <EmployeeProfile 
-                                        profileImageUrl={employee.profile_image_url} 
-                                        />
-                                    </td>
-                                    <td className="table-data font-medium">{'ORA-0' + employee.id}</td>
-                                    <td className="table-data">{employee.firstName} {employee.lastName}</td>
-                                    <td className="table-data">{employee.designation}</td>
-                                    <td className="table-data">{employee.department}</td>
-                                    <td className="table-data">{employee.location}</td>
-                                      <td className="table-data">
-                                        {/* {(Object.keys(JSON.parse(employee.alownces)).length > 0) ? Object.keys(JSON.parse(employee.alownces)).join(","):'No Allownces'} */}
-                                        {(Object.keys(employee.alownces).length > 0) ? Object.keys(employee.alownces).join(","):'No Allownces'}
-                                        </td>
-                                      <td className="table-data">
-                                        {/* {(Object.keys(JSON.parse(employee.resources)).length > 0) ? Object.keys(JSON.parse(employee.resources)).join(","):'No Resources Allocated'} */}
-                                        {(Object.keys((employee.resources)).length > 0) ? Object.keys((employee.resources)).join(","):'No Resources Allocated'}
-                                       
-                                        </td>
-                                    <td className="table-data">{employee.bank_name}</td>
-                                    <td className="table-data">{employee.email}</td>
-                                    <td className="table-data">{employee.phoneNumber}</td>
-                                    <td className="table-data">${parseFloat(employee.salary).toLocaleString()}</td>
-                                    <td className="table-data">
-                                        {employee.hire_date ? new Date(employee.hire_date).toLocaleDateString() : 'N/A'}
-                                    </td>
-                                    <td className="table-data table-actions">
-                                        <div className="action-buttons-group">
-                                            <button
-                                                onClick={() => openModal('edit', employee)}
-                                                className="action-button edit-button"
-                                                title="Edit Employee"
-                                            >
-                                                <Edit size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => openModal('delete', employee)}
-                                                className="action-button delete-button"
-                                                title="Delete Employee"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+              <Table
+              data={employees}
+              thead={["EmployeeId","First Name","Last Name","Designation","Department","Email","Allownces","Resources","cnic","hire date", "Bank Account"]}
+               datakeys = {[
+              "employee_id",   // EmployeeId
+                "firstName",     // First Name
+                "lastName",      // Last Name
+                "designation",   // Designation
+                "department",    // Department
+                "email",         // Email
+                "alownces",      // Allownces
+                "resources",     // Resources
+                "cnic",          // cnic
+                "hire_date",     // hire date
+                "bank_account"   // Bank Account
+              ]}
+              
+               actions={{
+                edit:true,
+                onEditClick:(employeeNo) => openModal("edit", employees[employeeNo]),
+                del:true,
+                onDeleteClick:(employeeNo) => openModal("delete", employees[employeeNo])
+               }}  
+              /> 
             )}
 
 
