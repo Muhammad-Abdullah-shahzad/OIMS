@@ -1,7 +1,9 @@
 const salaryModel = require("../model/salaryModel");
 const convertSalaryJsonToPdf = require("../utility/salarySlipGenerator");
 const {userActivityLogger} = require("../model/userActivityLogModel");
-
+const {getYTD} = require("../utility/ytdEarningsGeneratoe");
+const {monthlyDeductions} = require("../utility/monthlyDeductions");
+const numberToWordsGenerator = require("../utility/numberToWordsGenerator");
 // GET all salary payments
 exports.getAllSalaryController = async (req, res) => {
   try {
@@ -150,43 +152,84 @@ exports.generateReportController = async (req, res) => {
     const { month, year } = req.body;
 
     const [employeeSalaryData] = await salaryModel.getSalary(employeeId, month, year);
-
+console.log("employee salary data",employeeSalaryData);
     if (!employeeSalaryData || Object.keys(employeeSalaryData).length === 0) {
       return res.status(404).json({ message: "No salary data found" });
     }
 
-    const dummyPayslipData = {
-      companyName: "Oradigitals Consultants",
-      slipTitle: `Pay Slip, ${new Date(employeeSalaryData.payment_date).toLocaleDateString()}`,
-      employeeDetails: [
-        { label: "EMPLOYEE ID", value: 'ORA-0' + employeeSalaryData.employee_id },
-        { label: "NAME", value: employeeSalaryData.employee_name },
-        { label: "DESIGNATION", value: employeeSalaryData.designation },
-        { label: "LOCATION", value: employeeSalaryData.location },
-        { label: "DEPARTMENT", value: employeeSalaryData.department },
-      ],
-      jobDetails: [
-        { label: "DAYS WORKED", value: "30.00" },
-        { label: "DOJ", value: new Date(employeeSalaryData.hire_date).toLocaleDateString() },
-        { label: "PAY THROUGH", value: employeeSalaryData.payment_method.split("_").join(" ") },
-        { label: "BANK NAME", value: employeeSalaryData.bank_name },
-      ],
-      earnings: [
-        { description: "Basic Salary", current: "150,000.00", ytd: "1,800,000.00" },
-        { description: "Housing Allowance", current: "30,000.00", ytd: "360,000.00" },
-        { description: "Transport Allowance", current: "15,000.00", ytd: "180,000.00" },
-        { description: "Bonus", current: "10,000.00", ytd: "10,000.00" },
-      ],
-      deductions: [
-        { description: "Income Tax", current: "25,000.00", ytd: "300,000.00" },
-        { description: "Provident Fund", current: "8,000.00", ytd: "96,000.00" },
-      ],
-      grossEarnings: "205,000.00",
-      totalDeductions: "33,000.00",
-      netPay: "172,000.00",
-      netPayWords: "Pakistan Rupee One Lakh Seventy-Two Thousand Only",
-      notes: "This is a dummy salary slip for testing purposes. All figures are fictional and should not be used for any official documentation.\n\nThis is a computer generated document and does not require a signature."
-    };
+//  hireDate
+
+const hireDate = employeeSalaryData.hire_date;
+// Pre-calculate values
+const basicSalary     = parseFloat(employeeSalaryData.amount) || 0;
+const houseAllowance  = parseFloat(employeeSalaryData.alownces["House Allowance"]) || 0;
+const travelAllowance = parseFloat(employeeSalaryData.alownces["Travel Allowance"]) || 0;
+const medicalAllowance= parseFloat(employeeSalaryData.alownces["Medical Allowance"]) || 0;
+// Pre-calculate YTDs
+const baseYTD    = getYTD(hireDate, basicSalary);
+const houseYTD   = getYTD(hireDate, houseAllowance);
+const travelYTD  = getYTD(hireDate, travelAllowance);
+const medicalYTD = getYTD(hireDate, medicalAllowance);
+
+// total YTD
+const grossYTD = baseYTD + houseYTD + travelYTD + medicalYTD;
+
+// total monthly salary
+
+const grossSalary = basicSalary + houseAllowance + medicalAllowance + travelAllowance;
+
+const monthlySalaryDeductions = monthlyDeductions(basicSalary,grossSalary);
+
+const netSalaryPay = grossSalary - monthlySalaryDeductions.totalMonthlyDeduction;
+
+// ytd of deductions
+
+const incomeTaxYTD = getYTD(hireDate,monthlySalaryDeductions.monthlyIncometax);
+const profidentFundsYTD = getYTD(hireDate,monthlySalaryDeductions.monthlyProvidentFund);
+
+const totalDeductionsYTD = incomeTaxYTD + profidentFundsYTD;
+
+
+console.log(monthlySalaryDeductions);
+
+const dummyPayslipData = {
+  companyName: "Oradigitals Consultants",
+  slipTitle: `Pay Slip, ${new Date(employeeSalaryData.payment_date).toLocaleDateString()}`,
+
+  employeeDetails: [
+    { label: "EMPLOYEE ID", value: "ORA-0" + employeeSalaryData.employee_id },
+    { label: "NAME", value: employeeSalaryData.employee_name },
+    { label: "DESIGNATION", value: employeeSalaryData.designation },
+    { label: "LOCATION", value: employeeSalaryData.location },
+    { label: "DEPARTMENT", value: employeeSalaryData.department },
+  ],
+
+  jobDetails: [
+    { label: "DAYS WORKED", value: "30.00" },
+    { label: "Hire Date", value: new Date(hireDate).toLocaleDateString() },
+    { label: "PAY THROUGH", value: employeeSalaryData.payment_method.split("_").join(" ") },
+    { label: "BANK NAME", value: employeeSalaryData.bank_name },
+  ],
+
+  earnings: [
+    { description: "Basic Salary",      current: basicSalary,     ytd: baseYTD },
+    { description: "House Allowance",   current: houseAllowance,  ytd: houseYTD },
+    { description: "Travel Allowance",  current: travelAllowance, ytd: travelYTD },
+    { description: "Medical Allowance", current: medicalAllowance,ytd: medicalYTD },
+  ],
+
+  deductions: [
+    { description: "Income Tax", current:monthlySalaryDeductions.monthlyIncometax || "No Tax Applied" , ytd: incomeTaxYTD || "No TAX Applied"},
+    { description: "Provident Fund", current:monthlySalaryDeductions.monthlyProvidentFund, ytd: profidentFundsYTD},
+  ],
+  totalDeductionsYTD:totalDeductionsYTD,
+  totalYTD:grossYTD,
+  grossEarnings: grossSalary,
+  totalDeductions: monthlySalaryDeductions.totalMonthlyDeduction ,
+  netPay:netSalaryPay,
+  netPayWords:numberToWordsGenerator(netSalaryPay) +" "+"only",
+  notes: "This is a dummy salary slip for testing purposes. All figures are fictional and should not be used for any official documentation.\n\nThis is a computer generated document and does not require a signature."
+};
 
     const pdfBuffer = await convertSalaryJsonToPdf(dummyPayslipData);
 

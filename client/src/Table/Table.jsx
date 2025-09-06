@@ -18,10 +18,13 @@ import EmployeeProfile from "../EmployeeProfile/EmployeeProfile";
 //  openModal('assign', project
 
 //  openModal('view_assignments', project)
-function Table({ thead, datakeys, data, showProfile, onProfileClick, actions }) {
-    const { onEditClick, onDeleteClick, onAssignmentClick, onViewAssignmentClick } = actions;
+function Table({ thead =[], datakeys=[], data=[], showProfile, onProfileClick=()=>{}, actions={} }) {
+    const { onEditClick =()=>{}, onDeleteClick=()=>{}, onAssignmentClick=()=>{}, onViewAssignmentClick=()=>{} } = actions;
     const { edit, del, assign, viewAssign } = actions;
-
+    function isValidDate(val) {
+        const d = new Date(val);
+        return d instanceof Date && !isNaN(d);
+      }
 
     return (
         <div className="employee-table-container">
@@ -53,7 +56,6 @@ function Table({ thead, datakeys, data, showProfile, onProfileClick, actions }) 
                         </td>
 
                     )}
-
                             {
                                datakeys.map((key) => {
                                 const value = tdata[key];
@@ -63,8 +65,11 @@ function Table({ thead, datakeys, data, showProfile, onProfileClick, actions }) 
                                 } else if (typeof value === "object" && value !== null) {
                                     
                                   return <td className="table-data">{Object.keys(value).length > 0 ? Object.keys(value).join(","):"No Data"}</td>; {/* or JSON.stringify(value) */}
-                                } else {
+                                } else if(isNaN(new Date(value))){
                                   return <td className="table-data">{value}</td>;
+                                }
+                                else if (isValidDate(value)){
+                                    return <td className="table-data">{new Date(value).toLocaleDateString()}</td>;
                                 }
                               })
                               
@@ -108,7 +113,7 @@ function Table({ thead, datakeys, data, showProfile, onProfileClick, actions }) 
                                     }
                                     { viewAssign &&
                                         <button
-                                        onClick={() =>onAssignmentClick(index)}
+                                        onClick={() =>onViewAssignmentClick(index)}
                                         className="action-button button-secondary"
                                         title="View Assigned Employees"
                                     >

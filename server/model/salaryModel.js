@@ -37,6 +37,9 @@ exports.getSalary = async (employeeId,month,year) => {
     return rows;
 
   };
+
+
+  
   
 // ADD a new salary record
 exports.addSalary = async (data) => {

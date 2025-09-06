@@ -1,5 +1,5 @@
 // payslipGenerator.js
-const puppeteer = require("puppeteer");
+const htmlPdf = require('html-pdf-node');
 
 /**
  * Generates an HTML string for the payslip using the provided data.
@@ -44,14 +44,12 @@ function generateSlipHTML(data) {
                     --primary-dark: rgba(39, 71, 98, 0.9);
                     --border-color: rgba(39, 71, 98, 0.3);
                 }
-
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
                     margin: 0;
                     padding: 2rem;
                     color: var(--primary-dark);
                 }
-
                 .payslip-container {
                     max-width: 21cm;
                     min-height: 29.7cm;
@@ -59,40 +57,32 @@ function generateSlipHTML(data) {
                     background-color: #ffffff;
                     padding: 2rem;
                 }
-                
-                /* Header Section */
                 .header-container {
                     display: flex;
                     justify-content: space-between;
                     align-items: flex-start;
                     margin-bottom: 1rem;
                 }
-                
                 .header-logo-container {
                     display: flex;
                     align-items: center;
-                    gap: 10px; /* Adjust as needed for spacing */
+                    gap: 10px;
                 }
-
                 .header-logo-img {
-                    height: 50px; /* Adjust as needed */
+                    height: 50px;
                     width: auto;
                 }
-
                 .header-logo-text {
                     font-size: 1rem;
                     font-weight: 700;
                     color: var(--primary-color);
                 }
-
                 .header-title {
                     font-size: 1rem;
                     font-weight: 700;
                     color: var(--primary-color);
                     text-align: right;
                 }
-
-                /* Details Section */
                 .details-grid {
                     display: grid;
                     grid-template-columns: repeat(2, minmax(0,1fr));
@@ -100,43 +90,35 @@ function generateSlipHTML(data) {
                     margin-bottom: 1rem;
                     font-size: 0.875rem;
                 }
-
                 .details-list {
                     display: flex;
                     flex-direction: column;
                     margin-bottom:0px;
                 }
-
                 .detail-row {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     margin-bottom:-10px;
                 }
-                
                 .detail-label {
                     font-weight:400;
                     color: var(--primary-color);
                 }
-
                 .detail-value {
                     color: var(--primary-dark);
                     font-weight: 200;
                     text-align: right;
                 }
-
-                /* Table Styling */
                 .payslip-table {
                     width: 100%;
                     border-collapse: collapse;
                     margin-bottom: 1.5rem;
                     font-size: 0.875rem;
                 }
-
                 .table-row {
                     height: 2rem;
                 }
-
                 .table-header {
                     background-color: var(--primary-light);
                     color: var(--primary-color);
@@ -144,19 +126,15 @@ function generateSlipHTML(data) {
                     padding: 0.5rem;
                     text-align: center;
                 }
-
                 .table-cell {
                     padding: 0.5rem;
                     text-align: left;
                 }
-
                 .text-right {
                     text-align: right;
                 }
-
                 .table-cell-border {
                     border: 1px solid var(--border-color);
-                   
                 }
                 .border-bottom-none{
                     border-bottom:none;
@@ -167,12 +145,10 @@ function generateSlipHTML(data) {
                 .border-right-1px {
                     border-right: 1px solid var(--border-color);
                 }
-
                 .table-total-row {
                     background-color: var(--primary-lighter);
                     font-weight: 600;
                 }
-                
                 .net-pay-bar {
                     color: var(--primary-color);
                     font-weight: 400;
@@ -183,19 +159,15 @@ function generateSlipHTML(data) {
                     margin-bottom: 0.5rem;
                     font-size:16px;
                 }
-                
                 .net-pay-value {
                     font-weight: 400;
                     font-size: 16px;
                 }
-
                 .net-pay-words {
                     font-size: 0.875rem;
                     font-weight: 600;
                     margin-bottom: 1.5rem;
                 }
-
-                /* Footer */
                 .footer-box {
                     padding: 1rem;
                     background-color: var(--primary-lighter);
@@ -204,7 +176,6 @@ function generateSlipHTML(data) {
                     font-size: 0.875rem;
                     color: var(--primary-dark);
                 }
-                
                 .footer-box p {
                     margin-bottom: 0.5rem;
                 }
@@ -221,7 +192,6 @@ function generateSlipHTML(data) {
                         <h1 class="header-title">${data.slipTitle}</h1>
                     </div>
                 </div>
-
                 <div class="details-grid">
                     <div class="details-list">
                         ${data.employeeDetails.map(item => `
@@ -240,7 +210,6 @@ function generateSlipHTML(data) {
                         `).join('')}
                     </div>
                 </div>
-
                 <table class="payslip-table">
                     <thead>
                         <tr>
@@ -263,21 +232,18 @@ function generateSlipHTML(data) {
                         <tr class="table-total-row">
                             <td class="table-cell table-cell-border">Total Earnings</td>
                             <td class="table-cell table-cell-border text-right">${data.grossEarnings}</td>
-                            <td class="table-cell table-cell-border text-right">2,491,002.00</td>
+                            <td class="table-cell table-cell-border text-right">${data.totalYTD}</td>
                             <td class="table-cell table-cell-border">Total Deductions</td>
                             <td class="table-cell table-cell-border text-right">${data.totalDeductions}</td>
-                            <td class="table-cell table-cell-border text-right">287,335.37</td>
+                            <td class="table-cell table-cell-border text-right">${data.totalDeductionsYTD}</td>
                         </tr>
                     </tfoot>
                 </table>
-
                 <div class="net-pay-bar">
                     <p>Net Pay</p>
                     <p class="net-pay-value">${data.netPay}</p>
                 </div>
-
                 <p class="net-pay-words">${data.netPayWords}</p>
-
                 <div class="footer-box">
                     ${data.notes.split('\n\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
                 </div>
@@ -293,29 +259,30 @@ function generateSlipHTML(data) {
  * @returns {Promise<Buffer>} A Promise that resolves with the PDF buffer.
  */
 async function convertSalaryJsonToPdf(payslipData) {
-    let browser;
     try {
-        browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        
-        // Check if payslipData is valid
         if (!payslipData || typeof payslipData !== 'object') {
             throw new Error("Invalid or empty employee salary data provided.");
         }
 
         const htmlContent = generateSlipHTML(payslipData);
+        
+        const options = {
+            format: 'A4',
+            printBackground: true,
+            path: null // 'null' returns a buffer
+        };
+        
+        // Input object for html-pdf-node
+        const file = {
+            content: htmlContent,
+        };
 
-        await page.setContent(htmlContent, { waitUntil: "networkidle0", timeout: 60000 });
-        const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
+        const pdfBuffer = await htmlPdf.generatePdf(file, options);
 
         return pdfBuffer;
     } catch (error) {
         console.error("❌ An error occurred while generating the payslip:", error);
         throw error; 
-    } finally {
-        if (browser) {
-            await browser.close();
-        }
     }
 }
 

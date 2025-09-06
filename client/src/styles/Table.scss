@@ -15,11 +15,12 @@
 
 .employee-table thead {
     background-color: #f9fafb; /* bg-gray-50 equivalent */
+    text-align: center;
 }
 
 .table-header {
     padding: 0.75rem 1.5rem; /* px-6 py-3 equivalent */
-    text-align: left;
+    text-align: center;
     font-size: 0.75rem; /* text-xs equivalent */
     font-weight: 500; /* font-medium equivalent */
     color: #6b7280; /* text-gray-500 equivalent */
@@ -140,4 +141,5 @@
     background-color: #fee2e2; /* bg-red-100 */
     color: #dc2626; /* text-red-700 */
 }
+
 

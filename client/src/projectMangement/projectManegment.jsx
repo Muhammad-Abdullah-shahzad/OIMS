@@ -1060,13 +1060,47 @@ const ProjectManagement = () => {
                     <Plus size={20} className="button-icon" /> Add New Project
                 </button>
             </div>
-
+{console.log(projects)}
             {projects.length === 0 && !loading && !error && (modalMode !== 'create' && modalMode !== 'edit') ? (
                 <div className="no-data-found">
                     <p>No projects found. Click "Add New Project" to get started!</p>
                 </div>
             ) : (
-                <Table/>               
+                <Table
+                thead={[
+                  "ID",
+                  "Title",
+                  "Budget",
+                  "Status",
+                  "Start Date",
+                  "End Date",
+                  "Client Name",
+                  "Client Company",
+                  "Actions"
+                ]}
+                datakeys={[
+                  "id",
+                  "title",
+                  "budget",
+                  "status",
+                  "start_date",
+                  "end_date",
+                  "client_name",
+                  "client_company",
+                ]}
+                data={projects}
+                showProfile={false}
+                actions={{
+                  edit: true,
+                  del: true,
+                  assign: true,
+                  viewAssign: true,
+                  onEditClick: (i) =>openModal("edit",projects[i]) ,
+                  onDeleteClick: (i) => openModal("delete",projects[i]),
+                  onAssignmentClick: (i) => openModal("assign", projects[i]),
+                  onViewAssignmentClick: (i) => openModal("view_assignments",projects[i])
+                }}
+              />
             )}
 
             {/* New: Client Management Section */}
