@@ -631,6 +631,7 @@ const ProjectManagement = () => {
             showToastMessage('Client deleted successfully!', 'success');
             closeModal();
             fetchClients(); // Re-fetch clients to update the list
+             fetchProjects();               // Re-fetch projects to update the lists
         } catch (err) {
             if(err.hasOwnProperty('tokenVerified')){
                 if(err.tokenVerified===false){
@@ -669,20 +670,21 @@ const ProjectManagement = () => {
                                     type="text" id="title" name="title" value={formData.title}
                                     onChange={handleChange}
                                     className={`form-input ${validationErrors.title ? 'input-error' : ''}`}
-                                    required
+            
                                 />
                                 {validationErrors.title && <p className="error-message">{validationErrors.title}</p>}
                             </div>
                             {/* Client */}
                             <div className="form-group">
                                 <label htmlFor="client_id">Client</label>
+                                {console.log(formData)}
                                 <select
                                     id="client_id" name="client_id" value={formData.client_id}
                                     onChange={handleChange}
                                     className={`form-select ${validationErrors.client_id ? 'input-error' : ''}`}
                                     required
                                 >
-                                    <option value="">Select a Client</option>
+                                    <option value="">{formData.client_name}</option>
                                     {clients.map(client => (
                                         <option key={client.id} value={client.id}>{client.name} ({client.company})</option>
                                     ))}

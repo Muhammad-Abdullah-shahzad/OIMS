@@ -87,30 +87,40 @@ export default function UserActivityLogs() {
 
     return <span className={`log-type-tag ${typeClass}`}>{displayText}</span>;
   };
-
   const handleFilter = () => {
+    const fromDate = fromDateFilter ? new Date(fromDateFilter) : null;
+    const toDate = toDateFilter ? new Date(toDateFilter) : null;
+  
+    if (fromDate) fromDate.setHours(0, 0, 0, 0);               // start of the day
+    if (toDate) toDate.setHours(23, 59, 59, 999);              // end of the day
+  
     const filtered = allLogs.filter((log) => {
-      // User Email Filter
-      const userEmailMatch = log.userEmail.toLowerCase().includes(userEmailFilter.toLowerCase());
-
-      // Action Type Filter
-      const actionTypeMatch = actionTypeFilter === "All" || log.actionType === actionTypeFilter;
-      
-      // Table Name Filter
-      const tableNameMatch = tableNameFilter === "All" || log.tableName === tableNameFilter;
-
-      // Date Filters
       const logDate = new Date(log.timestamp);
-      const fromDate = fromDateFilter ? new Date(fromDateFilter) : null;
-      const toDate = toDateFilter ? new Date(toDateFilter) : null;
-      
+  
+      const userEmailMatch =
+        log.userEmail.toLowerCase().includes(userEmailFilter.toLowerCase());
+  
+      const actionTypeMatch =
+        actionTypeFilter === "All" || log.actionType === actionTypeFilter;
+  
+      const tableNameMatch =
+        tableNameFilter === "All" || log.tableName === tableNameFilter;
+  
       const fromDateMatch = !fromDate || logDate >= fromDate;
       const toDateMatch = !toDate || logDate <= toDate;
-
-      return userEmailMatch && actionTypeMatch && tableNameMatch && fromDateMatch && toDateMatch;
+  
+      return (
+        userEmailMatch &&
+        actionTypeMatch &&
+        tableNameMatch &&
+        fromDateMatch &&
+        toDateMatch
+      );
     });
+  
     setLogs(filtered);
   };
+  
 
   const handleShowDetails = (log) => {
     setSelectedLog(log);

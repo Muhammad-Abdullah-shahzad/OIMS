@@ -23,8 +23,9 @@ function Table({ thead =[], datakeys=[], data=[], showProfile, onProfileClick=()
     const { edit, del, assign, viewAssign } = actions;
     function isValidDate(val) {
         const d = new Date(val);
-        return d instanceof Date && !isNaN(d);
+        return d instanceof Date && !isNaN(d.getTime());
       }
+      
 
     return (
         <div className="employee-table-container">
@@ -62,7 +63,15 @@ function Table({ thead =[], datakeys=[], data=[], showProfile, onProfileClick=()
                               
                                 if (value instanceof Date) {
                                   return <td className="table-data">{value.toLocaleDateString()}</td>;
-                                } else if (typeof value === "object" && value !== null) {
+                                } 
+                                else if (typeof value ==="number"){
+                                    return <td className="table-data">{value}</td>
+                                }
+
+                                else if (typeof value ==="string" && value.includes("ORA")){
+                                    return <td className="table-data">{value}</td>
+                                }
+                                else if (typeof value === "object" && value !== null) {
                                     
                                   return <td className="table-data">{Object.keys(value).length > 0 ? Object.keys(value).join(","):"No Data"}</td>; {/* or JSON.stringify(value) */}
                                 } else if(isNaN(new Date(value))){
@@ -70,6 +79,9 @@ function Table({ thead =[], datakeys=[], data=[], showProfile, onProfileClick=()
                                 }
                                 else if (isValidDate(value)){
                                     return <td className="table-data">{new Date(value).toLocaleDateString()}</td>;
+                                }
+                                else if (typeof value ==="string" && value.includes("{")){
+                                    return <td className="table-data">{Object.keys(JSON.parse(value)).length > 0 ? Object.keys(JSON.parse(value)).join(","):"No Data"}</td>; {/* or JSON.stringify(value) */} 
                                 }
                               })
                               

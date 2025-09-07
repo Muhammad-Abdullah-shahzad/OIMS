@@ -25,7 +25,7 @@ const validateEmployeeForm = (formData) => {
     if (isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) < 0) {
         errors.salary = 'Valid Salary is required and must be a non-negative number.';
     }
-    if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
+    // if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email format.';
     if (formData.phoneNumber && !/^\+?[0-9\s-]{7,20}$/.test(formData.phoneNumber)) errors.phoneNumber = 'Invalid phone number format.';
     if (formData.cnic && !/^[0-9]{5}-?[0-9]{7}-?[0-9]{1}$/.test(formData.cnic)) errors.cnic = 'Invalid CNIC format (e.g., 12345-1234567-1).';
@@ -481,7 +481,7 @@ const EmployeeManagement = () => {
                         </h2>
                         <div className="form-grid">
                             {/* Employee ID */}
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label htmlFor="employee_id">Employee ID</label>
                                 <input
                                     type="text"
@@ -494,7 +494,7 @@ const EmployeeManagement = () => {
                                 />
                                 {validationErrors.employee_id && <p className="error-message">{validationErrors.employee_id}</p>}
                             </div>
-                            {/* First Name */}
+                            First Name */}
                             <div className="form-group">
                                 <label htmlFor="firstName">First Name</label>
                                 <input
@@ -951,9 +951,9 @@ const EmployeeManagement = () => {
             ) : (
               <Table
               data={employees}
-              thead={["EmployeeId","First Name","Last Name","Designation","Department","Email","Allownces","Resources","cnic","hire date", "Bank Account"]}
+              thead={["EmployeeId","First Name","Last Name","Designation","Department","Email","Allownces","Resources","cnic","hire date", "Bank Account","Actions"]}
                datakeys = {[
-              "employee_id",   // EmployeeId
+                 "id",   // EmployeeId
                 "firstName",     // First Name
                 "lastName",      // Last Name
                 "designation",   // Designation

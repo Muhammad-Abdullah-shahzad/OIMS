@@ -101,7 +101,7 @@ exports.getAllEmployeesModel = async () => {
   const pool = await database.pool;
   const [rows] = await pool.query(
     `SELECT 
-    e.id,firstName,e.lastName,e.employee_id,e.designation,
+    concat("ORA-",e.id) as id,firstName,e.lastName,e.employee_id,e.designation,
     e.cnic,address,e.salary,e.phoneNumber,e.hire_date,e.bank_account,e.email,e.location,
     e.bank_name,e.department,e.resources,e.alownces , p.profile_image_url , p.profile_id
      FROM employees e LEFT JOIN employeeProfiles p on
