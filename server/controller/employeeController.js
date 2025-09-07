@@ -95,10 +95,10 @@ exports.addNewEmployeeController = async (req, res) => {
 
 exports.deleteEmployeeController = async (req, res) => {
   const { id } = req.params;
-
+  const parsedID = parseInt(id.slice(4));
   // console.log("id and employee_id recieved from front end ",id,employee_id);
   try {
-    await employeeModel.deleteEmployeeModel(id);
+    await employeeModel.deleteEmployeeModel(parsedID);
     
    await userActivityLogger({
     userEmail : req.user.email,
@@ -119,8 +119,8 @@ exports.updateEmployeeInfoController = async (req, res) => {
   const { id } = req.params;
   delete req.body.profile_image_url;
   delete req.body.profile_id;
+  req.body.id = parseInt(req.body.id.slice(4));
   const updatedFields = req.body;
-
   try {
   await employeeModel.updateEmployeeModel(id, updatedFields);
    
@@ -231,6 +231,7 @@ exports.getAllDesignationsController = async (req, res) => {
 // Delete a designation
 exports.deleteDesignationController = async (req, res) => {
   const { designationId } = req.params;
+  
 
   try {
     const deleted = await employeeModel.deleteDesignationModel(designationId);

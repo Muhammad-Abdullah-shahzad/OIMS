@@ -403,7 +403,7 @@ const EmployeeManagement = () => {
                 // console.log("data that we are sending to update employee route",dataToSubmit); // Use dataToSubmit
                 const token = localStorage.token
                 // console.log("selected employee ",selectedEmployee);
-                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id)}`, {
+                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id.slice(4))}`, {
                     method: 'PUT',
                     headers: { 
                     'Content-Type': 'application/json',

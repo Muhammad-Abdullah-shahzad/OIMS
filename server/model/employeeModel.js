@@ -54,7 +54,7 @@ exports.deleteEmployeeModel = async (id) => {
 // Update employee
 exports.updateEmployeeModel = async (id, updatedFields) => {
   const pool = await database.pool;
-
+console.log("id in update model",id);
   // Validate input
   if (!id) throw new Error("Employee ID is required for update.");
   if (
