@@ -105,7 +105,7 @@ exports.updateSalaryController = async (req, res) => {
     // Log user activity
     await userActivityLogger({
       userEmail: req.user.email,
-      actionType: "UPDATE",
+      actionType: (fieldsToUpdate.salary_payments_status === "deleted" ? "DELETE":"UPDATE"),
       tableName: "salaries",
       newData: fieldsToUpdate,
       actionDetails: `${req.user.email} updated salary record ID ${paymentId}`

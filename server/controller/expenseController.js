@@ -49,7 +49,7 @@ exports.updateExpenseController = async (req, res) => {
     // Log UPDATE action
     await userActivityLogger({
       userEmail: req.user.email,
-      actionType: "UPDATE",
+      actionType:(updatedData.expense_status==="deleted"?"DELETE":"UPDATE"),
       tableName: "expenses",
       newData: updatedData,
       actionDetails: `${req.user.email} updated expense (ID: ${id})`
