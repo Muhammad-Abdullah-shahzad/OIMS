@@ -103,14 +103,14 @@ exports.getExpenseReportController = async (req, res) => {
 
     const pdfBuffer = await generatePdfFromJson(report, "Expense Report Slip", "OraDigital");
 
-    // Log REPORT GENERATION action
-    await userActivityLogger({
-      userEmail: req.user.email,
-      actionType: "REPORT",
-      tableName: "expenses",
-      newData: { startDate, endDate },
-      actionDetails: `${req.user.email} generated a monthly expense report${startDate && endDate ? ` from ${startDate} to ${endDate}` : ""}`
-    });
+    // Log REPORT GENERATION action for future not now 
+    // await userActivityLogger({
+    //   userEmail: req.user.email,
+    //   actionType: "REPORT",
+    //   tableName: "expenses",
+    //   newData: { startDate, endDate },
+    //   actionDetails: `${req.user.email} generated a monthly expense report${startDate && endDate ? ` from ${startDate} to ${endDate}` : ""}`
+    // });
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "attachment; filename=monthly_expense_report.pdf");

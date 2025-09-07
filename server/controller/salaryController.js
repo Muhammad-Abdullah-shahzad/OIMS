@@ -228,7 +228,7 @@ const dummyPayslipData = {
   totalDeductions: monthlySalaryDeductions.totalMonthlyDeduction ,
   netPay:netSalaryPay,
   netPayWords:numberToWordsGenerator(netSalaryPay) +" "+"only",
-  notes: "This is a dummy salary slip for testing purposes. All figures are fictional and should not be used for any official documentation.\n\nThis is a computer generated document and does not require a signature."
+  notes: "This is a computer-generated salary slip.  No signature is required. For queries or corrections, please reach out to HR/Finance."
 };
 
     const pdfBuffer = await convertSalaryJsonToPdf(dummyPayslipData);

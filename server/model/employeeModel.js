@@ -54,7 +54,7 @@ exports.deleteEmployeeModel = async (id) => {
 // Update employee
 exports.updateEmployeeModel = async (id, updatedFields) => {
   const pool = await database.pool;
-console.log("id in update model",id);
+
   // Validate input
   if (!id) throw new Error("Employee ID is required for update.");
   if (
@@ -101,7 +101,7 @@ exports.getAllEmployeesModel = async () => {
   const pool = await database.pool;
   const [rows] = await pool.query(
     `SELECT 
-    concat("ORA-",e.id) as id,firstName,e.lastName,e.employee_id,e.designation,
+    e.id,firstName,e.lastName,e.employee_id,e.designation,
     e.cnic,address,e.salary,e.phoneNumber,e.hire_date,e.bank_account,e.email,e.location,
     e.bank_name,e.department,e.resources,e.alownces , p.profile_image_url , p.profile_id
      FROM employees e LEFT JOIN employeeProfiles p on

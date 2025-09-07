@@ -40,11 +40,15 @@ exports.updatePaymentController = async (req, res) => {
     const paymentId = req.params.paymentId;
     const updates = req.body;
 
+
+
     const updated = await paymentModel.updatePaymentModel(paymentId, updates);
+
+    
 
     await userActivityLogger({
       userEmail: req.user.email,
-      actionType: "UPDATE",
+      actionType:updates.payment_status === "deleted" ? "DELETE": "UPDATE" ,
       tableName: "payments",
       newData: updates,
       actionDetails: `${req.user.email} updated payment with ID: ${paymentId}`

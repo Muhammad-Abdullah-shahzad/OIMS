@@ -82,9 +82,7 @@ exports.updateSalary = async (id, fields) => {
   if(fields.designation){
    delete fields.designation;
   }
-  if(fields.system_employee_id){
-   delete fields.system_employee_id;
-  }
+
   
   if(fields.updated_at){
    delete fields.updated_at;
@@ -92,6 +90,10 @@ exports.updateSalary = async (id, fields) => {
   
   if(fields.created_at){
    delete fields.created_at;
+  }
+  
+  if ("system_employee_id" in fields) {
+    delete fields.system_employee_id;
   }
 
   const keys = Object.keys(fields);

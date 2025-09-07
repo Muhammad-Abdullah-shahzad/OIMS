@@ -29,16 +29,16 @@ exports.addPaymentModel = async (payment) => {
 };
 
 exports.updatePaymentModel = async (id, updates) => {
-    if(updates.project_title){
+    if(updates?.project_title){
       delete updates.project_title
     }
-    if(updates.client_name){
+    if(updates?.client_name){
       delete updates.client_name;
     }
-    if(updates.updated_at){
+    if(updates?.updated_at){
       delete updates.updated_at;
     }
-    if(updates.created_at){
+    if(updates?.created_at){
       delete updates.created_at;
     }
 

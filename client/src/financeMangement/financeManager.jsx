@@ -747,10 +747,13 @@ export default function FinanceManager() {
     try {
       const token = localStorage.token;
       const response = await fetch(
-        `${API_BASE_URL}/payment/delete/${selectedPayment.id}`,
+        `${API_BASE_URL}/payment/edit/${selectedPayment.id}`,
         {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          method: "PUT",
+          headers: {"Content-Type":"application/json" ,Authorization: `Bearer ${token}` },
+          body:JSON.stringify({
+            payment_status:"deleted"
+          })
         }
       );
 
@@ -868,10 +871,13 @@ export default function FinanceManager() {
     try {
       const token = localStorage.token;
       const response = await fetch(
-        `${API_BASE_URL}/expense/delete/${selectedExpense.id}`,
+        `${API_BASE_URL}/expense/edit/${selectedExpense.id}`,
         {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          method: "PUT",
+          headers: { "Content-Type":"application/json",Authorization: `Bearer ${token}` },
+          body:JSON.stringify({
+            expense_status:"deleted"
+          })
         }
       );
 
@@ -980,10 +986,13 @@ export default function FinanceManager() {
     try {
       const token = localStorage.token;
       const response = await fetch(
-        `${API_BASE_URL}/salary/delete/${selectedSalaryPayment.id}`,
+        `${API_BASE_URL}/salary/edit/${selectedSalaryPayment.id}`,
         {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          method: "PUT",
+          headers: { "Content-Type":"application/json",Authorization: `Bearer ${token}` },
+          body:JSON.stringify({
+            salary_payments_status:"deleted"
+          })
         }
       );
 

@@ -25,7 +25,7 @@ const validateEmployeeForm = (formData) => {
     if (isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) < 0) {
         errors.salary = 'Valid Salary is required and must be a non-negative number.';
     }
-    // if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
+    if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email format.';
     if (formData.phoneNumber && !/^\+?[0-9\s-]{7,20}$/.test(formData.phoneNumber)) errors.phoneNumber = 'Invalid phone number format.';
     if (formData.cnic && !/^[0-9]{5}-?[0-9]{7}-?[0-9]{1}$/.test(formData.cnic)) errors.cnic = 'Invalid CNIC format (e.g., 12345-1234567-1).';
@@ -114,7 +114,12 @@ const EmployeeManagement = () => {
             if (!response.ok) {
                 throw await response.json();
             }
-            const data = await response.json();
+            let data = await response.json();
+            data = data.map((item)=>{
+                item.id= "ORA-" + item.id;
+
+                return item;
+            })
             setEmployees(data);
             console.log("employees date comming from backend " , data);
         } catch (err) {
@@ -403,7 +408,7 @@ const EmployeeManagement = () => {
                 // console.log("data that we are sending to update employee route",dataToSubmit); // Use dataToSubmit
                 const token = localStorage.token
                 // console.log("selected employee ",selectedEmployee);
-                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id.slice(4))}`, {
+                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id)}`, {
                     method: 'PUT',
                     headers: { 
                     'Content-Type': 'application/json',
@@ -481,7 +486,7 @@ const EmployeeManagement = () => {
                         </h2>
                         <div className="form-grid">
                             {/* Employee ID */}
-                            {/* <div className="form-group">
+                            <div className="form-group">
                                 <label htmlFor="employee_id">Employee ID</label>
                                 <input
                                     type="text"
@@ -494,7 +499,7 @@ const EmployeeManagement = () => {
                                 />
                                 {validationErrors.employee_id && <p className="error-message">{validationErrors.employee_id}</p>}
                             </div>
-                            First Name */}
+                            {/* First Name */}
                             <div className="form-group">
                                 <label htmlFor="firstName">First Name</label>
                                 <input
@@ -951,12 +956,13 @@ const EmployeeManagement = () => {
             ) : (
               <Table
               data={employees}
-              thead={["EmployeeId","First Name","Last Name","Designation","Department","Email","Allownces","Resources","cnic","hire date", "Bank Account","Actions"]}
+              thead={["EmployeeId","First Name","Last Name","Designation","Salary","Department","Email","Allownces","Resources","cnic","hire date", "Bank Account","Actions"]}
                datakeys = {[
-                 "id",   // EmployeeId
+              "id",   // EmployeeId
                 "firstName",     // First Name
                 "lastName",      // Last Name
-                "designation",   // Designation
+                "designation",
+                'salary',   // Designation
                 "department",    // Department
                 "email",         // Email
                 "alownces",      // Allownces
