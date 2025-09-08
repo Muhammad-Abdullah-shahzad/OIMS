@@ -2,7 +2,6 @@
 const database = require("../Database/database");
 // Add a new employee
 exports.addEmployeeModel = async (
-  employee_id,
   firstName,
   lastName,
   email,
@@ -16,20 +15,23 @@ exports.addEmployeeModel = async (
   location,
   department,
   bank_name,
-  alownces,
+  alownces = {},
   resources = {}
 ) => {
   const pool = database.pool;
   const query = `
-    INSERT INTO employees (employee_id,firstName, lastName, email, phoneNumber, designation,cnic,address,salary,bank_account,hire_date,location,department,bank_name,resources,alownces)
-    VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ? ,?,?,?,?,?,?)
+    INSERT INTO employees (
+      firstName, lastName, email, phoneNumber, designation,
+      cnic, address, salary, bank_account, hire_date,
+      location, department, bank_name, alownces, resources
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
+
   const values = [
-    employee_id,
     firstName,
     lastName,
     email,
-    phoneNumber,
+    String(phoneNumber),
     designation,
     cnic,
     address,
@@ -39,9 +41,10 @@ exports.addEmployeeModel = async (
     location,
     department,
     bank_name,
-    resources,
-    alownces,
+    alownces,   // ensure JSON format
+    resources   // ensure JSON format
   ];
+
   await pool.query(query, values);
 };
 
@@ -101,11 +104,12 @@ exports.getAllEmployeesModel = async () => {
   const pool = await database.pool;
   const [rows] = await pool.query(
     `SELECT 
-    e.id,firstName,e.lastName,e.employee_id,e.designation,
+    e.id,firstName,e.lastName,e.designation,e.is_active,
     e.cnic,address,e.salary,e.phoneNumber,e.hire_date,e.bank_account,e.email,e.location,
     e.bank_name,e.department,e.resources,e.alownces , p.profile_image_url , p.profile_id
      FROM employees e LEFT JOIN employeeProfiles p on
      e.id = p.employee_id
+     where is_active = 1
      `
   );
   return rows;

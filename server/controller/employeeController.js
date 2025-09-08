@@ -15,7 +15,6 @@ exports.addNewEmployeeController = async (req, res) => {
     salary,
     bank_account,
     hire_date,
-    employee_id,
     location,
     department,
     bank_name,
@@ -33,17 +32,15 @@ exports.addNewEmployeeController = async (req, res) => {
       !salary ||
       !bank_account ||
       !hire_date ||
-      !employee_id ||
       !location,
     !department,
     !bank_name ||!alownces)
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
-
+  console.log("type of phoneNumber and value " , typeof phoneNumber , phoneNumber);
   try {
     await employeeModel.addEmployeeModel(
-      employee_id,
       firstName,
       lastName,
       email,
@@ -66,7 +63,6 @@ exports.addNewEmployeeController = async (req, res) => {
     actionType :"INSERT",     
     tableName : "employees table",
     newData : {
-      employee_id,
       firstName,
       lastName,
       email,

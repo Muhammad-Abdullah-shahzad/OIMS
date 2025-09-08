@@ -147,6 +147,19 @@ const NavBar = ({ navLinks, showProfile, hamburgerShow, role }) => {
             {menuOpen ? <FaTimes /> : <FaBars />}
           </div>
         )}
+         {navLinks.length > 0 && (
+          <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
+            {navLinks.map((navLink, index) => {
+              return (
+                <li key={index}>
+                  <Link to={navLink.path} onClick={closeMenu}>
+                    {navLink.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
         <div className="profile-login-wrapper">
           <div>
             <Link
@@ -179,19 +192,7 @@ const NavBar = ({ navLinks, showProfile, hamburgerShow, role }) => {
             </div>
           )}
         </div>
-        {navLinks.length > 0 && (
-          <ul className={`navbar-links ${menuOpen ? "open" : ""}`}>
-            {navLinks.map((navLink, index) => {
-              return (
-                <li key={index}>
-                  <Link to={navLink.path} onClick={closeMenu}>
-                    {navLink.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+       
       </nav>
       {showImageUploader && (
         <ImageUploaderCard

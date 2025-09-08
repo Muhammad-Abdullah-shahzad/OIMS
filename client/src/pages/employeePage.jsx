@@ -13,7 +13,10 @@ function EmployeePage( ) {
             name:"Dashboard",
             path:"/hr-dashboard"
         }
-       ]}/>
+       ]}
+       hamburgerShow={true}
+       />
+       
         <EmployeeManagement/>
        </>
     )

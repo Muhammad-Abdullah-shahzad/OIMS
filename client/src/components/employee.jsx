@@ -25,7 +25,7 @@ const validateEmployeeForm = (formData) => {
     if (isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) < 0) {
         errors.salary = 'Valid Salary is required and must be a non-negative number.';
     }
-    if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
+    // if (!formData.employee_id) errors.employee_id = 'Employee ID is required.';
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Invalid email format.';
     if (formData.phoneNumber && !/^\+?[0-9\s-]{7,20}$/.test(formData.phoneNumber)) errors.phoneNumber = 'Invalid phone number format.';
     if (formData.cnic && !/^[0-9]{5}-?[0-9]{7}-?[0-9]{1}$/.test(formData.cnic)) errors.cnic = 'Invalid CNIC format (e.g., 12345-1234567-1).';
@@ -58,7 +58,8 @@ const EmployeeManagement = () => {
         hire_date: '',
         location: '',
         department: '',
-        bank_name: ''
+        bank_name: '',
+        is_active:1
     });
 
     // New states for allowances and resources
@@ -326,7 +327,7 @@ const EmployeeManagement = () => {
                 location: '',
                 department: '',
                 bank_name: ''
-            });
+            })
         } else if (mode === 'edit' && employee) {
             // console.log("employee data you want to edit " , employee);
             // Format hire_date for input[type="date"]
@@ -408,7 +409,7 @@ const EmployeeManagement = () => {
                 // console.log("data that we are sending to update employee route",dataToSubmit); // Use dataToSubmit
                 const token = localStorage.token
                 // console.log("selected employee ",selectedEmployee);
-                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id)}`, {
+                response = await fetch(`${API_BASE_URL}/update/${parseInt(selectedEmployee.id.slice(4))}`, {
                     method: 'PUT',
                     headers: { 
                     'Content-Type': 'application/json',
@@ -486,19 +487,6 @@ const EmployeeManagement = () => {
                         </h2>
                         <div className="form-grid">
                             {/* Employee ID */}
-                            <div className="form-group">
-                                <label htmlFor="employee_id">Employee ID</label>
-                                <input
-                                    type="text"
-                                    id="employee_id"
-                                    name="employee_id"
-                                    value={formData.employee_id}
-                                    onChange={handleChange}
-                                    className={`form-input ${validationErrors.employee_id ? 'input-error' : ''}`}
-                                    required
-                                />
-                                {validationErrors.employee_id && <p className="error-message">{validationErrors.employee_id}</p>}
-                            </div>
                             {/* First Name */}
                             <div className="form-group">
                                 <label htmlFor="firstName">First Name</label>
@@ -680,6 +668,23 @@ const EmployeeManagement = () => {
                                     <option value="MCB Bank">MCB Bank</option>
                                 </select>
                             </div>
+                            {/* Employee Status */}
+                            <div className="form-group">
+                                {console.log(formData)}
+                                <label htmlFor="is_active">Employee Status</label>
+                                <select
+                                    id="is_active"
+                                    name="is_active"
+                                    value={formData.is_active}
+                                    onChange={handleChange}
+                                    className="form-input"
+                                >
+                                    <option value="">Select Status</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">In Active</option>
+                                
+                                </select>
+                            </div>
 
                             {/* Address */}
                             <div className="form-group-full">
@@ -806,7 +811,7 @@ const EmployeeManagement = () => {
                         <h2 className="modal-title">Confirm Deletion</h2>
                         <p className="modal-text">
                             Are you sure you want to delete employee{' '}
-                            <span className="employee-name">{selectedEmployee?.firstName} {selectedEmployee?.lastName}</span> (ID: {selectedEmployee?.employee_id})?
+                            <span className="employee-name">{selectedEmployee?.firstName} {selectedEmployee?.lastName}</span> (ID: {selectedEmployee?.id})?
                             This action cannot be undone.
                         </p>
                         <div className="modal-actions">

@@ -20,7 +20,7 @@ body {
     /* margin-left: auto; */
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 1rem;
+    /* margin-top: 1rem; */
 }
 
 .date-label {
@@ -63,6 +63,7 @@ body {
     gap: 0.5rem; /* space-x-2 equivalent */
     margin-bottom: 2rem; /* mb-8 equivalent */
     flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+    align-items: center;
 }
 
 /* Individual Filter Button */
@@ -692,4 +693,10 @@ body {
    justify-content: center;
    align-items: center;
     }
+}
+
+@media  screen and (min-width:1000px) {
+
+
+    
 }

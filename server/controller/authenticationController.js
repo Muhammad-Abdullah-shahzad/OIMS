@@ -16,12 +16,12 @@ exports.signupController = async (req, res) => {
 
   try {
     const existingUser = await userModel.findUserByEmail(email);
-    if (existingUser) {
+    if (existingUser.length > 0) {
       return res.status(409).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await userModel.createUser(email, hashedPassword, firstName, lastName,role);
+    await userModel.createUser(email, hashedPassword, firstName, lastName);
 
     res.status(201).json({ message: "Signup successful" });
   } catch (err) {
