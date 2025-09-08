@@ -273,6 +273,7 @@ export default function FinanceManager() {
         throw await response.json();
       }
       const data = await response.json();
+      console.log("projects data comming from backend " , data);
       setProjects(data);
     } catch (err) {
       if (err.hasOwnProperty("tokenVerified")) {
@@ -1223,6 +1224,8 @@ export default function FinanceManager() {
                     required
                   >
                     <option value="">Select a Project</option>
+                  
+                    {console.log("Projects " , projects)}
                     {projects.map((project) => (
                       <option key={project.id} value={project.id}>
                         {project.title}
@@ -2644,13 +2647,14 @@ export default function FinanceManager() {
 
               }).map((payment) => (
                 <tr key={payment.id} className="table-row">
+                  {console.log(payment)}
                   <td className="table-data font-medium">{payment.id}</td>
                   <td className="table-data">
                     {payment.employee_name ||
-                      getEmployeeName(payment.employee_id)}
+                      getEmployeeName(payment.id)}
                   </td>
                   <td className="table-data">
-                    {payment.system_employee_id ||
+                    {"ORA-" + payment.employee_id  ||
                       getSystemEmployeeId(payment.employee_id)}
                   </td>
                   <td className="table-data">{payment.designation || "N/A"}</td>{" "}

@@ -38,7 +38,7 @@ const Login = () => {
       else if (result.data.role === "hr_manager"){
         navigate("/hr-dashboard");
       }
-      else{
+      else if (result.data.role === "fm_manager"){ 
         navigate("/fm-dashboard");
       }
     } else {

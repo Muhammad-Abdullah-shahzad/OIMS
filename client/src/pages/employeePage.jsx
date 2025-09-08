@@ -1,9 +1,10 @@
 import EmployeeManagement from "../components/employee";
 import NavBar from "../components/navbar";
 import React from "react";
-function EmployeePage( ) {
+function EmployeePage() {
     return(
        <>
+
        <NavBar navLinks={[
         {
             name:"Home",
@@ -18,6 +19,7 @@ function EmployeePage( ) {
        />
        
         <EmployeeManagement/>
+
        </>
     )
 }

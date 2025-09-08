@@ -19,7 +19,7 @@ export default function EmployeeProfile({ profileImageUrl, name, designation }) 
     // <div className="employee-profile-card">
       <div className="profile-image-container">
         <img
-          src={profileImageUrl || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSksG4mm4xFN-Ufeaf1ZZ8ixWe2k4aZknK1MQ&s'}
+          src={profileImageUrl || 'https://techboard.com.au/wp-content/uploads/2020/01/no-profile-image-png-3.png'}
           alt={`Profile picture of ${name}`}
           onError={handleImageError}
           className="profile-image"

@@ -15,7 +15,9 @@ const getAllProjectsModel = async () => {
       JOIN clients c ON p.client_id = c.id
       ORDER BY p.created_at DESC
     `);
+
     return projects;
+  
   } catch (error) {
     console.error("Error in getAllProjects:", error);
     throw new Error("Failed to fetch projects");

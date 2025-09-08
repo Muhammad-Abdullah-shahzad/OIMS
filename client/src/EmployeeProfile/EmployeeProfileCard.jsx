@@ -32,7 +32,7 @@ const EmployeeProfileCard = ({ employee, onClose , onProfileClick }) => {
                     <div className={styles.profileHeader}>
                         <img 
                             onClick={onProfileClick}
-                            src={employee.profile_image_url || 'https://static.vecteezy.com/system/resources/thumbnails/036/107/216/small/ai-generated-portrait-of-successful-and-happy-businesswoman-office-worker-smiling-and-looking-at-camera-with-crossed-arms-working-inside-modern-office-photo.jpg'}
+                            src={employee.profile_image_url || 'https://techboard.com.au/wp-content/uploads/2020/01/no-profile-image-png-3.png'}
                             alt={`${employee.firstName} ${employee.lastName}`}
                             className={styles.profileImage}
                         />

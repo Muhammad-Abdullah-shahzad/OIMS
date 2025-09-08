@@ -55,7 +55,7 @@ exports.editEmployeeProfile = async (req, res) => {
         const { profile_image_url , employee_id } = req.body;
         console.log(typeof profileId , profile_image_url , employee_id);
 
-        await profileModel.updateProfile(profileId,null,employee_id, {
+        await profileModel.updateProfile(profileId,null,parseInt(employee_id.slice(4)),{
             profile_image_url
         });
 

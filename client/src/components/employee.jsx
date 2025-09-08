@@ -960,6 +960,16 @@ const EmployeeManagement = () => {
                 </div>
             ) : (
               <Table
+              showProfile={true}
+              onProfileClick={
+                (i) => {
+                    setCurrentProfile({
+                      ...currentProfile,
+                      employeeId: employees[i].id,
+                      profile_id: employees[i].profile_id,
+                    });
+                    openProfileCard(employees[i]);
+                  }}
               data={employees}
               thead={["EmployeeId","First Name","Last Name","Designation","Salary","Department","Email","Allownces","Resources","cnic","hire date", "Bank Account","Actions"]}
                datakeys = {[
@@ -1015,7 +1025,9 @@ const EmployeeManagement = () => {
             )}
            { showImageUploader && (
                 <ImageUploaderComponent 
-                onUploadSuccess = {()=>{}}
+                onUploadSuccess = {()=> {
+                  fetchEmployees();
+                }}
                  onCancel={()=>{
                     setImageUploader(false)
                  }}

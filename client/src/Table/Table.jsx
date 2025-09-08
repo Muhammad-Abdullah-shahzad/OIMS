@@ -2,14 +2,6 @@ import "../styles/Table.scss";
 import {Edit , Trash2 , LinkIcon , Users} from "lucide-react"
 import EmployeeProfile from "../EmployeeProfile/EmployeeProfile";
 
-// () => {
-//     setCurrentProfile({
-//       ...currentProfile,
-//       employeeId: employee.id,
-//       profile_id: employee.profile_id,
-//     });
-//     openProfileCard(employee);
-//   }
 
 // () => openModal("edit", employee)
 
@@ -48,7 +40,7 @@ function Table({ thead =[], datakeys=[], data=[], showProfile, onProfileClick=()
                               {showProfile && (
                         <td
                             className="table-data font-medium profile-cell"
-                            onClick={onProfileClick}
+                            onClick={()=>onProfileClick(index)}
                         >
                             <EmployeeProfile
                                 profileImageUrl={tdata.profile_image_url}

@@ -510,7 +510,7 @@ const SuperAdminDashboard = () => {
                     <li>
                         <button
                             className={`${styles.sidebarButton} ${selectedSection === 'overview' ? styles.active : ''}`}
-                            onClick={() => { setSelectedSection('overview'); setIsMobileSidebarOpen(false); }}
+                            onClick={() => { setSelectedSection('overview'); setIsMobileSidebarOpen(false);fetchDashboardData(); }}
                         >
                             <LayoutDashboard size={20} className={styles.sidebarNavIcon} />
                             Overview
@@ -566,7 +566,7 @@ const SuperAdminDashboard = () => {
                         <li>
                             <button
                                 className={`${styles.sidebarButton} ${selectedSection === 'overview' ? styles.active : ''}`}
-                                onClick={() => setSelectedSection('overview')}
+                                onClick={() => {setSelectedSection('overview');fetchDashboardData();}}
                             >
                                 <LayoutDashboard size={20} className={styles.sidebarNavIcon} />
                                 Overview
