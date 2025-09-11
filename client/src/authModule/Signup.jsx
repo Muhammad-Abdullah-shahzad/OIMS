@@ -15,9 +15,9 @@ const Signup = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
 
-  const AUTH_API_URL = "http://localhost:5000/auth/signup";
+  const AUTH_API_URL = "https://oimsapi.oradigitals.com/auth/signup";
 
-  return (
+   return (
     <div className={styles.pageWrapper}>
       <div className={styles.authContainer}>
         <h2 className={styles.heading}>Create OIMS Account</h2>

@@ -47,7 +47,7 @@ const SuperAdminDashboard = () => {
 
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // State for mobile sidebar
 
-    const API_BASE_URL = 'http://localhost:5000/admin'; // Your API base URL
+    const API_BASE_URL = 'https://oimsapi.oradigitals.com/admin'; // Your API base URL
 
     const showToastMessage = useCallback((message, type) => {
         setToast({ show: true, message, type });

@@ -20,7 +20,7 @@ export default function UserActivityLogs() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedLog, setSelectedLog] = useState(null);
 
-  const BASE_URL = `http://localhost:5000`;
+  const BASE_URL = `https://oimsapi.oradigitals.com`;
 
   useEffect(() => {
     const fetchLogs = async () => {

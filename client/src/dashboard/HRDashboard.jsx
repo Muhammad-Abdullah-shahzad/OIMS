@@ -28,7 +28,7 @@ const EmployeeDashboard = () => {
     const [toast, setToast] = useState({ show: false, message: '', type: '' });
     const [selectedSection, setSelectedSection] = useState('overview'); // State to manage active section
 
-    const API_BASE_URL = 'http://localhost:5000/employee'; // Your API base URL
+    const API_BASE_URL = 'https://oimsapi.oradigitals.com/employee'; // Your API base URL
 
     const showToastMessage = useCallback((message, type) => {
         setToast({ show: true, message, type });

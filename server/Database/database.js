@@ -1,4 +1,4 @@
-const mysql = require("mysql2") 
+const mysql = require("mysql2");
 const dotenv =require("dotenv").config()
 
 // singelton design pattern for creating database connection instance

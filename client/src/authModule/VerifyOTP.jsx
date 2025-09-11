@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../styles/verifyOtp.scss";
 
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'https://oimsapi.oradigitals.com';
 
 function VerifyOtp() {
   const location = useLocation();

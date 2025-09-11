@@ -1,5 +1,3 @@
-const { rows } = require("mssql");
-
 const db = require("../Database/database").pool;
 
 // Get profile by userId

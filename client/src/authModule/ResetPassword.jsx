@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/resetPassword.scss';
 
-const BASE_URL ='http://localhost:5000';
+const BASE_URL ='https://oimsapi.oradigitals.com';
 
 const ResetPassword = () => {
   const location = useLocation();

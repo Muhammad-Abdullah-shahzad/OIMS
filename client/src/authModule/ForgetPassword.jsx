@@ -3,7 +3,7 @@ import { useState } from "react";
 import { FaEnvelope } from "react-icons/fa"; // Remember to install react-icons
 import { Link , useNavigate} from "react-router-dom";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://oimsapi.oradigitals.com";
 
 function ForgetPassword() {
   const [email, setEmail] = useState("");

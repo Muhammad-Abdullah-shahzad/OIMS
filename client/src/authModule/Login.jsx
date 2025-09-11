@@ -5,7 +5,8 @@ import loginUser from './userLogin';
 import {Link} from "react-router-dom"
 const Login = () => {
   const navigate = useNavigate();
-  const Base_Url = `http://localhost:5000/auth`;
+  
+  const Base_Url = `https://oimsapi.oradigitals.com/auth`;
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -514,8 +514,8 @@
     }
 
     .mainContentArea {
-        width: 100%;
-        padding: 0rem; /* Adjust padding for mobile */
+        /* width: 100%; */
+        padding: 0px 7px ; /* Adjust padding for mobile */
     }
 
     .headerSection {
